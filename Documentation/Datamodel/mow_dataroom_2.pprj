@@ -1,4 +1,4 @@
-; Fri Nov 22 16:42:06 CET 2013
+; Thu Nov 28 17:39:02 CET 2013
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -20,18 +20,21 @@
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[mow_dataroom_ProjectKB_Class10089]
-		[mow_dataroom_ProjectKB_Class10090]
-		[mow_dataroom_ProjectKB_Class10091]
-		[mow_dataroom_ProjectKB_Class20092]
-		[mow_dataroom_ProjectKB_Class20093]
-		[mow_dataroom_ProjectKB_Class20094]
-		[mow_dataroom_ProjectKB_Class20095]
-		[mow_dataroom_ProjectKB_Class20096]
-		[mow_dataroom_ProjectKB_Class20097]))
+		[mow_dataroom_2_ProjectKB_Class20018]
+		[mow_dataroom_2_ProjectKB_Class20019]
+		[mow_dataroom_2_ProjectKB_Class20020]
+		[mow_dataroom_2_ProjectKB_Class20021]
+		[mow_dataroom_2_ProjectKB_Class20022]
+		[mow_dataroom_2_ProjectKB_Class20023]
+		[mow_dataroom_2_ProjectKB_Class20024]
+		[mow_dataroom_2_ProjectKB_Class20025]
+		[mow_dataroom_2_ProjectKB_Class20026]
+		[mow_dataroom_2_ProjectKB_Class20027]
+		[mow_dataroom_2_ProjectKB_Class20028]))
 
 ([CLSES_TAB] of  Widget
 
+	(is_hidden FALSE)
 	(widget_class_name "edu.stanford.smi.protege.widget.ClsesTab"))
 
 ([CREATION_TIMESTAMP_WIDGET] of  Widget
@@ -44,6 +47,7 @@
 
 ([FORMS_TAB] of  Widget
 
+	(is_hidden FALSE)
 	(widget_class_name "edu.stanford.smi.protege.widget.FormsTab"))
 
 ([INSTANCE_ANNOTATION_FORM_WIDGET] of  Widget
@@ -67,6 +71,7 @@
 
 ([INSTANCES_TAB] of  Widget
 
+	(is_hidden FALSE)
 	(widget_class_name "edu.stanford.smi.protege.widget.InstancesTab"))
 
 ([KB_695502_Class0] of  String
@@ -75,7 +80,11 @@
 	(string_value "edu.stanford.smi.protege.storage.clips.ClipsKnowledgeBaseFactory"))
 
 ([KB_695502_Class1] of  Map
-)
+
+	(entries
+		[mow_dataroom_2_ProjectKB_Class20029]
+		[mow_dataroom_2_ProjectKB_Class20030]
+		[mow_dataroom_2_ProjectKB_Class20031]))
 
 ([KB_695502_Class100] of  Property_List
 
@@ -121,12 +130,12 @@
 ([KB_695502_Class113] of  String
 
 	(name "classes_file_name")
-	(string_value "mow_dataroom.pont"))
+	(string_value "mow_dataroom_2.pont"))
 
 ([KB_695502_Class114] of  String
 
 	(name "instances_file_name")
-	(string_value "mow_dataroom.pins"))
+	(string_value "mow_dataroom_2.pins"))
 
 ([KB_695502_Class91] of  Property_List
 
@@ -169,7 +178,7 @@
 ([KB_695502_Class99] of  Property_List
 )
 
-([KB_798907_Class0] of  Map
+([KB_907499_Class3] of  Map
 )
 
 ([LAYOUT_PROPERTIES] of  Property_List
@@ -177,29 +186,759 @@
 	(name "layout properties")
 	(properties [VERTICAL_STRETCHER]))
 
-([mow_dataroom_ProjectKB_Class1] of  Widget
+([mow_dataroom_2_ProjectKB_Class1] of  Widget
 
 	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class2])
+	(property_list [mow_dataroom_2_ProjectKB_Class2])
 	(widget_class_name "com.enterprise_architecture.essential.snapshot.EssentialSnapShotTab"))
 
-([mow_dataroom_ProjectKB_Class10] of  Property_List
+([mow_dataroom_2_ProjectKB_Class10] of  Property_List
 )
 
-([mow_dataroom_ProjectKB_Class10089] of  String
+([mow_dataroom_2_ProjectKB_Class10004] of  Widget
+
+	(height 120)
+	(is_hidden FALSE)
+	(name "indicator_records")
+	(property_list [mow_dataroom_2_ProjectKB_Class10005])
+	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
+	(width 200)
+	(x 0)
+	(y 530))
+
+([mow_dataroom_2_ProjectKB_Class10005] of  Property_List
+
+	(properties
+		[mow_dataroom_2_ProjectKB_Class10006]
+		[mow_dataroom_2_ProjectKB_Class10007]))
+
+([mow_dataroom_2_ProjectKB_Class10006] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-View References to Value"))
+
+([mow_dataroom_2_ProjectKB_Class10007] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-Delete Instance"))
+
+([mow_dataroom_2_ProjectKB_Class10008] of  String
+
+	(name "horizontal_stretcher")
+	(string_value "<<all>>"))
+
+([mow_dataroom_2_ProjectKB_Class10009] of  String
+
+	(name "vertical_stretcher")
+	(string_value "<<none>>"))
+
+([mow_dataroom_2_ProjectKB_Class103] of  Widget
+
+	(height 60)
+	(is_hidden FALSE)
+	(name "waarde")
+	(property_list [mow_dataroom_2_ProjectKB_Class104])
+	(widget_class_name "edu.stanford.smi.protege.widget.TextFieldWidget")
+	(width 200)
+	(x 0)
+	(y 60))
+
+([mow_dataroom_2_ProjectKB_Class104] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class105] of  Widget
+
+	(height 120)
+	(is_hidden FALSE)
+	(name "dim_element")
+	(property_list [mow_dataroom_2_ProjectKB_Class106])
+	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
+	(width 200)
+	(x 0)
+	(y 60))
+
+([mow_dataroom_2_ProjectKB_Class106] of  Property_List
+
+	(properties
+		[mow_dataroom_2_ProjectKB_Class107]
+		[mow_dataroom_2_ProjectKB_Class108]))
+
+([mow_dataroom_2_ProjectKB_Class107] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-View References to Value"))
+
+([mow_dataroom_2_ProjectKB_Class108] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-Delete Instance"))
+
+([mow_dataroom_2_ProjectKB_Class11] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class12])
+	(widget_class_name "ca.uvic.csr.shrimp.jambalaya.JambalayaTab"))
+
+([mow_dataroom_2_ProjectKB_Class12] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class13] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class14])
+	(widget_class_name "edu.stanford.smi.protege.widget.ClsesAndInstancesTab"))
+
+([mow_dataroom_2_ProjectKB_Class14] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class15] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class16])
+	(widget_class_name "uk.ac.man.cs.mig.coode.owlviz.ui.OWLVizTab"))
+
+([mow_dataroom_2_ProjectKB_Class16] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class17] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class18])
+	(widget_class_name "edu.stanford.smi.protege.query.LuceneQueryPlugin"))
+
+([mow_dataroom_2_ProjectKB_Class18] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class19] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class20])
+	(widget_class_name "edu.stanford.smi.protegex.owl.ui.cls.OWLClassesTab"))
+
+([mow_dataroom_2_ProjectKB_Class2] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class20] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class20018] of  String
 
 	(name ":INSTANCE-ANNOTATION")
 	(string_value "%3AANNOTATION-TEXT"))
 
-([mow_dataroom_ProjectKB_Class10090] of  String
+([mow_dataroom_2_ProjectKB_Class20019] of  String
 
-	(name "Persoonstabel")
+	(name "Dimensie")
+	(string_value "discriminator{+-+}waarde"))
+
+([mow_dataroom_2_ProjectKB_Class20020] of  String
+
+	(name "Dim_Element")
+	(string_value "dimensie{%3A+}waarde"))
+
+([mow_dataroom_2_ProjectKB_Class20021] of  String
+
+	(name "Personen")
 	(string_value "voornaam{+}familienaam"))
 
-([mow_dataroom_ProjectKB_Class10091] of  String
+([mow_dataroom_2_ProjectKB_Class20022] of  String
+
+	(name "ReferentieTabel")
+	(string_value "discriminator{+-+}waarde"))
+
+([mow_dataroom_2_ProjectKB_Class20023] of  String
 
 	(name "Frequentietabel")
 	(string_value "frequentie_type{++*+}maand{}kwartaal{}schooljaar{+}jaar"))
+
+([mow_dataroom_2_ProjectKB_Class20024] of  String
+
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
+
+([mow_dataroom_2_ProjectKB_Class20025] of  String
+
+	(name ":PAL-CONSTRAINT")
+	(string_value "%3APAL-NAME"))
+
+([mow_dataroom_2_ProjectKB_Class20026] of  String
+
+	(name "Organisatie")
+	(string_value "entiteit{+-+}afdeling"))
+
+([mow_dataroom_2_ProjectKB_Class20027] of  String
+
+	(name "Indicator")
+	(string_value "indicator"))
+
+([mow_dataroom_2_ProjectKB_Class20028] of  String
+
+	(name "Indicatorfiche")
+	(string_value "indicator_naam"))
+
+([mow_dataroom_2_ProjectKB_Class20029] of  Map_Entry
+
+	(key "add_name_on_instance_form")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([mow_dataroom_2_ProjectKB_Class20030] of  Map_Entry
+
+	(key "change_tracking_active")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([mow_dataroom_2_ProjectKB_Class20031] of  Map_Entry
+
+	(key "suppress_instance_counting")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([mow_dataroom_2_ProjectKB_Class20036] of  Widget
+
+	(is_hidden FALSE)
+	(name "Dimensie")
+	(property_list [mow_dataroom_2_ProjectKB_Class20037])
+	(widget_class_name "edu.stanford.smi.protege.widget.FormWidget"))
+
+([mow_dataroom_2_ProjectKB_Class20037] of  Property_List
+
+	(properties
+		[mow_dataroom_2_ProjectKB_Class20038]
+		[mow_dataroom_2_ProjectKB_Class20039]
+		[mow_dataroom_2_ProjectKB_Class20043]
+		[mow_dataroom_2_ProjectKB_Class20045]
+		[mow_dataroom_2_ProjectKB_Class20047]
+		[mow_dataroom_2_ProjectKB_Class20065]))
+
+([mow_dataroom_2_ProjectKB_Class20038] of  Property_List
+
+	(name "layout properties"))
+
+([mow_dataroom_2_ProjectKB_Class20039] of  Widget
+
+	(height 180)
+	(is_hidden FALSE)
+	(name "elementen_per_dimensie")
+	(property_list [mow_dataroom_2_ProjectKB_Class20040])
+	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
+	(width 200)
+	(x 200)
+	(y 0))
+
+([mow_dataroom_2_ProjectKB_Class20040] of  Property_List
+
+	(properties
+		[mow_dataroom_2_ProjectKB_Class20041]
+		[mow_dataroom_2_ProjectKB_Class20042]))
+
+([mow_dataroom_2_ProjectKB_Class20041] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-View References to Value"))
+
+([mow_dataroom_2_ProjectKB_Class20042] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-Delete Instance"))
+
+([mow_dataroom_2_ProjectKB_Class20043] of  Widget
+
+	(height 60)
+	(is_hidden FALSE)
+	(name "waarde")
+	(property_list [mow_dataroom_2_ProjectKB_Class20044])
+	(widget_class_name "edu.stanford.smi.protege.widget.TextFieldWidget")
+	(width 200)
+	(x 0)
+	(y 60))
+
+([mow_dataroom_2_ProjectKB_Class20044] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class20045] of  Widget
+
+	(height 60)
+	(is_hidden FALSE)
+	(name "discriminator")
+	(property_list [mow_dataroom_2_ProjectKB_Class20046])
+	(widget_class_name "edu.stanford.smi.protege.widget.TextFieldWidget")
+	(width 200)
+	(x 0)
+	(y 0))
+
+([mow_dataroom_2_ProjectKB_Class20046] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class20047] of  Widget
+
+	(height 60)
+	(is_hidden FALSE)
+	(name "actief")
+	(property_list [mow_dataroom_2_ProjectKB_Class20048])
+	(widget_class_name "edu.stanford.smi.protege.widget.CheckBoxWidget")
+	(width 200)
+	(x 0)
+	(y 120))
+
+([mow_dataroom_2_ProjectKB_Class20048] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class20049] of  Widget
+
+	(height 60)
+	(is_hidden FALSE)
+	(name "actief")
+	(property_list [mow_dataroom_2_ProjectKB_Class20050])
+	(widget_class_name "edu.stanford.smi.protege.widget.CheckBoxWidget")
+	(width 200)
+	(x 0)
+	(y 120))
+
+([mow_dataroom_2_ProjectKB_Class20050] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class20057] of  Widget
+
+	(height 120)
+	(is_hidden FALSE)
+	(name "dimensie_lijst")
+	(property_list [mow_dataroom_2_ProjectKB_Class20058])
+	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
+	(width 200)
+	(x 400)
+	(y 130))
+
+([mow_dataroom_2_ProjectKB_Class20058] of  Property_List
+
+	(properties
+		[mow_dataroom_2_ProjectKB_Class20059]
+		[mow_dataroom_2_ProjectKB_Class20060]))
+
+([mow_dataroom_2_ProjectKB_Class20059] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-View References to Value"))
+
+([mow_dataroom_2_ProjectKB_Class20060] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-Delete Instance"))
+
+([mow_dataroom_2_ProjectKB_Class20065] of  Widget
+
+	(height 120)
+	(is_hidden FALSE)
+	(name "dimensie_naar_indicatorfiche")
+	(property_list [mow_dataroom_2_ProjectKB_Class20066])
+	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
+	(width 200)
+	(x 0)
+	(y 170))
+
+([mow_dataroom_2_ProjectKB_Class20066] of  Property_List
+
+	(properties
+		[mow_dataroom_2_ProjectKB_Class20067]
+		[mow_dataroom_2_ProjectKB_Class20068]))
+
+([mow_dataroom_2_ProjectKB_Class20067] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-View References to Value"))
+
+([mow_dataroom_2_ProjectKB_Class20068] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-Delete Instance"))
+
+([mow_dataroom_2_ProjectKB_Class20073] of  Widget
+
+	(height 60)
+	(is_hidden FALSE)
+	(name "dimensie")
+	(property_list [mow_dataroom_2_ProjectKB_Class20074])
+	(widget_class_name "edu.stanford.smi.protege.widget.InstanceFieldWidget")
+	(width 200)
+	(x 0)
+	(y 0))
+
+([mow_dataroom_2_ProjectKB_Class20074] of  Property_List
+
+	(properties
+		[mow_dataroom_2_ProjectKB_Class20075]
+		[mow_dataroom_2_ProjectKB_Class20076]))
+
+([mow_dataroom_2_ProjectKB_Class20075] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-View References to Value"))
+
+([mow_dataroom_2_ProjectKB_Class20076] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-Delete Instance"))
+
+([mow_dataroom_2_ProjectKB_Class21] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class22])
+	(widget_class_name "edu.stanford.smi.RemoteKBTab.UMLSTab"))
+
+([mow_dataroom_2_ProjectKB_Class22] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class23] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class24])
+	(widget_class_name "edu.stanford.smi.protegex.changeanalysis.ChangeAnalysisTab"))
+
+([mow_dataroom_2_ProjectKB_Class24] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class25] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class26])
+	(widget_class_name "TGViztab.TGVizTab"))
+
+([mow_dataroom_2_ProjectKB_Class26] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class27] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class28])
+	(widget_class_name "org.algernon.kb.okbc.protege.plugins.AlgernonTab"))
+
+([mow_dataroom_2_ProjectKB_Class28] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class29] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class30])
+	(widget_class_name "edu.stanford.smi.protegex.xml.tab.XMLTab"))
+
+([mow_dataroom_2_ProjectKB_Class3] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class4])
+	(widget_class_name "se.liu.ida.JessTab.JessTab"))
+
+([mow_dataroom_2_ProjectKB_Class30] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class31] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class32])
+	(widget_class_name "edu.stanford.smi.protegex.widget.pal.PalQueriesTab"))
+
+([mow_dataroom_2_ProjectKB_Class32] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class33] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class34])
+	(widget_class_name "org.protege.owl.axiome.ui.AxiomeTab"))
+
+([mow_dataroom_2_ProjectKB_Class34] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class35] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class36])
+	(widget_class_name "edu.stanford.smi.protegex.owl.swrl.ui.tab.SWRLTab"))
+
+([mow_dataroom_2_ProjectKB_Class36] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class37] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class38])
+	(widget_class_name "edu.stanford.smi.protegex.fctab.FacetConstraintsTab"))
+
+([mow_dataroom_2_ProjectKB_Class38] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class39] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class40])
+	(widget_class_name "edu.stanford.smi.protege.widget.instance_tree.KnowledgeTreeTab"))
+
+([mow_dataroom_2_ProjectKB_Class4] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class40] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class41] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class42])
+	(widget_class_name "com.enterprise_architecture.essential.integration.widgets.EssentialIntegrationTab"))
+
+([mow_dataroom_2_ProjectKB_Class42] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class43] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class44])
+	(widget_class_name "edu.stanford.smi.protegex.changes.stats.ChangeStatisticsTab"))
+
+([mow_dataroom_2_ProjectKB_Class44] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class45] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class46])
+	(widget_class_name "edu.stanford.smi.protegex.owl.ui.properties.OWLPropertiesTab"))
+
+([mow_dataroom_2_ProjectKB_Class46] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class47] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class48])
+	(widget_class_name "edu.stanford.smi.protege.widget.ProtegePropertiesTab"))
+
+([mow_dataroom_2_ProjectKB_Class48] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class49] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class50])
+	(widget_class_name "edu.stanford.smi.protegex.server_changes.prompt.UsersTab"))
+
+([mow_dataroom_2_ProjectKB_Class5] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class6])
+	(widget_class_name "edu.stanford.smi.protegex.owl.ui.metadatatab.OWLMetadataTab"))
+
+([mow_dataroom_2_ProjectKB_Class50] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class51] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class52])
+	(widget_class_name "edu.stanford.smi.protege.widget.instance_tree.InstanceTreeTab"))
+
+([mow_dataroom_2_ProjectKB_Class52] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class53] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class54])
+	(widget_class_name "edu.stanford.smi.protegex.widget.pal.PalConstraintsTab"))
+
+([mow_dataroom_2_ProjectKB_Class54] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class55] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class56])
+	(widget_class_name "edu.stanford.smi.RemoteKBTab.WordNetTab"))
+
+([mow_dataroom_2_ProjectKB_Class56] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class57] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class58])
+	(widget_class_name "uk.ac.man.ac.mig.coode.individuals.ui.OWLDLIndividualsTab"))
+
+([mow_dataroom_2_ProjectKB_Class58] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class59] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class60])
+	(widget_class_name "org.protege.owl.mm.protege3.MappingMasterTab"))
+
+([mow_dataroom_2_ProjectKB_Class6] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class60] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class61] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class62])
+	(widget_class_name "edu.stanford.smi.protegex.evaluation.MetaAnalysis"))
+
+([mow_dataroom_2_ProjectKB_Class62] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class63] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class64])
+	(widget_class_name "edu.stanford.smi.protegex.owl.ui.individuals.OWLIndividualsTab"))
+
+([mow_dataroom_2_ProjectKB_Class64] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class65] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class66])
+	(widget_class_name "edu.stanford.smi.protegex.changes.changesKBViewTab.ChangesKBViewTab"))
+
+([mow_dataroom_2_ProjectKB_Class66] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class67] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class68])
+	(widget_class_name "edu.stanford.smi.protege.widget.KAToolTab"))
+
+([mow_dataroom_2_ProjectKB_Class68] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class69] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class70])
+	(widget_class_name "edu.stanford.smi.protegex.chatPlugin.ChatTab"))
+
+([mow_dataroom_2_ProjectKB_Class7] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class8])
+	(widget_class_name "uk.ac.man.cs.mig.coode.debugger.test.DebuggerTestTab"))
+
+([mow_dataroom_2_ProjectKB_Class70] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class71] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class72])
+	(widget_class_name "edu.stanford.smi.protege.keywordsearch.StringSearch"))
+
+([mow_dataroom_2_ProjectKB_Class72] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class73] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class74])
+	(widget_class_name "edu.stanford.smi.protegex.owl.ui.widget.OWLFormsTab"))
+
+([mow_dataroom_2_ProjectKB_Class74] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class75] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class76])
+	(widget_class_name "script.ProtegeScriptTab"))
+
+([mow_dataroom_2_ProjectKB_Class76] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class77] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class78])
+	(widget_class_name "com.enterprise_architecture.essential.update.EssentialUpdateTab"))
+
+([mow_dataroom_2_ProjectKB_Class78] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class79] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class80])
+	(widget_class_name "edu.stanford.smi.protegex.changes.ChangesTab"))
+
+([mow_dataroom_2_ProjectKB_Class8] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class80] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class81] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class82])
+	(widget_class_name "com.enterprise_architecture.essential.widgets.EasReportTab"))
+
+([mow_dataroom_2_ProjectKB_Class82] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class83] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class84])
+	(widget_class_name "edu.stanford.smi.protegex.datamaster.DataMasterTab"))
+
+([mow_dataroom_2_ProjectKB_Class84] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class85] of  Widget
+
+	(is_hidden FALSE)
+	(property_list [mow_dataroom_2_ProjectKB_Class86])
+	(widget_class_name "dfki.protege.ontoviz_tab.OntovizTab"))
+
+([mow_dataroom_2_ProjectKB_Class86] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class87] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class88])
+	(widget_class_name "edu.stanford.smi.protegex.prompt.PromptTab"))
+
+([mow_dataroom_2_ProjectKB_Class88] of  Property_List
+)
+
+([mow_dataroom_2_ProjectKB_Class9] of  Widget
+
+	(is_hidden TRUE)
+	(property_list [mow_dataroom_2_ProjectKB_Class10])
+	(widget_class_name "ezpal.EZPalTab"))
+
+([mow_dataroom_2_ProjectKB_Class96] of  Widget
+
+	(is_hidden FALSE)
+	(name "Dim_Element")
+	(property_list [mow_dataroom_2_ProjectKB_Class97])
+	(widget_class_name "edu.stanford.smi.protege.widget.FormWidget"))
+
+([mow_dataroom_2_ProjectKB_Class97] of  Property_List
+
+	(properties
+		[mow_dataroom_2_ProjectKB_Class98]
+		[mow_dataroom_2_ProjectKB_Class103]
+		[mow_dataroom_2_ProjectKB_Class20049]
+		[mow_dataroom_2_ProjectKB_Class20073]))
+
+([mow_dataroom_2_ProjectKB_Class98] of  Property_List
+
+	(name "layout properties"))
 
 ([mow_dataroom_ProjectKB_Class10092] of  Widget
 
@@ -271,16 +1010,20 @@
 		[mow_dataroom_ProjectKB_Class10135]
 		[mow_dataroom_ProjectKB_Class10137]
 		[mow_dataroom_ProjectKB_Class10139]
-		[mow_dataroom_ProjectKB_Class10141]
 		[mow_dataroom_ProjectKB_Class10145]
 		[mow_dataroom_ProjectKB_Class10149]
 		[mow_dataroom_ProjectKB_Class10151]
 		[mow_dataroom_ProjectKB_Class10153]
-		[mow_dataroom_ProjectKB_Class10155]))
+		[mow_dataroom_ProjectKB_Class10155]
+		[mow_dataroom_2_ProjectKB_Class10004]
+		[mow_dataroom_2_ProjectKB_Class20057]))
 
 ([mow_dataroom_ProjectKB_Class10100] of  Property_List
 
-	(name "layout properties"))
+	(name "layout properties")
+	(properties
+		[mow_dataroom_2_ProjectKB_Class10008]
+		[mow_dataroom_2_ProjectKB_Class10009]))
 
 ([mow_dataroom_ProjectKB_Class10101] of  Widget
 
@@ -559,33 +1302,6 @@
 ([mow_dataroom_ProjectKB_Class10140] of  Property_List
 )
 
-([mow_dataroom_ProjectKB_Class10141] of  Widget
-
-	(height 180)
-	(is_hidden FALSE)
-	(name "dimensies")
-	(property_list [mow_dataroom_ProjectKB_Class10142])
-	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
-	(width 200)
-	(x 400)
-	(y 120))
-
-([mow_dataroom_ProjectKB_Class10142] of  Property_List
-
-	(properties
-		[mow_dataroom_ProjectKB_Class10143]
-		[mow_dataroom_ProjectKB_Class10144]))
-
-([mow_dataroom_ProjectKB_Class10143] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-View References to Value"))
-
-([mow_dataroom_ProjectKB_Class10144] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-Delete Instance"))
-
 ([mow_dataroom_ProjectKB_Class10145] of  Widget
 
 	(height 120)
@@ -672,7 +1388,7 @@
 ([mow_dataroom_ProjectKB_Class10157] of  Widget
 
 	(is_hidden FALSE)
-	(name "Organisatietabel")
+	(name "Organisatie")
 	(property_list [mow_dataroom_ProjectKB_Class10158])
 	(widget_class_name "edu.stanford.smi.protege.widget.FormWidget"))
 
@@ -718,7 +1434,7 @@
 ([mow_dataroom_ProjectKB_Class10164] of  Widget
 
 	(is_hidden FALSE)
-	(name "Persoonstabel")
+	(name "Personen")
 	(property_list [mow_dataroom_ProjectKB_Class10165])
 	(widget_class_name "edu.stanford.smi.protege.widget.FormWidget"))
 
@@ -804,87 +1520,9 @@
 	(boolean_value FALSE)
 	(name "ButtonDisplayed-Delete Instance"))
 
-([mow_dataroom_ProjectKB_Class11] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class12])
-	(widget_class_name "ca.uvic.csr.shrimp.jambalaya.JambalayaTab"))
-
 ([mow_dataroom_ProjectKB_Class115] of  String
 
 	(name "SearchTab_Query"))
-
-([mow_dataroom_ProjectKB_Class12] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class13] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class14])
-	(widget_class_name "edu.stanford.smi.protege.widget.ClsesAndInstancesTab"))
-
-([mow_dataroom_ProjectKB_Class14] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class15] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class16])
-	(widget_class_name "uk.ac.man.cs.mig.coode.owlviz.ui.OWLVizTab"))
-
-([mow_dataroom_ProjectKB_Class16] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class17] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class18])
-	(widget_class_name "edu.stanford.smi.protege.query.LuceneQueryPlugin"))
-
-([mow_dataroom_ProjectKB_Class18] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class19] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class20])
-	(widget_class_name "edu.stanford.smi.protegex.owl.ui.cls.OWLClassesTab"))
-
-([mow_dataroom_ProjectKB_Class2] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class20] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class20092] of  String
-
-	(name "ReferentieTabel")
-	(string_value "discriminator{+-+}waarde"))
-
-([mow_dataroom_ProjectKB_Class20093] of  String
-
-	(name ":PAL-CONSTRAINT")
-	(string_value "%3APAL-NAME"))
-
-([mow_dataroom_ProjectKB_Class20094] of  String
-
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
-
-([mow_dataroom_ProjectKB_Class20095] of  String
-
-	(name "Indicator")
-	(string_value "indicator"))
-
-([mow_dataroom_ProjectKB_Class20096] of  String
-
-	(name "Organisatietabel")
-	(string_value "entiteit{+-+}afdeling"))
-
-([mow_dataroom_ProjectKB_Class20097] of  String
-
-	(name "Indicatorfiche")
-	(string_value "indicator_naam"))
 
 ([mow_dataroom_ProjectKB_Class20157] of  Widget
 
@@ -898,10 +1536,10 @@
 	(properties
 		[mow_dataroom_ProjectKB_Class20159]
 		[mow_dataroom_ProjectKB_Class20160]
-		[mow_dataroom_ProjectKB_Class20164]
 		[mow_dataroom_ProjectKB_Class20170]
 		[mow_dataroom_ProjectKB_Class20172]
-		[mow_dataroom_ProjectKB_Class20176]))
+		[mow_dataroom_ProjectKB_Class20176]
+		[mow_dataroom_2_ProjectKB_Class105]))
 
 ([mow_dataroom_ProjectKB_Class20159] of  Property_List
 
@@ -930,33 +1568,6 @@
 	(name "ButtonDisplayed-View References to Value"))
 
 ([mow_dataroom_ProjectKB_Class20163] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-Delete Instance"))
-
-([mow_dataroom_ProjectKB_Class20164] of  Widget
-
-	(height 180)
-	(is_hidden FALSE)
-	(name "dimensie")
-	(property_list [mow_dataroom_ProjectKB_Class20165])
-	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
-	(width 200)
-	(x 0)
-	(y 60))
-
-([mow_dataroom_ProjectKB_Class20165] of  Property_List
-
-	(properties
-		[mow_dataroom_ProjectKB_Class20166]
-		[mow_dataroom_ProjectKB_Class20167]))
-
-([mow_dataroom_ProjectKB_Class20166] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-View References to Value"))
-
-([mow_dataroom_ProjectKB_Class20167] of  Boolean
 
 	(boolean_value FALSE)
 	(name "ButtonDisplayed-Delete Instance"))
@@ -1149,351 +1760,12 @@
 ([mow_dataroom_ProjectKB_Class20216] of  Property_List
 )
 
-([mow_dataroom_ProjectKB_Class21] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class22])
-	(widget_class_name "edu.stanford.smi.RemoteKBTab.UMLSTab"))
-
-([mow_dataroom_ProjectKB_Class22] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class23] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class24])
-	(widget_class_name "edu.stanford.smi.protegex.changeanalysis.ChangeAnalysisTab"))
-
-([mow_dataroom_ProjectKB_Class24] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class25] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class26])
-	(widget_class_name "TGViztab.TGVizTab"))
-
-([mow_dataroom_ProjectKB_Class26] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class27] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class28])
-	(widget_class_name "org.algernon.kb.okbc.protege.plugins.AlgernonTab"))
-
-([mow_dataroom_ProjectKB_Class28] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class29] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class30])
-	(widget_class_name "edu.stanford.smi.protegex.xml.tab.XMLTab"))
-
-([mow_dataroom_ProjectKB_Class3] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class4])
-	(widget_class_name "se.liu.ida.JessTab.JessTab"))
-
-([mow_dataroom_ProjectKB_Class30] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class31] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class32])
-	(widget_class_name "edu.stanford.smi.protegex.widget.pal.PalQueriesTab"))
-
-([mow_dataroom_ProjectKB_Class32] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class33] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class34])
-	(widget_class_name "org.protege.owl.axiome.ui.AxiomeTab"))
-
-([mow_dataroom_ProjectKB_Class34] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class35] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class36])
-	(widget_class_name "edu.stanford.smi.protegex.owl.swrl.ui.tab.SWRLTab"))
-
-([mow_dataroom_ProjectKB_Class36] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class37] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class38])
-	(widget_class_name "edu.stanford.smi.protegex.fctab.FacetConstraintsTab"))
-
-([mow_dataroom_ProjectKB_Class38] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class39] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class40])
-	(widget_class_name "edu.stanford.smi.protege.widget.instance_tree.KnowledgeTreeTab"))
-
-([mow_dataroom_ProjectKB_Class4] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class40] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class41] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class42])
-	(widget_class_name "com.enterprise_architecture.essential.integration.widgets.EssentialIntegrationTab"))
-
-([mow_dataroom_ProjectKB_Class42] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class43] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class44])
-	(widget_class_name "edu.stanford.smi.protegex.changes.stats.ChangeStatisticsTab"))
-
-([mow_dataroom_ProjectKB_Class44] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class45] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class46])
-	(widget_class_name "edu.stanford.smi.protegex.owl.ui.properties.OWLPropertiesTab"))
-
-([mow_dataroom_ProjectKB_Class46] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class47] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class48])
-	(widget_class_name "edu.stanford.smi.protege.widget.ProtegePropertiesTab"))
-
-([mow_dataroom_ProjectKB_Class48] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class49] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class50])
-	(widget_class_name "edu.stanford.smi.protegex.server_changes.prompt.UsersTab"))
-
-([mow_dataroom_ProjectKB_Class5] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class6])
-	(widget_class_name "edu.stanford.smi.protegex.owl.ui.metadatatab.OWLMetadataTab"))
-
-([mow_dataroom_ProjectKB_Class50] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class51] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class52])
-	(widget_class_name "edu.stanford.smi.protege.widget.instance_tree.InstanceTreeTab"))
-
-([mow_dataroom_ProjectKB_Class52] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class53] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class54])
-	(widget_class_name "edu.stanford.smi.protegex.widget.pal.PalConstraintsTab"))
-
-([mow_dataroom_ProjectKB_Class54] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class55] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class56])
-	(widget_class_name "edu.stanford.smi.RemoteKBTab.WordNetTab"))
-
-([mow_dataroom_ProjectKB_Class56] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class57] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class58])
-	(widget_class_name "uk.ac.man.ac.mig.coode.individuals.ui.OWLDLIndividualsTab"))
-
-([mow_dataroom_ProjectKB_Class58] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class59] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class60])
-	(widget_class_name "org.protege.owl.mm.protege3.MappingMasterTab"))
-
-([mow_dataroom_ProjectKB_Class6] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class60] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class61] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class62])
-	(widget_class_name "edu.stanford.smi.protegex.evaluation.MetaAnalysis"))
-
-([mow_dataroom_ProjectKB_Class62] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class63] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class64])
-	(widget_class_name "edu.stanford.smi.protegex.owl.ui.individuals.OWLIndividualsTab"))
-
-([mow_dataroom_ProjectKB_Class64] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class65] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class66])
-	(widget_class_name "edu.stanford.smi.protegex.changes.changesKBViewTab.ChangesKBViewTab"))
-
-([mow_dataroom_ProjectKB_Class66] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class67] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class68])
-	(widget_class_name "edu.stanford.smi.protege.widget.KAToolTab"))
-
-([mow_dataroom_ProjectKB_Class68] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class69] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class70])
-	(widget_class_name "edu.stanford.smi.protegex.chatPlugin.ChatTab"))
-
-([mow_dataroom_ProjectKB_Class7] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class8])
-	(widget_class_name "uk.ac.man.cs.mig.coode.debugger.test.DebuggerTestTab"))
-
-([mow_dataroom_ProjectKB_Class70] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class71] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class72])
-	(widget_class_name "edu.stanford.smi.protege.keywordsearch.StringSearch"))
-
-([mow_dataroom_ProjectKB_Class72] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class73] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class74])
-	(widget_class_name "edu.stanford.smi.protegex.owl.ui.widget.OWLFormsTab"))
-
-([mow_dataroom_ProjectKB_Class74] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class75] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class76])
-	(widget_class_name "script.ProtegeScriptTab"))
-
-([mow_dataroom_ProjectKB_Class76] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class77] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class78])
-	(widget_class_name "com.enterprise_architecture.essential.update.EssentialUpdateTab"))
-
-([mow_dataroom_ProjectKB_Class78] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class79] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class80])
-	(widget_class_name "edu.stanford.smi.protegex.changes.ChangesTab"))
-
-([mow_dataroom_ProjectKB_Class8] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class80] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class81] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class82])
-	(widget_class_name "com.enterprise_architecture.essential.widgets.EasReportTab"))
-
-([mow_dataroom_ProjectKB_Class82] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class83] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class84])
-	(widget_class_name "edu.stanford.smi.protegex.datamaster.DataMasterTab"))
-
-([mow_dataroom_ProjectKB_Class84] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class85] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class86])
-	(widget_class_name "dfki.protege.ontoviz_tab.OntovizTab"))
-
-([mow_dataroom_ProjectKB_Class86] of  Property_List
-)
-
-([mow_dataroom_ProjectKB_Class87] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class88])
-	(widget_class_name "edu.stanford.smi.protegex.prompt.PromptTab"))
-
-([mow_dataroom_ProjectKB_Class88] of  Property_List
-)
-
 ([mow_dataroom_ProjectKB_Class89] of  Widget
 
 	(is_hidden FALSE)
 	(name "ReferentieTabel")
 	(property_list [mow_dataroom_ProjectKB_Class90])
 	(widget_class_name "edu.stanford.smi.protege.widget.FormWidget"))
-
-([mow_dataroom_ProjectKB_Class9] of  Widget
-
-	(is_hidden TRUE)
-	(property_list [mow_dataroom_ProjectKB_Class10])
-	(widget_class_name "ezpal.EZPalTab"))
 
 ([mow_dataroom_ProjectKB_Class90] of  Property_List
 
@@ -1515,6 +1787,7 @@
 	(display_hidden_classes TRUE)
 	(display_multi_parent_class_icon TRUE)
 	(is_readonly FALSE)
+	(tabbed_instance_form_layout FALSE)
 	(undo_enabled TRUE)
 	(update_modification_slots FALSE))
 
@@ -1585,21 +1858,24 @@
 
 	(browser_slot_names [BROWSER_SLOT_NAMES])
 	(customized_instance_widgets
+		[mow_dataroom_2_ProjectKB_Class20036]
+		[mow_dataroom_2_ProjectKB_Class96]
+		[STANDARD_FACET_FORM_WIDGET]
+		[mow_dataroom_ProjectKB_Class89]
+		[mow_dataroom_ProjectKB_Class20178]
+		[PAL_FORM_WIDGET]
+		[mow_dataroom_ProjectKB_Class10157]
+		[STANDARD_CLASS_FORM_WIDGET]
+		[mow_dataroom_ProjectKB_Class20157]
 		[INSTANCE_ANNOTATION_FORM_WIDGET]
 		[mow_dataroom_ProjectKB_Class10164]
-		[mow_dataroom_ProjectKB_Class20178]
-		[mow_dataroom_ProjectKB_Class89]
 		[STANDARD_SLOT_FORM_WIDGET]
-		[STANDARD_FACET_FORM_WIDGET]
-		[PAL_FORM_WIDGET]
-		[mow_dataroom_ProjectKB_Class20157]
-		[STANDARD_CLASS_FORM_WIDGET]
-		[mow_dataroom_ProjectKB_Class10098]
-		[mow_dataroom_ProjectKB_Class10157])
+		[mow_dataroom_ProjectKB_Class10098])
 	(default_cls_metaclass ":STANDARD-CLASS")
 	(default_facet_metaclass ":STANDARD-FACET")
 	(default_instance_widget_class_name "edu.stanford.smi.protege.widget.FormWidget")
 	(default_slot_metaclass ":STANDARD-SLOT")
+	(journaling_enabled FALSE)
 	(next_frame_number 0)
 	(options [option_instance])
 	(property_map [KB_695502_Class1])
@@ -1609,15 +1885,61 @@
 		[SLOTS_TAB]
 		[FORMS_TAB]
 		[INSTANCES_TAB]
-		[QUERIES_TAB]))
+		[QUERIES_TAB]
+		[mow_dataroom_2_ProjectKB_Class27]
+		[mow_dataroom_2_ProjectKB_Class23]
+		[mow_dataroom_2_ProjectKB_Class79]
+		[mow_dataroom_2_ProjectKB_Class13]
+		[mow_dataroom_2_ProjectKB_Class83]
+		[mow_dataroom_2_ProjectKB_Class7]
+		[mow_dataroom_2_ProjectKB_Class81]
+		[mow_dataroom_2_ProjectKB_Class41]
+		[mow_dataroom_2_ProjectKB_Class1]
+		[mow_dataroom_2_ProjectKB_Class77]
+		[mow_dataroom_2_ProjectKB_Class37]
+		[mow_dataroom_2_ProjectKB_Class51]
+		[mow_dataroom_2_ProjectKB_Class11]
+		[mow_dataroom_2_ProjectKB_Class3]
+		[mow_dataroom_2_ProjectKB_Class67]
+		[mow_dataroom_2_ProjectKB_Class39]
+		[mow_dataroom_2_ProjectKB_Class17]
+		[mow_dataroom_2_ProjectKB_Class61]
+		[mow_dataroom_2_ProjectKB_Class85]
+		[mow_dataroom_2_ProjectKB_Class57]
+		[mow_dataroom_2_ProjectKB_Class73]
+		[mow_dataroom_2_ProjectKB_Class53]
+		[mow_dataroom_2_ProjectKB_Class87]
+		[mow_dataroom_2_ProjectKB_Class47]
+		[mow_dataroom_2_ProjectKB_Class75]
+		[mow_dataroom_2_ProjectKB_Class71]
+		[mow_dataroom_2_ProjectKB_Class25]
+		[mow_dataroom_2_ProjectKB_Class21]
+		[mow_dataroom_2_ProjectKB_Class29]
+		[mow_dataroom_2_ProjectKB_Class33]
+		[mow_dataroom_2_ProjectKB_Class65]
+		[mow_dataroom_2_ProjectKB_Class43]
+		[mow_dataroom_2_ProjectKB_Class69]
+		[mow_dataroom_2_ProjectKB_Class9]
+		[mow_dataroom_2_ProjectKB_Class59]
+		[mow_dataroom_2_ProjectKB_Class19]
+		[mow_dataroom_2_ProjectKB_Class63]
+		[mow_dataroom_2_ProjectKB_Class5]
+		[mow_dataroom_2_ProjectKB_Class45]
+		[mow_dataroom_2_ProjectKB_Class15]
+		[mow_dataroom_2_ProjectKB_Class31]
+		[mow_dataroom_2_ProjectKB_Class35]
+		[mow_dataroom_2_ProjectKB_Class49]
+		[mow_dataroom_2_ProjectKB_Class55]))
 
 ([QUERIES_TAB] of  Widget
 
+	(is_hidden FALSE)
 	(property_list [KB_695502_Class112])
 	(widget_class_name "edu.stanford.smi.protegex.queries_tab.QueriesTab"))
 
 ([SLOTS_TAB] of  Widget
 
+	(is_hidden FALSE)
 	(widget_class_name "edu.stanford.smi.protege.widget.SlotsTab"))
 
 ([SOURCES] of  Property_List

@@ -1,21 +1,182 @@
-; Fri Nov 22 16:42:06 CET 2013
+; Thu Nov 28 17:39:02 CET 2013
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
 
-([mow_dataroom_Class0] of  ReferentieTabel
+([mow_dataroom_2_Class0] of  Dimensie
 
 	(actief TRUE)
-	(discriminator "type dag")
-	(referentie_type Dimensie_Element)
+	(discriminator "tijdvenster")
+	(elementen_per_dimensie
+		[mow_dataroom_2_Class5]
+		[mow_dataroom_2_Class6])
+	(waarde "dagdeel"))
+
+([mow_dataroom_2_Class1] of  Dimensie
+
+	(dimensie_naar_indicatorfiche [mow_dataroom_Class15])
+	(discriminator "tijdvenster")
+	(elementen_per_dimensie
+		[mow_dataroom_2_Class12]
+		[mow_dataroom_2_Class13])
+	(waarde "type dag"))
+
+([mow_dataroom_2_Class10] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class3])
+	(waarde "Vlaams Brabant"))
+
+([mow_dataroom_2_Class10000] of  Indicatorfiche
+
+	(geografische_info_van_toepassing FALSE)
+	(indicator_naam "Nieuwe indicatorfiche voor nieuwe dimensie")
+	(opladen_metric_studio TRUE))
+
+([mow_dataroom_2_Class10001] of  Dimensie
+
+	(actief TRUE)
+	(discriminator "Nieuwe Discriminator")
+	(elementen_per_dimensie
+		[mow_dataroom_2_Class10002]
+		[mow_dataroom_2_Class10003])
+	(waarde "Waarde nieuwe dimensie"))
+
+([mow_dataroom_2_Class10002] of  Dim_Element
+
+	(actief TRUE)
+	(dimensie [mow_dataroom_2_Class10001])
+	(waarde "Nieuw element 1"))
+
+([mow_dataroom_2_Class10003] of  Dim_Element
+
+	(actief TRUE)
+	(dimensie [mow_dataroom_2_Class10001])
+	(waarde "Nieuw element 2"))
+
+([mow_dataroom_2_Class11] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class3])
+	(waarde "Limburg"))
+
+([mow_dataroom_2_Class12] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class1])
 	(waarde "verlofdag"))
 
-([mow_dataroom_Class1] of  ReferentieTabel
+([mow_dataroom_2_Class13] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class1])
+	(waarde "werkdag"))
+
+([mow_dataroom_2_Class14] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class2])
+	(waarde "dal"))
+
+([mow_dataroom_2_Class15] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class2])
+	(waarde "piek"))
+
+([mow_dataroom_2_Class16] of  Dimensie
+
+	(discriminator "verplaatsing")
+	(waarde "afstandsklasse"))
+
+([mow_dataroom_2_Class17] of  Dimensie
+
+	(discriminator "verplaatsing")
+	(waarde "hoofdvervoerwijze"))
+
+([mow_dataroom_2_Class18] of  Dimensie
+
+	(discriminator "verplaatsing")
+	(elementen_per_dimensie [mow_dataroom_2_Class23])
+	(waarde "verplaatsingsmotief"))
+
+([mow_dataroom_2_Class19] of  Dimensie
 
 	(actief TRUE)
-	(discriminator "type dag")
-	(referentie_type Dimensie_Element)
-	(waarde "werkdag"))
+	(dimensie_naar_indicatorfiche [mow_dataroom_Class10058])
+	(discriminator "verplaatsing")
+	(elementen_per_dimensie
+		[mow_dataroom_2_Class20]
+		[mow_dataroom_2_Class21]
+		[mow_dataroom_2_Class24])
+	(waarde "vervoersbewijs"))
+
+([mow_dataroom_2_Class2] of  Dimensie
+
+	(dimensie_naar_indicatorfiche [mow_dataroom_Class15])
+	(discriminator "tijdvenster")
+	(elementen_per_dimensie
+		[mow_dataroom_2_Class14]
+		[mow_dataroom_2_Class15])
+	(waarde "type verkeerssituatie"))
+
+([mow_dataroom_2_Class20] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class19])
+	(waarde "abonnement"))
+
+([mow_dataroom_2_Class21] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class19])
+	(waarde "nachtbus"))
+
+([mow_dataroom_2_Class23] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class18])
+	(waarde "ticket reductietarief"))
+
+([mow_dataroom_2_Class24] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class19])
+	(waarde "ticket volle prijs"))
+
+([mow_dataroom_2_Class3] of  Dimensie
+
+	(dimensie_naar_indicatorfiche
+		[mow_dataroom_Class10037]
+		[mow_dataroom_Class10058])
+	(discriminator "locatie")
+	(elementen_per_dimensie
+		[mow_dataroom_2_Class7]
+		[mow_dataroom_2_Class11]
+		[mow_dataroom_2_Class9]
+		[mow_dataroom_2_Class10]
+		[mow_dataroom_2_Class8])
+	(waarde "provincie"))
+
+([mow_dataroom_2_Class4] of  Dimensie
+
+	(discriminator "locatie")
+	(waarde "hoofdgemeente-deelgemeente"))
+
+([mow_dataroom_2_Class5] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class0])
+	(waarde "am"))
+
+([mow_dataroom_2_Class6] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class0])
+	(waarde "pm"))
+
+([mow_dataroom_2_Class7] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class3])
+	(waarde "Antwerpen"))
+
+([mow_dataroom_2_Class8] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class3])
+	(waarde "West Vlaanderen"))
+
+([mow_dataroom_2_Class9] of  Dim_Element
+
+	(dimensie [mow_dataroom_2_Class3])
+	(waarde "Oost Vlaanderen"))
 
 ([mow_dataroom_Class10] of  ReferentieTabel
 
@@ -142,9 +303,9 @@
 
 	(aantal "1206")
 	(actief TRUE)
-	(dimensie
-		[mow_dataroom_Class1]
-		[mow_dataroom_Class3])
+	(dim_element
+		[mow_dataroom_2_Class13]
+		[mow_dataroom_2_Class15])
 	(indicator [mow_dataroom_Class15])
 	(periode [mow_dataroom_Class10007]))
 
@@ -152,9 +313,10 @@
 
 	(aantal "809")
 	(actief TRUE)
-	(dimensie
-		[mow_dataroom_Class0]
-		[mow_dataroom_Class2])
+	(dim_element
+		[mow_dataroom_2_Class7]
+		[mow_dataroom_2_Class13]
+		[mow_dataroom_2_Class14])
 	(indicator [mow_dataroom_Class15])
 	(periode [mow_dataroom_Class10007]))
 
@@ -162,9 +324,10 @@
 
 	(aantal "924")
 	(actief TRUE)
-	(dimensie
-		[mow_dataroom_Class0]
-		[mow_dataroom_Class3])
+	(dim_element
+		[mow_dataroom_2_Class7]
+		[mow_dataroom_2_Class12]
+		[mow_dataroom_2_Class15])
 	(indicator [mow_dataroom_Class15])
 	(periode [mow_dataroom_Class10007]))
 
@@ -205,69 +368,20 @@
 ([mow_dataroom_Class10037] of  Indicatorfiche
 
 	(aanspreekpunt [mow_dataroom_Class10046])
-	(aantal_percentage aantal)
-	(dimensies [mow_dataroom_Class10038])
+	(dimensie_lijst [mow_dataroom_2_Class3])
 	(geografische_info_van_toepassing FALSE)
 	(indicator_naam "Aantal geplande diensten")
+	(indicator_records
+		[mow_dataroom_Class10047]
+		[mow_dataroom_Class10048])
 	(laatst_bijgewerkt_cijfers "2012")
-	(meetfrequentie [mow_dataroom_Class7])
 	(opladen_metric_studio TRUE))
 
-([mow_dataroom_Class10038] of  ReferentieTabel
+([mow_dataroom_Class10045] of  Organisatie
 
-	(actief TRUE)
-	(discriminator "locatie")
-	(referentie_type Dimensie)
-	(waarde "provincie"))
+	(afdeling "Onderzoek"))
 
-([mow_dataroom_Class10039] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "locatie")
-	(referentie_type Dimensie)
-	(waarde "hoofdgemeente - deelgemeente"))
-
-([mow_dataroom_Class10040] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "provincie")
-	(referentie_type Dimensie_Element)
-	(waarde "Antwerpen"))
-
-([mow_dataroom_Class10041] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "provincie")
-	(referentie_type Dimensie_Element)
-	(waarde "West Vlaanderen"))
-
-([mow_dataroom_Class10042] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "provincie")
-	(referentie_type Dimensie_Element)
-	(waarde "Oost Vlaanderen"))
-
-([mow_dataroom_Class10043] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "provincie")
-	(referentie_type Dimensie_Element)
-	(waarde "Vlaams Brabant"))
-
-([mow_dataroom_Class10044] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "provincie")
-	(referentie_type Dimensie_Element)
-	(waarde "Limburg"))
-
-([mow_dataroom_Class10045] of  Organisatietabel
-
-	(afdeling "Onderzoek")
-	(entiteit "De Lijn"))
-
-([mow_dataroom_Class10046] of  Persoonstabel
+([mow_dataroom_Class10046] of  Personen
 
 	(familienaam "Nuytemans")
 	(organisatie [mow_dataroom_Class10045])
@@ -277,7 +391,7 @@
 
 	(aantal "798")
 	(actief TRUE)
-	(dimensie [mow_dataroom_Class10040])
+	(dim_element [mow_dataroom_2_Class7])
 	(indicator [mow_dataroom_Class10037])
 	(periode [mow_dataroom_Class10036]))
 
@@ -285,179 +399,78 @@
 
 	(aantal "1241")
 	(actief TRUE)
-	(dimensie [mow_dataroom_Class10041])
+	(dim_element [mow_dataroom_2_Class8])
 	(indicator [mow_dataroom_Class10037])
 	(periode [mow_dataroom_Class10036]))
-
-([mow_dataroom_Class10049] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "verplaatsing")
-	(referentie_type Dimensie)
-	(waarde "vervoersbewijs"))
-
-([mow_dataroom_Class10050] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "verplaatsing")
-	(referentie_type Dimensie)
-	(waarde "afstandsklasse"))
-
-([mow_dataroom_Class10051] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "verplaatsing")
-	(referentie_type Dimensie)
-	(waarde "hoofdvervoerswijze"))
-
-([mow_dataroom_Class10052] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "verplaatsing")
-	(referentie_type Dimensie)
-	(waarde "verplaatsingsmotief"))
-
-([mow_dataroom_Class10053] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "vervoersbewijs")
-	(referentie_type Dimensie_Element)
-	(waarde "abonnement"))
-
-([mow_dataroom_Class10054] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "vervoersbewijs")
-	(referentie_type Dimensie_Element)
-	(waarde "ticket volle prijs"))
-
-([mow_dataroom_Class10055] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "vervoersbewijs")
-	(referentie_type Dimensie_Element)
-	(waarde "ticket reductietarief"))
-
-([mow_dataroom_Class10056] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "vervoersbewijs")
-	(referentie_type Dimensie_Element)
-	(waarde "nachtbus"))
 
 ([mow_dataroom_Class10057] of  Indicator
 
 	(aantal "1251")
 	(actief TRUE)
-	(dimensie
-		[mow_dataroom_Class10040]
-		[mow_dataroom_Class10053])
+	(dim_element
+		[mow_dataroom_2_Class7]
+		[mow_dataroom_2_Class21])
 	(indicator [mow_dataroom_Class10058])
 	(periode [mow_dataroom_Class10036]))
 
 ([mow_dataroom_Class10058] of  Indicatorfiche
 
 	(aanspreekpunt [mow_dataroom_Class10046])
-	(aantal_percentage aantal)
-	(dimensies
-		[mow_dataroom_Class10038]
-		[mow_dataroom_Class10049])
+	(dimensie_lijst
+		[mow_dataroom_2_Class3]
+		[mow_dataroom_2_Class19])
 	(geografische_info_van_toepassing FALSE)
 	(indicator_naam "Aantal reizigers per type vervoersbewijs")
+	(indicator_records
+		[mow_dataroom_Class10057]
+		[mow_dataroom_Class10059])
 	(laatst_bijgewerkt_cijfers "2012")
-	(meetfrequentie [mow_dataroom_Class7])
 	(opladen_metric_studio TRUE))
 
 ([mow_dataroom_Class10059] of  Indicator
 
 	(aantal "9476")
 	(actief TRUE)
-	(dimensie
-		[mow_dataroom_Class10040]
-		[mow_dataroom_Class10055])
+	(dim_element
+		[mow_dataroom_2_Class8]
+		[mow_dataroom_2_Class21])
 	(indicator [mow_dataroom_Class10058])
 	(periode [mow_dataroom_Class10036]))
-
-([mow_dataroom_Class12] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "tijdvenster")
-	(referentie_type Dimensie)
-	(waarde "type dag"))
-
-([mow_dataroom_Class13] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "tijdvenster")
-	(referentie_type Dimensie)
-	(waarde "dagdeel"))
-
-([mow_dataroom_Class14] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "tijdvenster")
-	(referentie_type Dimensie)
-	(waarde "type verkeerssituatie"))
 
 ([mow_dataroom_Class15] of  Indicatorfiche
 
 	(aanspreekpunt [mow_dataroom_Class22])
-	(aantal_percentage gemiddelde_per_dag)
-	(dimensies
-		[mow_dataroom_Class12]
-		[mow_dataroom_Class14])
+	(dimensie_lijst
+		[mow_dataroom_2_Class1]
+		[mow_dataroom_2_Class2])
 	(geografische_info_van_toepassing FALSE)
 	(indicator_naam "Aantal inzittenden voertuigen")
+	(indicator_records
+		[mow_dataroom_Class10026]
+		[mow_dataroom_Class10028]
+		[mow_dataroom_Class10029]
+		[mow_dataroom_Class6])
 	(laatst_bijgewerkt_cijfers "2012")
-	(meetfrequentie [mow_dataroom_Class7])
 	(opladen_metric_studio TRUE))
 
-([mow_dataroom_Class2] of  ReferentieTabel
+([mow_dataroom_Class21] of  Organisatie
 
-	(actief TRUE)
-	(discriminator "type verkeerssituatie")
-	(referentie_type Dimensie_Element)
-	(waarde "spits"))
+	(afdeling "Planning en Coördinatie"))
 
-([mow_dataroom_Class21] of  Organisatietabel
-
-	(afdeling "Planning en Coördinatie")
-	(entiteit "AWV"))
-
-([mow_dataroom_Class22] of  Persoonstabel
+([mow_dataroom_Class22] of  Personen
 
 	(familienaam "Boterbergh")
 	(organisatie [mow_dataroom_Class21])
 	(voornaam "Bert"))
 
-([mow_dataroom_Class3] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "type verkeerssituatie")
-	(referentie_type Dimensie_Element)
-	(waarde "dal"))
-
-([mow_dataroom_Class4] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "dagdeel")
-	(referentie_type Dimensie_Element)
-	(waarde "am"))
-
-([mow_dataroom_Class5] of  ReferentieTabel
-
-	(actief TRUE)
-	(discriminator "dagdeel")
-	(referentie_type Dimensie_Element)
-	(waarde "pm"))
-
 ([mow_dataroom_Class6] of  Indicator
 
 	(aantal "748")
 	(actief TRUE)
-	(dimensie
-		[mow_dataroom_Class1]
-		[mow_dataroom_Class2])
+	(dim_element
+		[mow_dataroom_2_Class7]
+		[mow_dataroom_2_Class12]
+		[mow_dataroom_2_Class14])
 	(indicator [mow_dataroom_Class15])
 	(periode [mow_dataroom_Class10007]))
 

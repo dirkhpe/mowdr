@@ -1,4 +1,4 @@
-; Thu Nov 28 17:39:02 CET 2013
+; Tue Dec 03 14:20:39 CET 2013
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -71,7 +71,8 @@
 		(create-accessor read-write))
 	(single-slot meeteenheid
 ;+		(comment "Eenheid waarin de indicator gemeten wordt.\nDit wordt gehaald uit een lijst van referentie waarden.")
-		(type STRING)
+		(type SYMBOL)
+		(allowed-values jaar kwartaal schooljaar maand)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
 	(multislot beleidsdocument_sectie
@@ -131,16 +132,16 @@
 ;+		(allowed-classes Organisatie)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot indicator_naam
-;+		(comment "Naam van de indicator.")
-		(type STRING)
-;+		(cardinality 1 1)
-		(create-accessor read-write))
 	(single-slot aantal_percentage
 ;+		(comment "Bepaalt of de cijferwaarden van de indicator in absolute cijfers of in percentages zullen worden ingegeven.\nAantal => True\nPercentage => False")
 		(type SYMBOL)
 		(allowed-values FALSE TRUE)
 		(default TRUE)
+;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot indicator_naam
+;+		(comment "Naam van de indicator.")
+		(type STRING)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
 	(multislot dim_element
@@ -193,16 +194,16 @@
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
+	(single-slot status
+;+		(comment "Referentiewaarde")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
 	(multislot periode_commentaar
 ;+		(comment "Commentaar per periode voor de indicator.")
 		(type INSTANCE)
 ;+		(allowed-classes Periode_Commentaar)
 ;+		(inverse-slot commentaar_per_indicator)
-		(create-accessor read-write))
-	(single-slot status
-;+		(comment "Referentiewaarde")
-		(type STRING)
-;+		(cardinality 0 1)
 		(create-accessor read-write))
 	(single-slot laatst_bijgewerkt
 ;+		(comment "Datum laatste bijwerking van de indicatorfiche. \n(nb: die datum moet automatisch gegenereerd worden).")
@@ -225,14 +226,14 @@
 		(allowed-values Departement_MOW Wegen_En_Verkeer Maritieme_Dienstverlening_en_Kust De_Scheepvaart De_Lijn Waterwegen_en_Zeekanaal)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
-	(single-slot maand
-		(type SYMBOL)
-		(allowed-values Januari Februari Maart April Mei Juni Juli Augustus September Oktober November December)
-;+		(cardinality 0 1)
-		(create-accessor read-write))
 	(single-slot meettechniek
 ;+		(comment "Beschrijft hoe de indicator gemeten wordt.")
 		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(single-slot maand
+		(type SYMBOL)
+		(allowed-values Januari Februari Maart April Mei Juni Juli Augustus September Oktober November December)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
 	(single-slot laatst_bijgewerkt_cijfers
@@ -305,17 +306,17 @@
 		(allowed-values 2010-2011 2011-2012 2012-2013 2013-2014 2014-2015)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(multislot document_children
-;+		(comment "Inverse van document_parent, laat toe om te navigeren.")
-		(type INSTANCE)
-;+		(allowed-classes Beleidsdocument)
-;+		(inverse-slot document_parent)
-		(create-accessor read-write))
 	(multislot dimensies
 ;+		(comment "Voor rapporteringsdoeleinden. Geeft aan welke dimensie van toepassing is voor de indicator.")
 		(type INSTANCE)
 ;+		(allowed-classes ReferentieTabel)
 		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write))
+	(multislot document_children
+;+		(comment "Inverse van document_parent, laat toe om te navigeren.")
+		(type INSTANCE)
+;+		(allowed-classes Beleidsdocument)
+;+		(inverse-slot document_parent)
 		(create-accessor read-write))
 	(single-slot familienaam
 ;+		(comment "Familie naam van het aanspreekpunt.")
@@ -345,14 +346,14 @@
 		(type STRING)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
-	(single-slot kwartaal
-		(type SYMBOL)
-		(allowed-values Kwartaal_1 Kwartaal_2 Kwartaal_3 Kwartaal_4)
-;+		(cardinality 0 1)
-		(create-accessor read-write))
 	(single-slot email
 ;+		(comment "Email adres van de persoon.")
 		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(single-slot kwartaal
+		(type SYMBOL)
+		(allowed-values Kwartaal_1 Kwartaal_2 Kwartaal_3 Kwartaal_4)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
 	(multislot indicator_records
@@ -368,20 +369,20 @@
 ;+		(cardinality 1 1)
 ;+		(inverse-slot indicator_records)
 		(create-accessor read-write))
-	(multislot fiche_per_sectie
-;+		(comment "Inverse van beleidsdocument_sectie, om eenvoudig te kunnen navigeren.")
-		(type INSTANCE)
-;+		(allowed-classes Indicatorfiche)
-;+		(inverse-slot beleidsdocument_sectie)
+	(single-slot afdeling
+		(type STRING)
+;+		(cardinality 0 1)
 		(create-accessor read-write))
 	(single-slot definitie
 ;+		(comment "Omschrijving, inclusief berekeningswjize, van de indicator.")
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot afdeling
-		(type STRING)
-;+		(cardinality 0 1)
+	(multislot fiche_per_sectie
+;+		(comment "Inverse van beleidsdocument_sectie, om eenvoudig te kunnen navigeren.")
+		(type INSTANCE)
+;+		(allowed-classes Indicatorfiche)
+;+		(inverse-slot beleidsdocument_sectie)
 		(create-accessor read-write))
 	(multislot beheerder
 ;+		(comment "Verantwoordelijke die gegevens mag invoeren en wijzigen voor die indicator. (cfr aanspreekpunt)")
@@ -399,12 +400,10 @@
 (defclass Indicatorfiche "Metadata over de Indicatoren"
 	(is-a USER)
 	(role concrete)
-	(single-slot opladen_metric_studio
-;+		(comment "Geeft aan dat de metriek automatisch mag opgezet worden en overgeladen worden naar Metric Studio. Dit veld zal gebruikt worden om tijdens het opzetten van een nieuwe indicator te vermijden dat deze automatisch wordt opgeladen in Cognos Metric. Pas wanneer de indicator volledig is gedefinieerd zal dit veld op TRUE gezet worden.")
-		(type SYMBOL)
-		(allowed-values FALSE TRUE)
-		(default TRUE)
-;+		(cardinality 1 1)
+	(multislot trefwoord
+;+		(comment "Lijst van zoektermen die bij de indicator horen. De lijst wordt binnen Drupal gebruikt.")
+		(type INSTANCE)
+;+		(allowed-classes Zoektermen)
 		(create-accessor read-write))
 	(multislot aanspreekpunt
 ;+		(comment "Verantwoordelijke voor het beheer van de informatie gerelateerd aan de indicator.\n(cfr met beheerder)\n(Multiple?)")
@@ -412,10 +411,12 @@
 ;+		(allowed-classes Personen)
 		(cardinality 1 ?VARIABLE)
 		(create-accessor read-write))
-	(multislot trefwoord
-;+		(comment "Lijst van zoektermen die bij de indicator horen. De lijst wordt binnen Drupal gebruikt.")
-		(type INSTANCE)
-;+		(allowed-classes Zoektermen)
+	(single-slot opladen_metric_studio
+;+		(comment "Geeft aan dat de metriek automatisch mag opgezet worden en overgeladen worden naar Metric Studio. Dit veld zal gebruikt worden om tijdens het opzetten van een nieuwe indicator te vermijden dat deze automatisch wordt opgeladen in Cognos Metric. Pas wanneer de indicator volledig is gedefinieerd zal dit veld op TRUE gezet worden.")
+		(type SYMBOL)
+		(allowed-values FALSE TRUE)
+		(default TRUE)
+;+		(cardinality 1 1)
 		(create-accessor read-write))
 	(single-slot streefwaarde_type
 ;+		(comment "Geeft aan welk type streefwaarde van toepassing is voor deze indicator. Mogelijke waarden: geen - default - specifiek. Met specifiek wordt bedoeld dat er een specifieke streefwaarde zal worden ingebouwd in het automatisch verwerken van de data in Metric Studio.")
@@ -452,11 +453,10 @@
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot aantal_percentage
-;+		(comment "Bepaalt of de cijferwaarden van de indicator in absolute cijfers of in percentages zullen worden ingegeven.\nAantal => True\nPercentage => False")
-		(type SYMBOL)
-		(allowed-values FALSE TRUE)
-		(default TRUE)
+	(single-slot aanspreekpunt_organisatie
+;+		(comment "De organisatie die verantwoordelijk is voor de indicator. \nElke organisatie is verantwoordelijk voor een groep van indicatoren.\nEen indicator behoort bij één en slechts één organisatie.\nDe 'Technische Sleutel' van de indicator is de combinatie van aanspreekpunt en indicator_naam.")
+		(type INSTANCE)
+;+		(allowed-classes Organisatie)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
 	(single-slot indicator_naam
@@ -464,10 +464,11 @@
 		(type STRING)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
-	(single-slot aanspreekpunt_organisatie
-;+		(comment "De organisatie die verantwoordelijk is voor de indicator. \nElke organisatie is verantwoordelijk voor een groep van indicatoren.\nEen indicator behoort bij één en slechts één organisatie.\nDe 'Technische Sleutel' van de indicator is de combinatie van aanspreekpunt en indicator_naam.")
-		(type INSTANCE)
-;+		(allowed-classes Organisatie)
+	(single-slot aantal_percentage
+;+		(comment "Bepaalt of de cijferwaarden van de indicator in absolute cijfers of in percentages zullen worden ingegeven.\nAantal => True\nPercentage => False")
+		(type SYMBOL)
+		(allowed-values FALSE TRUE)
+		(default TRUE)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
 	(single-slot streefwaarde
@@ -477,7 +478,8 @@
 		(create-accessor read-write))
 	(single-slot meeteenheid
 ;+		(comment "Eenheid waarin de indicator gemeten wordt.\nDit wordt gehaald uit een lijst van referentie waarden.")
-		(type STRING)
+		(type SYMBOL)
+		(allowed-values jaar kwartaal schooljaar maand)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
 	(multislot beleidsdocument_sectie
@@ -485,16 +487,16 @@
 		(type INSTANCE)
 ;+		(allowed-classes Beleidsdocument)
 		(create-accessor read-write))
+	(single-slot meettechniek
+;+		(comment "Beschrijft hoe de indicator gemeten wordt.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
 	(single-slot type_indicator
 ;+		(comment "Verwijst naar het type van indicator wat wordt gebruikt.\nDit wordt verder gebruikt in Reporting Studio en in Metrics Studio.")
 		(type INSTANCE)
 ;+		(allowed-classes ReferentieTabel)
 ;+		(cardinality 1 1)
-		(create-accessor read-write))
-	(single-slot meettechniek
-;+		(comment "Beschrijft hoe de indicator gemeten wordt.")
-		(type STRING)
-;+		(cardinality 0 1)
 		(create-accessor read-write))
 	(single-slot meetfrequentie
 ;+		(comment "Geeft aan hoe regelmatig de waarde gemeten wordt.Dimensies die vandaag ondersteund worden zijn: jaar - kwartaal - maand - schooljaar.\nHou rekening met dag en seizoen voor een volgende release.")
@@ -502,16 +504,16 @@
 		(allowed-values jaar kwartaal maand schooljaar)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
-	(single-slot laatst_bijgewerkt_cijfers
-;+		(comment "Datum van de laatste bijwerking van de cijfergegevens.\n(Verschil tussen: cijfers bijgewerkt tot 2012 - maar opgeladen op 30.11.13, welke optie?)")
-		(type STRING)
-;+		(cardinality 0 1)
-		(create-accessor read-write))
 	(multislot dimensie_lijst
 ;+		(comment "Lijst van dimensies die voor de indicatoren die bij de indicatorfiche horen mogelijk zijn.\n Een dimensie wordt gebruikt voor rapporteringsdoeleinden en geeft aan welke parameter (dimensie) van toepassing is voor de indicator.\nEen indicatorfiche heeft één of meer dimensies.")
 		(type INSTANCE)
 ;+		(allowed-classes Dimensie)
 		(cardinality 1 ?VARIABLE)
+		(create-accessor read-write))
+	(single-slot laatst_bijgewerkt_cijfers
+;+		(comment "Datum van de laatste bijwerking van de cijfergegevens.\n(Verschil tussen: cijfers bijgewerkt tot 2012 - maar opgeladen op 30.11.13, welke optie?)")
+		(type STRING)
+;+		(cardinality 0 1)
 		(create-accessor read-write))
 	(single-slot doel
 ;+		(comment "Beschrijft waarom die indicator gebruikt wordt.")
@@ -588,15 +590,15 @@
 ;+		(allowed-classes Organisatie)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot email
-;+		(comment "Email adres van de persoon.")
-		(type STRING)
-;+		(cardinality 0 1)
-		(create-accessor read-write))
 	(single-slot voornaam
 ;+		(comment "Voornaam van het aanspreekpunt.")
 		(type STRING)
 ;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot email
+;+		(comment "Email adres van de persoon.")
+		(type STRING)
+;+		(cardinality 0 1)
 		(create-accessor read-write))
 	(single-slot familienaam
 ;+		(comment "Familie naam van het aanspreekpunt.")
@@ -656,15 +658,15 @@
 		(allowed-values Kwartaal_1 Kwartaal_2 Kwartaal_3 Kwartaal_4)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot frequentie_naam
-;+		(comment "Naam van de periode, bv. Januari 2013.")
-		(type STRING)
-;+		(cardinality 0 1)
-		(create-accessor read-write))
 	(single-slot frequentie_type
 ;+		(comment "Link naar de meetfrequentie uit de Referentie tabel.")
 		(type INSTANCE)
 ;+		(allowed-classes ReferentieTabel)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(single-slot frequentie_naam
+;+		(comment "Naam van de periode, bv. Januari 2013.")
+		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
 	(single-slot jaar
@@ -755,16 +757,16 @@
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
+	(multislot indicator_per_organisatie
+;+		(comment "Protege only.\nInverse slot om de indicatoren van een organisatie te vinden.")
+		(type INSTANCE)
+;+		(allowed-classes Indicatorfiche)
+		(create-accessor read-write))
 	(single-slot entiteit
 ;+		(comment "De entiteit binnen het beleidsdomein.")
 		(type SYMBOL)
 		(allowed-values Departement_MOW Wegen_En_Verkeer Maritieme_Dienstverlening_en_Kust De_Scheepvaart De_Lijn Waterwegen_en_Zeekanaal)
 ;+		(cardinality 1 1)
-		(create-accessor read-write))
-	(multislot indicator_per_organisatie
-;+		(comment "Protege only.\nInverse slot om de indicatoren van een organisatie te vinden.")
-		(type INSTANCE)
-;+		(allowed-classes Indicatorfiche)
 		(create-accessor read-write)))
 
 (defclass Dimensie "De parameter die de dimensie van de indicator bepaalt, bv Provincie. De dimensie elementen zijn dan Antwerpen, West Vlaanderen, ..."

@@ -1,4 +1,4 @@
-; Thu Nov 28 17:39:02 CET 2013
+; Tue Dec 03 14:20:39 CET 2013
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -178,7 +178,7 @@
 ([KB_695502_Class99] of  Property_List
 )
 
-([KB_907499_Class3] of  Map
+([KB_752800_Class3] of  Map
 )
 
 ([LAYOUT_PROPERTIES] of  Property_List
@@ -323,13 +323,13 @@
 
 ([mow_dataroom_2_ProjectKB_Class20018] of  String
 
-	(name ":INSTANCE-ANNOTATION")
-	(string_value "%3AANNOTATION-TEXT"))
+	(name "Dimensie")
+	(string_value "discriminator{+-+}waarde"))
 
 ([mow_dataroom_2_ProjectKB_Class20019] of  String
 
-	(name "Dimensie")
-	(string_value "discriminator{+-+}waarde"))
+	(name ":INSTANCE-ANNOTATION")
+	(string_value "%3AANNOTATION-TEXT"))
 
 ([mow_dataroom_2_ProjectKB_Class20020] of  String
 
@@ -343,18 +343,18 @@
 
 ([mow_dataroom_2_ProjectKB_Class20022] of  String
 
-	(name "ReferentieTabel")
-	(string_value "discriminator{+-+}waarde"))
-
-([mow_dataroom_2_ProjectKB_Class20023] of  String
-
 	(name "Frequentietabel")
 	(string_value "frequentie_type{++*+}maand{}kwartaal{}schooljaar{+}jaar"))
 
+([mow_dataroom_2_ProjectKB_Class20023] of  String
+
+	(name "ReferentieTabel")
+	(string_value "discriminator{+-+}waarde"))
+
 ([mow_dataroom_2_ProjectKB_Class20024] of  String
 
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
+	(name "Organisatie")
+	(string_value "entiteit{+-+}afdeling"))
 
 ([mow_dataroom_2_ProjectKB_Class20025] of  String
 
@@ -363,8 +363,8 @@
 
 ([mow_dataroom_2_ProjectKB_Class20026] of  String
 
-	(name "Organisatie")
-	(string_value "entiteit{+-+}afdeling"))
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
 
 ([mow_dataroom_2_ProjectKB_Class20027] of  String
 

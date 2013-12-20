@@ -42,7 +42,9 @@ No inline options are available. There is a properties\vo.ini file that contains
 # Variables
 ########### 
 
-my ($log, $cfg, $dbs, $dbt, %trefwoorden);
+my ($log, $cfg, $dbs, $dbt);
+my (%ref_trefwoord, %ref_type_indicator, %ref_meeteenheid);
+my (%tx_meetfrequentie);
 
 #####
 # use
@@ -103,8 +105,8 @@ sub handle_tw($$) {
 	my @fields = qw (indicatorfiche_id referentie_id);
 	my @tw_arr = split /\|/, $tw_str;
 	foreach my $tw (@tw_arr) {
-		if (exists $trefwoorden{$tw}) {
-			my $referentie_id = $trefwoorden{$tw};
+		if (exists $ref_trefwoord{$tw}) {
+			my $referentie_id = $ref_trefwoord{$tw};
 			my (@vals) = map { eval ("\$" . $_ ) } @fields;
 	        unless(create_record($dbt, "trefwoord_fiche", \@fields, \@vals)) {
 		        $log->fatal("Could not insert record into trefwoord_fiche");
@@ -174,19 +176,41 @@ my $ref = do_select($dbt, $query);
 foreach my $record (@$ref) {
 	my $referentie_id = $$record{'referentie_id'};
 	my $type = $$record{'type'};
+	my $veld = $$record{'veld'} || "";
 	my $waarde = $$record{'waarde'};
 	if ($type eq "Trefwoord") {
-		$trefwoorden{$waarde} = $referentie_id;
+		$ref_trefwoord{$waarde} = $referentie_id;
+	}
+	if ($veld eq "type_indicator") {
+		$ref_type_indicator{$waarde} = $referentie_id;
+	}
+	if ($veld eq "meeteenheid") {
+		$ref_meeteenheid{$waarde} = $referentie_id;
 	}
 }
 
-my @fields = qw (indicator_naam definitie doel_meting tijdvenster streefwaarde bron opmerking);
+# Collect all translation values
+$query = "SELECT veld, huidig, vertaling
+          FROM vertaaltabel";
+$ref = do_select($dbs, $query);
+foreach my $record (@$ref) {
+	my $veld = $$record{'veld'};
+	my $huidig = $$record{'huidig'};
+	my $vertaling = $$record{'vertaling'};
+	if (lc($veld) eq "meetfrequentie") {
+		$tx_meetfrequentie{lc($huidig)} = $vertaling;
+	}
+}
+
+my @fields = qw (indicator_naam definitie doel_meting tijdvenster streefwaarde 
+                 bron opmerking meetfrequentie type_indicator meeteenheid
+				 aantal_percentage);
 $log->info("Get Indicatorfiches");
 $query = "SELECT `Indicator`, `Definitie/Berekeningswijze`, `Doel van de meting`,
                  `Trefwoord1`, `Trefwoord2`, `Trefwoord3`, t.`Type indicator`, `Bron`,
 		   	     `Meettechniek(en)`, `Meeteenheid`, `Tijdsvenster`, `Streefwaarde`,
 			   	 `Gepubliceerd in (1)`, `Gepubliceerd in (2)`, `Gepubliceerd in (3)`,
-				 `Aanspreekpunt`, `Afdeling`, `Entiteit`,
+				 `Aanspreekpunt`, `Afdeling`, `Entiteit`, `Meetfrequentie`,
 				 `Opmerking 1`, `Opmerking 2`, `Opmerking 3` 
              FROM  indicatorfiches i
 			 LEFT JOIN `lijst types indicatoren` t ON i.`Type indicator` = t.Id";
@@ -199,6 +223,7 @@ foreach my $record (@$ref) {
 	my $tijdvenster    = $$record{'Tijdsvenster'};
 	my $streefwaarde   = $$record{'Streefwaarde'};
 	my $bron           = $$record{'Bron'};
+	my $aantal_percentage = "J";
 	my $opmerking      = "";
 	if (defined($$record{'Opmerking 1'})) {
 		$opmerking    .= $$record{'Opmerking 1'};
@@ -209,7 +234,39 @@ foreach my $record (@$ref) {
 	if (defined($$record{'Opmerking 3'})) {
 		$opmerking    .= $$record{'Opmerking 3'};
 	}
-	my $trefwoorden    = "";
+	# Meetfrequentie (jaar, maand, kwartaal, schooljaar)
+	# must exist in this range.
+	my $meetfrequentie = $$record{'Meetfrequentie'} || "";
+	if (length($meetfrequentie) == 0) {
+		$log->debug("$indicator_naam - Geen meetfrequentie gedefinieerd, gebruik default jaar");
+		$meetfrequentie = "jaar";
+	}
+	if (exists $tx_meetfrequentie{lc($meetfrequentie)}) {
+	    $meetfrequentie = $tx_meetfrequentie{lc($meetfrequentie)};
+	} else {
+		$log->error("$indicator_naam meetfrequentie $meetfrequentie kan niet vertaald worden, skipping indicator");
+		next;
+	}
+	# Type Indicator 
+	my $type_indicator = $$record{'Type indicator'};
+	if (defined $type_indicator) {
+		if (exists($ref_type_indicator{$type_indicator})) {
+			$type_indicator = $ref_type_indicator{$type_indicator};
+		} else {
+			$log->error("$indicator_naam type_indicator $type_indicator niet gevonden in referentie tabel");
+			undef $type_indicator;
+		}
+	}
+	# Meeteenheid
+	my $meeteenheid = $$record{'Meeteenheid'};
+	if (defined $meeteenheid) {
+		if (exists($ref_meeteenheid{$meeteenheid})) {
+			$meeteenheid = $ref_meeteenheid{$meeteenheid};
+		} else {
+			$log->error("$indicator_naam meeteenheid $meeteenheid niet gevonden in referentie tabel");
+			undef $meeteenheid;
+		}
+	}
 	my (@vals) = map { eval ("\$" . $_ ) } @fields;
 	$indicatorfiche_id = create_record($dbt, "indicatorfiche", \@fields, \@vals);
     if (not defined $indicatorfiche_id) {

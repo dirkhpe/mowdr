@@ -4,3 +4,6 @@ perl 30_references.pl
 perl 40_trefwoorden.pl
 perl 50_gepubliceerd.pl
 perl 60_frequenties.pl
+perl 100_indicatorfiche.pl
+perl 200_indicator2fiche.pl
+perl 210_get_dim_elementen.pl

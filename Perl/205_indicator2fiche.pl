@@ -190,46 +190,11 @@ foreach my $record (@$ref) {
 
 my @fields = qw (dimensie_id fiche_id);
 while (my ($huidig, $vertaling) = each %tx_indicatortabel) {
-	# Handle aantal_percentage - but this needs review!
-	my ($dimensie_id, $fiche_id);
-	my $query = "UPDATE indicatorfiche 
-				SET aantal_percentage = 'N'
-				WHERE indicator_naam = '$vertaling'";
-	if ($dbt->do($query)) {
-		$log->debug("aantal_percentage set to N for $vertaling");
-	} else {
-		$log->error("Could not set aantal_percentage for $vertaling");
-	}
-	$fiche_id = $fiches{$vertaling};
-	if (index($vertaling, "afstandsklasse") > -1) {
-		$dimensie_id = 47;
-	} else {
-		$dimensie_id = 46;
-	}
-    my (@vals) = map { eval ("\$" . $_ ) } @fields;
-	unless (create_record($dbt, "dimensie_fiche", \@fields, \@vals)) {
-		$log->fatal("Could not insert record into dim_fiche");
-		exit_application(1);
-	}
-	if (index($vertaling, "afstandsklasse") > -1) {
-		$dimensie_id = 61;
-	    my (@vals) = map { eval ("\$" . $_ ) } @fields;
-	    unless (create_record($dbt, "dimensie_fiche", \@fields, \@vals)) {
-		    $log->fatal("Could not insert record into dim_fiche");
-		    exit_application(1);
-	    }
-	}
-}
-
-sub to_be_reviewed {
-while (my ($huidig, $vertaling) = each %tx_indicatortabel) {
 	# Then get dimensies per indicatorfiche
 	# But this does not work due to some character conversion issue!
 	# review the print select statement, and check how spaces are represented.
 	my $fiche_id = $fiches{$vertaling};
-	my @h_arr = split /\N{U+C2A0}/, $huidig;
-	my $new_huidig = join(" ", @h_arr);
-	my $table = "indicator $new_huidig";
+	my $table = "indicator $huidig";
 	$query = "SELECT * FROM `$table` LIMIT 1";
 print "\n\n\n***$query***\n\n\n";
 	my $ref = do_select($dbs, $query);
@@ -244,7 +209,6 @@ print "\n\n\n***$query***\n\n\n";
 			}
 		}
 	}
-}
 }
 
 exit_application(0);

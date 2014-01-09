@@ -1,10 +1,10 @@
 =head1 NAME
 
-get_dim_elementen - Map indicatorfiche to indicator information.
+indicatormap2txtable - Map indicatorfiche to indicator information.
 
 =head1 VERSION HISTORY
 
-version 1.0 20 December 2013 DV
+version 1.0 09 January 2014 DV
 
 =over 4
 
@@ -16,15 +16,15 @@ Initial release.
 
 =head1 DESCRIPTION
 
-Collect the dimensie elementen.
+Add indicatortable information to tx table.
 
 =head1 SYNOPSIS
 
- get_dim_elementen.pl
+ indicatormap2txtable.pl
 
- get_dim_elementen -h	Usage
- get_dim_elementen -h 1  Usage and description of the options
- get_dim_elementen -h 2  All documentation
+ indicatormap2txtable -h	Usage
+ indicatormap2txtable -h 1  Usage and description of the options
+ indicatormap2txtable -h 2  All documentation
 
 =head1 OPTIONS
 
@@ -42,7 +42,7 @@ No inline options are available. There is a properties\vo.ini file that contains
 # Variables
 ########### 
 
-my ($log, $cfg, $dbs, $dbt, %tx_dimensie, %dimensies);
+my ($log, $cfg, $dbs);
 
 #####
 # use
@@ -81,9 +81,6 @@ sub exit_application($) {
     my ($return_code) = @_;
 	if (defined $dbs) {
 		$dbs->disconnect;
-	}
-	if (defined $dbt) {
-		$dbt->disconnect;
 	}
 	$log->info("Exit application with return code $return_code.");
 	exit $return_code;
@@ -136,56 +133,30 @@ if ($log->is_trace()) {
 
 # Make database connection for vo database
 $dbs = db_connect("mow_access") or exit_application(1);
-$dbt = db_connect("mow_fase1")  or exit_application(1);
 
-# Delete tables in sequence
-my @tables = qw (dim_element);
-foreach my $table (@tables) {
-	if ($dbt->do("delete from $table")) {
-		$log->debug("Contents of table $table deleted");
-	} else {
-		$log->fatal("Failed to delete `$table'. Error: " . $dbt->errstr);
-		exit_application(1);
-	}
+# Delete indicatortabel entries from vertaaltabel.
+if ($dbs->do("delete from vertaaltabel where veld = 'indicatortabel'")) {
+	$log->debug("Contents related to indicatortabel in vertaaltabel deleted");
+} else {
+	$log->fatal("Failed to delete records from vertaaltabel, Error: " . $dbs->errstr);
+	exit_application(1);
 }
+
+my @fields = qw (veld huidig vertaling);
+my $veld = "indicatortabel";
 
 # Collect all translation values
-my $query = "SELECT veld, huidig, vertaling
-             FROM vertaaltabel
-	  	     WHERE veld = 'dimensie'
-			   AND (NOT (huidig = 'tbd'))
-			   AND (NOT (vertaling = 'tbd'))";
+my $query = "SELECT `Tabelnaam Cijferdatabank`, `indicator Indicatorfiches` 
+			 FROM `map_cijferdatabank_indicator`
+			 WHERE `Actief` = 'Ja'";
 my $ref = do_select($dbs, $query);
 foreach my $record (@$ref) {
-	my $huidig = $$record{'huidig'};
-	my $vertaling = $$record{'vertaling'};
-	$tx_dimensie{$huidig} = $vertaling;
-}
-
-# Get dimensie_ids
-$query = "SELECT dimensie_id, waarde
-          FROM dimensie";
-$ref = do_select($dbt, $query);
-foreach my $record (@$ref) {
-	my $dimensie_id = $$record{'dimensie_id'};
-	my $waarde = $$record{'waarde'};
-	$dimensies{$waarde} = $dimensie_id;
-}
-
-my @fields = qw (dimensie_id waarde);
-while (my ($huidig, $nieuw) = each %tx_dimensie) {
-	my $dimensie_id = $dimensies{$nieuw};
-	my $table = "dimensie $huidig";
-	my $query = "SELECT `$huidig` as element
-	             FROM `$table`";
-	my $ref = do_select($dbs, $query);
-	foreach my $record (@$ref) {
-		my $waarde = $$record{'element'};
-		my (@vals) = map { eval ("\$" . $_ ) } @fields;
-		unless (create_record($dbt, "dim_element", \@fields, \@vals)) {
-		    $log->fatal("Could not insert record into dim_element");
-		    exit_application(1);
-		}
+	my $huidig = $$record{'Tabelnaam Cijferdatabank'};
+	my $vertaling = $$record{'indicator Indicatorfiches'};
+	my (@vals) = map { eval ("\$" . $_ ) } @fields;
+	unless (create_record($dbs, "vertaaltabel", \@fields, \@vals)) {
+		$log->fatal("Could not insert record into vertaaltabel");
+		exit_application(1);
 	}
 }
 

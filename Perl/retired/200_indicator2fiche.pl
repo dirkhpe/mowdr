@@ -43,8 +43,8 @@ No inline options are available. There is a properties\vo.ini file that contains
 ########### 
 
 my ($log, $cfg, $dbs, $dbt);
-my (%tx_indicatortabel, %tx_dimensie, %tx_aantal_percentage, %tx_meetfrequentie);
-my (%fiches, %dimensies, %unk_dims);
+my (%tx_indicatortabel, %tx_dimensie);
+my (%fiches, %dimensies);
 
 #####
 # use
@@ -155,9 +155,7 @@ foreach my $table (@tables) {
 my $query = "SELECT veld, huidig, vertaling
              FROM vertaaltabel
 	  	     WHERE veld = 'indicatortabel'
-			    OR veld = 'dimensie'
-				OR veld = 'aantal_percentage'
-				OR veld = 'meetfrequentie'";
+			    OR veld = 'dimensie'";
 my $ref = do_select($dbs, $query);
 foreach my $record (@$ref) {
 	my $huidig = $$record{'huidig'};
@@ -167,10 +165,6 @@ foreach my $record (@$ref) {
 		$tx_indicatortabel{$huidig} = $vertaling;
 	} elsif ($veld eq "dimensie") {
 		$tx_dimensie{$huidig} = $vertaling;
-	} elsif ($veld eq "aantal_percentage") {
-		$tx_aantal_percentage{$huidig} = $vertaling;
-	} elsif ($veld eq "meetfrequentie") {
-		$tx_meetfrequentie{$huidig} = $vertaling;
 	}
 }
 
@@ -196,50 +190,61 @@ foreach my $record (@$ref) {
 
 my @fields = qw (dimensie_id fiche_id);
 while (my ($huidig, $vertaling) = each %tx_indicatortabel) {
+	# Handle aantal_percentage - but this needs review!
+	my ($dimensie_id, $fiche_id);
+	my $query = "UPDATE indicatorfiche 
+				SET aantal_percentage = 'N'
+				WHERE indicator_naam = '$vertaling'";
+	if ($dbt->do($query)) {
+		$log->debug("aantal_percentage set to N for $vertaling");
+	} else {
+		$log->error("Could not set aantal_percentage for $vertaling");
+	}
+	$fiche_id = $fiches{$vertaling};
+	if (index($vertaling, "afstandsklasse") > -1) {
+		$dimensie_id = 47;
+	} else {
+		$dimensie_id = 46;
+	}
+    my (@vals) = map { eval ("\$" . $_ ) } @fields;
+	unless (create_record($dbt, "dimensie_fiche", \@fields, \@vals)) {
+		$log->fatal("Could not insert record into dim_fiche");
+		exit_application(1);
+	}
+	if (index($vertaling, "afstandsklasse") > -1) {
+		$dimensie_id = 61;
+	    my (@vals) = map { eval ("\$" . $_ ) } @fields;
+	    unless (create_record($dbt, "dimensie_fiche", \@fields, \@vals)) {
+		    $log->fatal("Could not insert record into dim_fiche");
+		    exit_application(1);
+	    }
+	}
+}
+
+sub to_be_reviewed {
+while (my ($huidig, $vertaling) = each %tx_indicatortabel) {
 	# Then get dimensies per indicatorfiche
 	# But this does not work due to some character conversion issue!
 	# review the print select statement, and check how spaces are represented.
 	my $fiche_id = $fiches{$vertaling};
-	$query = "SELECT * FROM `$huidig` LIMIT 1";
+	my @h_arr = split /\N{U+C2A0}/, $huidig;
+	my $new_huidig = join(" ", @h_arr);
+	my $table = "indicator $new_huidig";
+	$query = "SELECT * FROM `$table` LIMIT 1";
+print "\n\n\n***$query***\n\n\n";
 	my $ref = do_select($dbs, $query);
 	my $record = @$ref[0];
 	foreach my $dimensie (keys $record) {
 		if (defined $tx_dimensie{$dimensie}) {
-			# Don't handle unknown dimensions
-			if ($tx_dimensie{$dimensie} eq 'tbd') {
-				next;
-			}
 			my $dimensie_id = $dimensies{$tx_dimensie{$dimensie}};
 			my (@vals) = map { eval ("\$" . $_ ) } @fields;
 			unless (create_record($dbt, "dimensie_fiche", \@fields, \@vals)) {
-				$log->fatal("Could not insert record into dimensie_fiche");
+				$log->fatal("Could not insert record into dim_element");
 				exit_application(1);
-			}
-		} elsif (defined $tx_aantal_percentage{$dimensie}) {
-			# For aantal_percentage, check if this is percentage
-			# Set aantal_percentage flag to No if so.
-			if ($tx_aantal_percentage{$dimensie} eq "procent") {
-				my $query = "UPDATE indicatorfiche 
-				             SET aantal_percentage = 'N'
-							 WHERE indicatorfiche_id = $fiche_id";
-				if ($dbt->do($query)) {
-					$log->debug("Update aantal percentage for $fiche_id to N.");
-				} else {
-					$log->fatal("Could not update aantal_percentage in indicatorfiche $fiche_id. Error: " . $dbt->errstr);
-					exit_application(1);
-				}
-			}
-		} elsif (defined $tx_meetfrequentie{$dimensie}) {
-			# Fine, don't do anything...
-			next;
-		} else {
-			if (($dimensie ne 'tbd') and (not exists $unk_dims{$dimensie})) {
-				# $log->error("Onbekende dimensie $dimensie in $huidig");
-				print $dimensie."\n";
-				$unk_dims{$dimensie} = 1;
 			}
 		}
 	}
+}
 }
 
 exit_application(0);

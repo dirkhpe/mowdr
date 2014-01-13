@@ -43,8 +43,9 @@ No inline options are available. There is a properties\vo.ini file that contains
 ########### 
 
 my ($log, $cfg, $dbs, $dbt);
-my (%ref_trefwoord, %ref_type_indicator, %ref_meeteenheid);
-my (%tx_meetfrequentie);
+my (%ref_trefwoord, %ref_type_indicator, %ref_meeteenheid, %ref_streefwaardetype, %ref_publicatie);
+my (%tx_meetfrequentie, %tx_afdeling, %tx_entiteit);
+my (%org, %pers);
 
 #####
 # use
@@ -118,6 +119,45 @@ sub handle_tw($$) {
 	}
 }
 
+sub handle_publ($$) {
+	my ($indicatorfiche_id, $publ) = @_;
+	my @fields = qw (indicatorfiche_id referentie_id);
+	if (exists $ref_publicatie{lc($publ)}) {
+		my $referentie_id = $ref_publicatie{lc($publ)};
+		my (@vals) = map { eval ("\$" . $_ ) } @fields;
+	    unless(create_record($dbt, "gepubliceerd_fiche", \@fields, \@vals)) {
+	        $log->fatal("Could not insert record into gepubliceerd_fiche");
+	        exit_application(1);
+		}
+	} else {
+		$log->error("Could not find ID for publicatie $publ");
+	}
+}
+
+sub handle_persoon($$) {
+	# Also add 'Dataroom Beheerder'
+	my ($indicatorfiche_id, $persoon) = @_;
+	my @fields = qw (type indicatorfiche_id persoon_id);
+	if (exists $pers{$persoon}) {
+		my $persoon_id = $pers{$persoon};
+		my $type = "Indicator Beheerder";
+		my (@vals) = map { eval ("\$" . $_ ) } @fields;
+	    unless(create_record($dbt, "rol", \@fields, \@vals)) {
+	        $log->fatal("Could not insert record into rol");
+	        exit_application(1);
+		}
+		$type = "Aanspreekpunt";
+		(@vals) = map { eval ("\$" . $_ ) } @fields;
+	    unless(create_record($dbt, "rol", \@fields, \@vals)) {
+	        $log->fatal("Could not insert record into rol");
+	        exit_application(1);
+		}
+	} else {
+		$log->error("Could not find ID for persoon $persoon");
+	}
+}
+
+
 ######
 # Main
 ######
@@ -181,11 +221,17 @@ foreach my $record (@$ref) {
 	if ($type eq "Trefwoord") {
 		$ref_trefwoord{$waarde} = $referentie_id;
 	}
+	if ($type eq "Publicatie") {
+		$ref_publicatie{lc($waarde)} = $referentie_id;
+	}
 	if ($veld eq "type_indicator") {
 		$ref_type_indicator{$waarde} = $referentie_id;
 	}
 	if ($veld eq "meeteenheid") {
 		$ref_meeteenheid{$waarde} = $referentie_id;
+	}
+	if ($veld eq "Streefwaardetype") {
+		$ref_streefwaardetype{$waarde} = $referentie_id;
 	}
 }
 
@@ -200,12 +246,45 @@ foreach my $record (@$ref) {
 	if (lc($veld) eq "meetfrequentie") {
 		$tx_meetfrequentie{lc($huidig)} = $vertaling;
 	}
+	if (lc($veld) eq "entiteit") {
+		$tx_entiteit{lc($huidig)} = $vertaling;
+	}
+	if (lc($veld) eq "afdeling") {
+		$tx_afdeling{lc($huidig)} = $vertaling;
+	}
 }
 
+# Collect organisatie informatie
+$query = "SELECT organisatie_id, entiteit, afdeling
+		  FROM organisatie
+		  WHERE organisatie_id > 0";
+$ref = do_select($dbt, $query);
+foreach my $record (@$ref) {
+	my $organisatie_id = $$record{organisatie_id};
+	my $entiteit = $$record{entiteit} || "";
+	my $afdeling = $$record{afdeling} || "";
+	$org{"$entiteit $afdeling"} = $organisatie_id;
+}
+
+# Collect persoon informatie
+$query = "SELECT persoon_id, naam, voornaam
+		  FROM persoon
+		  WHERE persoon_id > 0";
+$ref = do_select($dbt, $query);
+foreach my $record (@$ref) {
+	my $persoon_id = $$record{persoon_id};
+	my $naam = $$record{naam};
+	my $voornaam = $$record{voornaam};
+	$pers{"$voornaam $naam"} = $persoon_id;
+}
+
+$log->info("Get Indicatorfiches");
 my @fields = qw (indicator_naam definitie doel_meting tijdvenster streefwaarde 
                  bron opmerking meetfrequentie type_indicator meeteenheid
-				 aantal_percentage);
-$log->info("Get Indicatorfiches");
+				 aantal_percentage meettechniek streefwaardetype geografische_info
+				 vrijgave_metrics aanspreekorganisatie_id sleutel);
+# Set default waarden
+my $streefwaardetype = $ref_streefwaardetype{"default"};;
 $query = "SELECT `Indicator`, `Definitie/Berekeningswijze`, `Doel van de meting`,
                  `Trefwoord1`, `Trefwoord2`, `Trefwoord3`, t.`Type indicator`, `Bron`,
 		   	     `Meettechniek(en)`, `Meeteenheid`, `Tijdsvenster`, `Streefwaarde`,
@@ -223,7 +302,27 @@ foreach my $record (@$ref) {
 	my $tijdvenster    = $$record{'Tijdsvenster'};
 	my $streefwaarde   = $$record{'Streefwaarde'};
 	my $bron           = $$record{'Bron'};
+	my $meettechniek   = $$record{'Meettechniek(en)'};
+	my $entiteit       = $$record{'Entiteit'} || "VVM De Lijn";
+	if (exists $tx_entiteit{lc($entiteit)}) {
+		$entiteit      = $tx_entiteit{lc($entiteit)};
+	} else {
+		$log->error("No translation found for entiteit $entiteit ($indicator_naam)");
+		exit_application(1);
+	}
+	my $afdeling       = $$record{'Afdeling'} || "VVM De Lijn";
+	if (exists $tx_afdeling{lc($afdeling)}) {
+		$afdeling      = $tx_afdeling{lc($afdeling)};
+	} else {
+		$log->error("No translation found for afdeling $afdeling ($indicator_naam)");
+		exit_application(1);
+	}
+	my $organisatie    = $entiteit . " " . $afdeling;
+	my $aanspreekorganisatie_id = $org{$organisatie};
+	my $sleutel        = "$organisatie * $indicator_naam";
 	my $aantal_percentage = "J";
+	my $geografische_info = "N";
+	my $vrijgave_metrics  = "J";
 	my $opmerking      = "";
 	if (defined($$record{'Opmerking 1'})) {
 		$opmerking    .= $$record{'Opmerking 1'};
@@ -289,7 +388,26 @@ foreach my $record (@$ref) {
 	if ($nr_tw > 0) {
 	    handle_tw($indicatorfiche_id, join("|", @tw_arr));
 	}
-
+	# Then handle 'Gepubliceerd in'
+	if (defined($$record{'Gepubliceerd in (1)'})) {
+		handle_publ($indicatorfiche_id, $$record{'Gepubliceerd in (1)'});
+	}
+	if (defined($$record{'Gepubliceerd in (2)'})) {
+		handle_publ($indicatorfiche_id, $$record{'Gepubliceerd in (2)'});
+	}
+	if (defined($$record{'Gepubliceerd in (3)'})) {
+		handle_publ($indicatorfiche_id, $$record{'Gepubliceerd in (3)'});
+	}
+	# And handle personen
+	my $aanspreekpunt = $$record{'Aanspreekpunt'} || "";
+	if (index($aanspreekpunt, "/") > -1) {
+		($aanspreekpunt, undef) = split /\//, $aanspreekpunt;
+		# I know the second name is Guy Palmans, why bother with the code...
+		handle_persoon($indicatorfiche_id, "Guy Palmans");
+	}
+	if (length($aanspreekpunt) > 0) {
+		handle_persoon($indicatorfiche_id, trim($aanspreekpunt));
+	}
 }
 
 exit_application(0);

@@ -145,7 +145,7 @@ $dbs = db_connect("mow_access") or exit_application(1);
 $dbt = db_connect("mow_fase1")  or exit_application(1);
 
 # Delete existing Frequenties from referentie tabel
-my $query = "TRUNCATE TABLE FREQUENTIES";
+my $query = "delete from frequenties";
 if ($dbt->do($query)) {
 	$log->debug("Frequenties table deleted.");
 } else {

@@ -198,7 +198,7 @@ $log->info("Get the worksheets in the workbook");
 my $worksheets;
 foreach my $worksheet ($workbook->worksheets()) {
 	my $worksheet_name = $worksheet->get_name;
-	if (index($worksheet_name,"dimensies", 0) > -1) {
+	if (index($worksheet_name,"Dimensie", 0) > -1) {
 		$worksheets->{$worksheet_name} = $worksheet;
 		$log->debug("Ready to load worksheet: $worksheet_name");
 		import_sheet($worksheet, $dbh, $table);

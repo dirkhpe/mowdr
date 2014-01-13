@@ -43,8 +43,8 @@ No inline options are available. There is a properties\vo.ini file that contains
 ########### 
 
 my ($log, $cfg, $dbs, $dbt, $field_val);
-my (%tx_indicatortabel, %tx_dimensie, %cols, %tx_aantal_percentage, %tx_meetfrequentie);
-my (%freq_jaar, %freq_maand, %freq_schjr, %freq_kw);
+my (%tx_indicatortabel, %tx_dimensie, %cols, %tx_aantal_percentage, %tx_meetfrequentie, %tx_dim2column);
+my (%freq_jaar, %freq_maand, %freq_schjr, %freq_winter, %freq_kw, %known_errors);
 my (%fiches, %dimensies, %dim_els, @fields, @vals, %meetfrequentie, %map_dim_element);
 
 # Meetfrequentie values
@@ -107,8 +107,8 @@ sub trim {
     return wantarray ? @out : $out[0];
 }
 
-sub get_cols($) {
-	my ($indic_table) = @_;
+sub get_cols($$) {
+	my ($indic_table, $indicatorfiche_id) = @_;
 	my $valid_rec = "Yes";
 	my ($aantal_flag, $frequentie_flag);
 	my $query = "SELECT * FROM `$indic_table` LIMIT 1";
@@ -130,6 +130,18 @@ sub get_cols($) {
 			} else {
 				$frequentie_flag = 1;
 			    $cols{$col_name} = $tx_aantal_percentage{$col_name};
+				if ($cols{$col_name} eq "percentage") {
+					# Update Aantal / Percentage flag in indicatorfiche
+					my $query = "UPDATE indicatorfiche 
+								 SET aantal_percentage = 'N'
+								 WHERE indicatorfiche_id = $indicatorfiche_id";
+					if ($dbt->do($query)) {
+						$log->debug("Aantal percentage flag for $indicatorfiche_id set to N");
+					} else {
+						$log->fatal("Could not set Aantal percentage flag for $indicatorfiche_id to N. Error: " . $dbt->errstr);
+						exit_application(1);
+					}
+				}
 			}
 		} elsif (exists $tx_dimensie{$col_name}) {
 			if (exists $cols{$col_name}) {
@@ -145,20 +157,27 @@ sub get_cols($) {
 
 sub tx_value($$$) {
 	my ($field_type, $acc_key, $acc_value) = @_;
-	if (($field_type eq 'aantal') or ($field_type eq 'procent')) {
-		# The easy one, aantal / procent will automatically end up where it belongs.
+	if (($field_type eq 'aantal') or ($field_type eq 'percentage')) {
+		# The easy one, aantal / percentage will automatically end up where it belongs.
 		return $acc_value;
 	}
-	if ($field_type eq 'meetfrequentie') {
+	# Check if I'm working on meetfrequentie
+	if (exists $tx_meetfrequentie{$acc_key}) {
+		# Translation exists, so translated value is in $field_type
 		# Also not difficult - get the dagnr.
-		if ($acc_value eq 'jaar') {
-			return $freq_jaar{$acc_key};
-		} elsif ($acc_value eq 'schooljaar') {
-			return $freq_schjr{$acc_key};
-		} elsif ($acc_value eq 'maand') {
-			return $freq_maand{$acc_key};
-		} elsif ($acc_value eq 'kwartaal') {
-			return $freq_kw{$acc_key};
+		if ($field_type eq 'jaar') {
+			return $freq_jaar{$acc_value};
+		} elsif ($field_type eq 'schooljaar') {
+			return $freq_schjr{$acc_value};
+		} elsif ($field_type eq 'winter') {
+			return $freq_winter{$acc_value};
+		} elsif ($field_type eq 'maand') {
+			return $freq_maand{$acc_value};
+		} elsif ($field_type eq 'kwartaal') {
+			return $freq_kw{$acc_value};
+		} else {
+			$log->error("$acc_key translates into meetfrequentie $field_type, but this is unknown meetfrequentie");
+			return -1;
 		}
 	}
 	# Now get dim_element number
@@ -166,7 +185,11 @@ sub tx_value($$$) {
 	if (exists $map_dim_element{$acc_element}) {
 		return $map_dim_element{$acc_element};
 	} else {
-		$log->error("Could not find $acc_element in map_dim_element");
+		my $errmsg = "Could not find $acc_element in map_dim_element";
+		if (not exists $known_errors{$errmsg}) {
+			$known_errors{$errmsg} = 1;
+			$log->error("Could not find $acc_element in map_dim_element");
+		}
 	    return -2;
 	}
 }
@@ -228,7 +251,8 @@ my $query = "SELECT veld, huidig, vertaling
 	  	     WHERE (veld = 'indicatortabel'
 			    OR  veld = 'dimensie'
 				OR  veld = 'aantal_percentage'
-				OR  veld = 'meetfrequentie')
+				OR  veld = 'meetfrequentie'
+				OR  veld = 'dim2column')
 				AND (NOT(huidig = 'tbd'))
 				AND (NOT(vertaling = 'tbd'))";
 my $ref = do_select($dbs, $query);
@@ -244,6 +268,8 @@ foreach my $record (@$ref) {
 		$tx_aantal_percentage{$huidig} = $vertaling;
 	} elsif ($veld eq "meetfrequentie") {
 		$tx_meetfrequentie{$huidig} = $vertaling;
+	} elsif ($veld eq "dim2column") {
+		$tx_dim2column{$huidig} = $vertaling;
 	}
 }
 
@@ -298,11 +324,20 @@ foreach my $record(@$ref) {
 
 # Get frequentie schooljaar (winter heeft zelfde start, meer entries dan schooljaar)
 $query = "SELECT a.Id, (select min(dagnr) from mow_fase1.frequenties
+                        where schooljaar_label = a.schooljaar)	dagnr
+          FROM `frequentie per schooljaar` a";
+$ref = do_select($dbs, $query);
+foreach my $record(@$ref) {
+	$freq_schjr{$$record{Id}} = $$record{dagnr};
+}
+
+# Get frequentie winter
+$query = "SELECT a.Id, (select min(dagnr) from mow_fase1.frequenties
                         where schooljaar_label = a.winter)	dagnr
           FROM `frequentie per winter` a";
 $ref = do_select($dbs, $query);
 foreach my $record(@$ref) {
-	$freq_schjr{$$record{Id}} = $$record{dagnr};
+	$freq_winter{$$record{Id}} = $$record{dagnr};
 }
 
 # Get frequentie kwartaal 
@@ -332,8 +367,9 @@ foreach my $record(@$ref) {
 }
 
 while (my ($acc_ind, $f1_ind) = each %tx_indicatortabel) {
+	$log->info("Investigating $acc_ind");
 	undef %cols;
-	if (not(get_cols($acc_ind) eq "Yes")) {
+	if (not(get_cols($acc_ind, $fiches{$f1_ind}) eq "Yes")) {
 		$log->error("Skip $acc_ind");
 		next;
 	}
@@ -345,21 +381,27 @@ while (my ($acc_ind, $f1_ind) = each %tx_indicatortabel) {
 		push @fields, 'indicatorfiche_id';
 		push @vals, $fiches{$f1_ind};
 		while (my ($key, $value) = each %$record) {
+			# Value must be positive integer, pointing to a reference table.
+			# In a few cases (stormvloedpeil) no value has been selected, value 0 is in value column.
 			if (exists $cols{$key}) {
 				# Translate values aantal, meetfrequentie, dimensie
-				if (exists $meetfrequentie{$cols{$key}}) {
+				if (exists $tx_meetfrequentie{$cols{$key}}) {
 					$field_val = "dagnr";
-				} else {
+				} elsif (($cols{$key} eq "aantal") or ($cols{$key} eq "percentage")) {
 					$field_val = $cols{$key};
-				}			
+				} else {
+					$field_val = $tx_dim2column{$cols{$key}};
+				}
 				push @fields, $field_val;
 				push @vals, tx_value($cols{$key}, $key, $value);
 			}
 		}
-		# unless (create_record($dbt, "indicator_report", \@fields, \@vals)) {
-		#	$log->fatal("Could not insert record into indicator_report");
-		#	exit_application(1);
-		#}
+		push @fields, 'actief';
+		push @vals, 'J';
+		unless (create_record($dbt, "indicator_report", \@fields, \@vals)) {
+			$log->fatal("Could not insert record into indicator_report");
+			exit_application(1);
+		}
 	}
 }
 

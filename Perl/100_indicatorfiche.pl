@@ -45,7 +45,7 @@ No inline options are available. There is a properties\vo.ini file that contains
 my ($log, $cfg, $dbs, $dbt);
 my (%ref_trefwoord, %ref_type_indicator, %ref_meeteenheid, %ref_streefwaardetype, %ref_publicatie);
 my (%tx_meetfrequentie, %tx_afdeling, %tx_entiteit);
-my (%org, %pers);
+my (%org, %pers, %fiche2id);
 
 #####
 # use
@@ -278,11 +278,19 @@ foreach my $record (@$ref) {
 	$pers{"$voornaam $naam"} = $persoon_id;
 }
 
+# Get indicatorfiche IDs
+$query = "SELECT indicatorfiche_id, indicator_naam
+		  FROM fiche2id";
+$ref = do_select($dbs, $query);
+foreach my $record (@$ref) {
+	$fiche2id{$$record{indicator_naam}} = $$record{indicatorfiche_id};
+}
+
 $log->info("Get Indicatorfiches");
 my @fields = qw (indicator_naam definitie doel_meting tijdvenster streefwaarde 
                  bron opmerking meetfrequentie type_indicator meeteenheid
 				 aantal_percentage meettechniek streefwaardetype geografische_info
-				 vrijgave_metrics aanspreekorganisatie_id sleutel);
+				 vrijgave_metrics aanspreekorganisatie_id sleutel indicatorfiche_id);
 # Set default waarden
 my $streefwaardetype = $ref_streefwaardetype{"default"};;
 $query = "SELECT `Indicator`, `Definitie/Berekeningswijze`, `Doel van de meting`,
@@ -297,6 +305,12 @@ $ref = do_select($dbs, $query);
 foreach my $record (@$ref) {
 	my $indicatorfiche_id;
     my $indicator_naam = $$record{'Indicator'};
+	if (defined $fiche2id{$indicator_naam}) {
+		$indicatorfiche_id = $fiche2id{$indicator_naam};
+	} else {
+		$log->error("Geen ID gedefinieerd voor Fiche $indicator_naam");
+		next;
+	}
 	my $definitie      = $$record{'Definitie/Berekeningswijze'};
 	my $doel_meting    = $$record{'Doel van de meting'};
 	my $tijdvenster    = $$record{'Tijdsvenster'};
@@ -367,9 +381,13 @@ foreach my $record (@$ref) {
 		}
 	}
 	my (@vals) = map { eval ("\$" . $_ ) } @fields;
-	$indicatorfiche_id = create_record($dbt, "indicatorfiche", \@fields, \@vals);
-    if (not defined $indicatorfiche_id) {
+	my $new_indicatorfiche_id = create_record($dbt, "indicatorfiche", \@fields, \@vals);
+    if (not defined $new_indicatorfiche_id) {
 		$log->fatal("Could not insert record into indicatorfiche");
+		exit_application(1);
+	}
+	if (not ($new_indicatorfiche_id == $indicatorfiche_id)) {
+		$log->fatal("Indicatorfiche $indicator_naam created with id $new_indicatorfiche_id, expected id $indicatorfiche_id");
 		exit_application(1);
 	}
 	# Indicatorfiche ID known, now link to the other attributes

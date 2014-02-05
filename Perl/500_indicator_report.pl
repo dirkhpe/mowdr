@@ -115,6 +115,10 @@ sub get_cols($$) {
 	my $ref = do_select($dbs, $query);
 	my $record = @$ref[0];
 	foreach my $col_name (keys $record) {
+		if ($col_name eq 'jaartal') {
+			# Every now and then jaartal is used as additional frequentie indicator
+			next;
+		}
 		if (exists $tx_meetfrequentie{$col_name}) {
 			if (defined $aantal_flag) {
 				$log->error("Duplicate aantal flag in table $indic_table");
@@ -150,7 +154,16 @@ sub get_cols($$) {
 			} else {
 			    $cols{$col_name} = $tx_dimensie{$col_name};
 			}
+		} else {
+			$log->error("No translation for dimensie $col_name");
 		}
+	}
+	# Now check for aantal_flag and frequentie_flag
+	if (not defined $aantal_flag) {
+		$log->error("Aantal / Percentage niet gedefinieerd voor indicator");
+	}
+	if (not defined $frequentie_flag) {
+		$log->error("Frequentie vlag niet gedefinieerd voor indicator");
 	}
 	return $valid_rec;
 }

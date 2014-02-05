@@ -42,7 +42,7 @@ Full path and file to the data_mapping report that contains tabe vertaaltabel. T
 # Variables
 ########### 
 
-my ($log, $dbh, $xls_file);
+my ($log, $dbh, $dbs, $xls_file);
 my $table = "dimensie";
 
 #####
@@ -150,13 +150,28 @@ if ($log->is_debug()) {
 
 # Make database connection for vo database
 $dbh = db_connect('mow_fase1') or exit_application(1);
+$dbs = db_connect('mow_access') or exit_application(1);
 
 # Truncate table
-if ($dbh->do("delete from $table")) {
-	$log->debug("Table $table truncated");
-} else {
-	$log->fatal("Failed to truncate `$table'. Error: " . $dbh->errstr);
-	exit_application(1);
+my @tables = qw (dimensie);
+foreach my $table (@tables) {
+    if ($dbh->do("delete from $table")) {
+	    $log->debug("Table $table truncated");
+    } else {
+	    $log->fatal("Failed to truncate `$table'. Error: " . $dbh->errstr);
+	    exit_application(1);
+    }
+}
+
+# Truncate table
+@tables = qw (ldap fiche2id);
+foreach my $table (@tables) {
+    if ($dbs->do("delete from $table")) {
+	    $log->debug("Table $table truncated");
+    } else {
+	    $log->fatal("Failed to truncate `$table'. Error: " . $dbs->errstr);
+	    exit_application(1);
+    }
 }
 
 # Set auto_increment OFF during the load
@@ -202,10 +217,22 @@ foreach my $worksheet ($workbook->worksheets()) {
 		$worksheets->{$worksheet_name} = $worksheet;
 		$log->debug("Ready to load worksheet: $worksheet_name");
 		import_sheet($worksheet, $dbh, $table);
+	} elsif (index($worksheet_name, "Fiche2ID", 0) > -1) {
+		$worksheets->{$worksheet_name} = $worksheet;
+		$log->debug("Ready to load worksheet: $worksheet_name");
+		import_sheet($worksheet, $dbs, "Fiche2ID");
+	} elsif (index($worksheet_name, "ldap", 0) > -1) {
+		$worksheets->{$worksheet_name} = $worksheet;
+		$log->debug("Ready to load worksheet: $worksheet_name");
+		import_sheet($worksheet, $dbs, "ldap");
+	} elsif (index($worksheet_name, "Beleidsdocumenten") > -1) {
+		$worksheets->{$worksheet_name} = $worksheet;
+		$log->debug("Ready to load worksheet: $worksheet_name");
+		import_sheet($worksheet, $dbs, "beleidsdocumenten");
 	}
 }
 
-# Set auto_increment ON for this table.
+# Set auto_increment ON for table dimensie.
 $query = "ALTER TABLE  `dimensie` 
 		  CHANGE  `dimensie_id`  `dimensie_id` INT( 11 ) NOT NULL AUTO_INCREMENT";
 if ($dbh->do($query)) {

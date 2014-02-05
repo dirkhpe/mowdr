@@ -138,6 +138,17 @@ if ($log->is_trace()) {
 $dbs = db_connect("mow_access") or exit_application(1);
 $dbt = db_connect("mow_fase1")  or exit_application(1);
 
+# Delete tables in sequence
+my @tables = qw (persoon);
+foreach my $table (@tables) {
+	if ($dbt->do("delete from $table")) {
+		$log->debug("Contents of table $table deleted");
+	} else {
+		$log->fatal("Failed to delete `$table'. Error: " . $dbt->errstr);
+		exit_application(1);
+	}
+}
+
 # Check for -1 record in organisatie
 my $query = "SELECT count(organisatie_id) rec_count 
              FROM organisatie
@@ -154,6 +165,24 @@ if ($rec_cnt == 0) {
 		$log->fatal("Could not insert record into organisatie");
 		exit_application(1);
 	}
+}
+
+# Get personen information
+my @fields = qw (ldap naam voornaam);
+$query = "SELECT ldap_id, naam, voornaam
+		  FROM ldap";
+$ref = do_select($dbs, $query);
+foreach my $record (@$ref) {
+	my $ldap = lc($$record{ldap_id});
+	my $naam = $$record{naam};
+	my $voornaam = $$record{voornaam};
+    my (@vals) = map { eval ("\$" . $_ ) } @fields;
+	unless (create_record($dbt, "persoon", \@fields, \@vals)) {
+		$log->fatal("Could not insert record into persoon");
+		exit_application(1);
+	}
+    my $fullname = "$voornaam $naam";
+	$names{$fullname} = 1;
 }
 
 # Check for -1 record in persoon
@@ -174,7 +203,7 @@ if ($rec_cnt == 0) {
 	}
 }
 
-my @fields = qw (voornaam naam);
+@fields = qw (voornaam naam);
 
 $log->info("Get Aanspreekpunt");
 $query = "SELECT distinct aanspreekpunt 

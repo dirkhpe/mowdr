@@ -43,7 +43,7 @@ No inline options are available. There is a properties\vo.ini file that contains
 ########### 
 
 my ($log, $cfg, $dbs, $dbt);
-my (%ref_trefwoord, %ref_type_indicator, %ref_meeteenheid, %ref_streefwaardetype, %ref_publicatie);
+my (%ref_trefwoord, %ref_type_indicator, %ref_meeteenheid, %ref_streefwaardetype, %ref_publicatie, %ref_afdeling, %ref_entiteit);
 my (%tx_meetfrequentie, %tx_afdeling, %tx_entiteit);
 my (%org, %pers, %fiche2id);
 
@@ -73,8 +73,8 @@ use Data::Dumper;
 # Trace Warnings
 ################
 
-use Carp;
-$SIG{__WARN__} = sub { Carp::confess( @_ ) };
+# use Carp;
+# $SIG{__WARN__} = sub { Carp::confess( @_ ) };
 
 #############
 # subroutines
@@ -233,6 +233,12 @@ foreach my $record (@$ref) {
 	if ($veld eq "Streefwaardetype") {
 		$ref_streefwaardetype{$waarde} = $referentie_id;
 	}
+	if ($veld eq "Afdeling") {
+		$ref_afdeling{$waarde} = $referentie_id;
+	}
+	if ($veld eq "Entiteit") {
+		$ref_entiteit{$waarde} = $referentie_id;
+	}
 }
 
 # Collect all translation values
@@ -331,9 +337,15 @@ foreach my $record (@$ref) {
 		$log->error("No translation found for afdeling $afdeling ($indicator_naam)");
 		exit_application(1);
 	}
-	my $organisatie    = $entiteit . " " . $afdeling;
-	my $aanspreekorganisatie_id = $org{$organisatie};
-	my $sleutel        = "$organisatie * $indicator_naam";
+	my $organisatie_label = $entiteit . " " . $afdeling;
+	my $organisatie    = $ref_entiteit{$entiteit} . " " . $ref_afdeling{$afdeling};
+	my $aanspreekorganisatie_id;
+	if (exists $org{$organisatie}) {
+		$aanspreekorganisatie_id = $org{$organisatie};
+	} else {
+		$log->error("ID for organisation $organisatie not found!");
+	}
+	my $sleutel        = "$organisatie_label * $indicator_naam";
 	my $aantal_percentage = "J";
 	my $geografische_info = "N";
 	my $vrijgave_metrics  = "J";

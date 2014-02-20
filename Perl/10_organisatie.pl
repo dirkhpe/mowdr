@@ -18,6 +18,8 @@ Initial release.
 
 Extract organisatie information from indicatorfiches, start with aanspreekpunt.
 
+The organisatie information is stored in a temporary table organisatie_names. Then in script 30_references the unique names are stored in the reference table and organisation records containing keys only are inserted into the organisation table. 
+
 =head1 SYNOPSIS
 
  organisatie.pl
@@ -58,7 +60,7 @@ use strict 'subs';
 use Getopt::Std;		    # Handle input params
 use Pod::Usage;			    # Allow Usage information
 use DBI();
-use DbUtil qw(db_connect do_select create_record);
+use DbUtil qw(db_connect do_select create_record do_stmt);
 
 use Log::Log4perl qw(get_logger);
 use SimpleLog qw(setup_logging);
@@ -149,9 +151,22 @@ foreach my $table (@tables) {
 	}
 }
 
+# Create organisatie_temp table
+my $query = "CREATE TABLE IF NOT EXISTS `organisatie_temp` (
+				`organisatie_id` int(11) NOT NULL AUTO_INCREMENT,
+				`beleidsdomein` varchar(255) DEFAULT NULL,
+				`entiteit` varchar(255) DEFAULT NULL,
+				`afdeling` varchar(255) DEFAULT NULL,
+				PRIMARY KEY (`organisatie_id`)
+			) ENGINE=MyISAM  DEFAULT CHARSET=utf8";
+unless (do_stmt($dbt, $query)) {
+	$log->fatal("Could not create table organisatie_temp, exiting...");
+	exit_application(1);
+}
+
 # Check for -1 record in organisatie
-my $query = "SELECT count(organisatie_id) rec_count 
-             FROM organisatie
+$query = "SELECT count(organisatie_id) rec_count 
+             FROM organisatie_temp
 			 WHERE organisatie_id = -1";
 my $ref = do_select($dbt, $query);
 my $record = @$ref[0];
@@ -161,8 +176,8 @@ if ($rec_cnt == 0) {
 	my $beleidsdomein = "(geen organisatie)";
 	my @fields = qw (organisatie_id beleidsdomein);
     my (@vals) = map { eval ("\$" . $_ ) } @fields;
-	unless (create_record($dbt, "organisatie", \@fields, \@vals)) {
-		$log->fatal("Could not insert record into organisatie");
+	unless (create_record($dbt, "organisatie_temp", \@fields, \@vals)) {
+		$log->fatal("Could not insert record into organisatie_temp");
 		exit_application(1);
 	}
 }
@@ -207,7 +222,7 @@ foreach my $record (@$ref) {
 	if (not (exists $organisaties{$fullname})) {
 		$organisaties{$fullname} = 1;
 	    my (@vals) = map { eval ("\$" . $_ ) } @fields;
-	    unless (create_record($dbt, "organisatie", \@fields, \@vals)) {
+	    unless (create_record($dbt, "organisatie_temp", \@fields, \@vals)) {
 		    $log->fatal("Could not insert record into persoon");
 		    exit_application(1);
 		}

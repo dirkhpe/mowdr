@@ -44,7 +44,7 @@ No inline options are available. There is a properties\vo.ini file that contains
 
 my ($log, $cfg, $dbs, $dbt, $field_val);
 my (%tx_indicatortabel, %tx_dimensie, %cols, %tx_aantal_percentage, %tx_meetfrequentie, %tx_dim2column);
-my (%freq_jaar, %freq_maand, %freq_schjr, %freq_winter, %freq_kw, %known_errors);
+my (%freq_jaar, %freq_maand, %freq_schjr, %freq_winter, %freq_kw, %known_errors, %ind_freq);
 my (%fiches, %dimensies, %dim_els, @fields, @vals, %meetfrequentie, %map_dim_element);
 
 # Meetfrequentie values
@@ -193,7 +193,7 @@ sub tx_value($$$) {
 			return -1;
 		}
 	}
-	# Now get dim_element number
+	# Not frequentie so now get dim_element number
 	my $acc_element = $acc_value . $acc_key;
 	if (exists $map_dim_element{$acc_element}) {
 		return $map_dim_element{$acc_element};
@@ -206,6 +206,39 @@ sub tx_value($$$) {
 	    return -2;
 	}
 }
+
+sub get_periode($$) {
+	my ($freq, $dagnr) = @_;
+	# Get periode parameters
+	my $query = "SELECT maand, kwartaal, jaar, maand_label, kwartaal_label, schooljaar_label
+				 FROM frequenties
+				 WHERE dagnr = $dagnr";
+	my $ref = do_select($dbt, $query);
+    my $record = @$ref[0];
+	if ($freq eq "maand") {
+		push @fields, qw(periode label jaar);
+		push @vals, $$record{maand_label};
+		push @vals, $$record{maand};
+		push @vals, $$record{jaar};
+	} elsif ($freq eq "kwartaal") {
+		push @fields, qw(periode label jaar);
+		push @vals, $$record{kwartaal_label};
+		push @vals, $$record{kwartaal};
+		push @vals, $$record{jaar};
+	} elsif ($freq eq "schooljaar") {
+		push @fields, qw(periode schooljaar);
+		push @vals, $$record{schooljaar_label};
+		push @vals, $$record{schooljaar_label};
+	} elsif ($freq eq "jaar") {
+		push @fields, qw(periode jaar);
+		push @vals, $$record{jaar};
+		push @vals, $$record{jaar};
+	} else {
+		$log->error("Unknown meetfrequentie $freq");
+	}
+}
+
+
 
 ######
 # Main
@@ -308,13 +341,14 @@ foreach my $record (@$ref) {
 }
 
 # Get indicatorfiche_ids
-$query = "SELECT indicatorfiche_id, indicator_naam
+$query = "SELECT indicatorfiche_id, indicator_naam, meetfrequentie
 		  FROM indicatorfiche";
 $ref = do_select($dbt, $query);
 foreach my $record (@$ref) {
 	my $indicatorfiche_id = $$record{'indicatorfiche_id'};
 	my $indicator_naam = $$record{'indicator_naam'};
 	$fiches{$indicator_naam} = $indicatorfiche_id;
+	$ind_freq{$indicatorfiche_id} = $$record{'meetfrequentie'};	# Remember Meetfrequenties
 }
 
 # Get frequentie jaarlijks
@@ -391,8 +425,9 @@ while (my ($acc_ind, $f1_ind) = each %tx_indicatortabel) {
 	foreach my $record (@$ref) {
 		undef @fields;
 		undef @vals;
+		my $indicatorfiche_id = $fiches{$f1_ind};
 		push @fields, 'indicatorfiche_id';
-		push @vals, $fiches{$f1_ind};
+		push @vals, $indicatorfiche_id;
 		while (my ($key, $value) = each %$record) {
 			# Value must be positive integer, pointing to a reference table.
 			# In a few cases (stormvloedpeil) no value has been selected, value 0 is in value column.
@@ -400,7 +435,9 @@ while (my ($acc_ind, $f1_ind) = each %tx_indicatortabel) {
 				# Translate values aantal, meetfrequentie, dimensie
 				if (exists $tx_meetfrequentie{$cols{$key}}) {
 					$field_val = "dagnr";
-				} elsif (($cols{$key} eq "aantal") or ($cols{$key} eq "percentage")) {
+					my $dagnr  = tx_value($cols{$key}, $key, $value);
+					get_periode($ind_freq{$indicatorfiche_id}, $dagnr);
+ 				} elsif (($cols{$key} eq "aantal") or ($cols{$key} eq "percentage")) {
 					$field_val = $cols{$key};
 				} else {
 					$field_val = $tx_dim2column{$cols{$key}};

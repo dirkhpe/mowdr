@@ -543,8 +543,8 @@ sub create_record_sth ($$) {
   my ($sth) = @_;
   my (@values) = @{$_[1]};
   # quote values according to db specifications
-  #my $dbh = $sth->{Database};
-  #@values = map { $dbh->quote($_) } @values;
+  my $dbh = $sth->{Database};
+  @values = map { $dbh->quote($_) } @values;
   my $rv = $sth->execute(@values);
   if (not defined $rv) {
     ERROR("Could not execute query. Error: ". $sth->errstr);

@@ -1,321 +1,347 @@
-; Mon Feb 03 17:54:04 CET 2014
+; Mon Feb 17 18:00:40 CET 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
 
+([mow_sitemap_Class0] of  Pagina
+
+	(gebruiker_documentatie "Hier wordt aangegeven welke indicator gemeten wordt bij welke sectie van een beleidsdocument.")
+	(naam "Indicatorfiche per Beleidsdocument")
+	(nummer "63")
+	(opgeroepen_door [mow_sitemap_Class37]))
+
 ([mow_sitemap_Class10] of  Tab
 
-	(calls
+	(naam "TS1")
+	(naar
 		[mow_sitemap_Class11]
-		[mow_sitemap_Class12]
-		[mow_sitemap_Class13])
-	(name "TS1"))
+		[mow_sitemap_Class13]))
+
+([mow_sitemap_Class10000] of  Pagina
+
+	(developer_documentatie "Navigation Form wordt gemaakt door van een 'Blank Page' te vertrekken, daarna 'HTML Area' aan de pagina toe te voegen. Op die HTML area worden dan buttons gedefinieerd met 'Dynamic Actions'.")
+	(gebruiker_documentatie "Herberekenen van Cijferrecord Invoer URL, Rapport URL en Rapport Map URL. \nDit kan nodig zijn bij migratie van development omgeving (apexprep) naar productie omgeving (apexprod). \nHerberekenen URL Invoer moet altijd mogelijk zijn, omdat die URL intern is aan de APEX oplossing. \nHerberekenen van URL Rapport en URL Rapport Map mag niet zonder meer gebruikt worden. Het rapport of de map kan nog niet gemaakt zijn, of een niet-default naam hebben. Bestaande en gemodificeerde URLs worden overschreven. Daarom is het beter om URL Rapport en URL Rapport Map te beheren van de indicatorfiche zelf (scherm 51, met invoerscherm en button om URL voorstel te maken).")
+	(naam "URL Cijferrecord of Rapport Herberekenen")
+	(nummer "60")
+	(opgeroepen_door [mow_sitemap_Class14])
+	(scherm_type Navigation_Form))
+
+([mow_sitemap_Class10001] of  Pagina
+
+	(gebruiker_documentatie "Dit scherm laat toe om XML files (Indicatorfiches en Beleidsdocumenten) te genereren. \nAPEXPREP-only, tijdelijk scherm om flexibel testen mogelijk te maken. In APEXPROD worden de xml automatisch elke nacht gegenereerd.")
+	(naam "Genereer XML")
+	(nummer "74")
+	(opgeroepen_door [mow_sitemap_Class14])
+	(scherm_type Navigation_Form))
 
 ([mow_sitemap_Class11] of  Tab
 
-	(calls [mow_sitemap_Class15])
-	(is_called_by [mow_sitemap_Class10])
-	(name "Indicatorfiches"))
-
-([mow_sitemap_Class12] of  Tab
-
-	(calls [mow_sitemap_Class17])
-	(is_called_by [mow_sitemap_Class10])
-	(name "Indicatorcijfers"))
+	(naam "Indicatorfiches")
+	(naar [mow_sitemap_Class15])
+	(opgeroepen_door [mow_sitemap_Class10]))
 
 ([mow_sitemap_Class13] of  Tab
 
-	(calls [mow_sitemap_Class14])
-	(is_called_by [mow_sitemap_Class10])
-	(name "Beheer Informatie"))
+	(naam "Beheer Informatie")
+	(naar [mow_sitemap_Class14])
+	(opgeroepen_door [mow_sitemap_Class10]))
 
-([mow_sitemap_Class14] of  List
+([mow_sitemap_Class14] of  Lijst
 
-	(calls
+	(naam "Beheer Informatie")
+	(naar
 		[mow_sitemap_Class22]
 		[mow_sitemap_Class24]
 		[mow_sitemap_Class26]
 		[mow_sitemap_Class29]
 		[mow_sitemap_Class31]
 		[mow_sitemap_Class33]
+		[mow_sitemap_Class10000]
+		[mow_sitemap_Class36]
 		[mow_sitemap_Class38]
-		[mow_sitemap_Class36])
-	(is_called_by [mow_sitemap_Class13])
-	(name "Beheer Informatie"))
+		[mow_sitemap_Class10001])
+	(opgeroepen_door [mow_sitemap_Class13]))
 
-([mow_sitemap_Class15] of  Page
+([mow_sitemap_Class15] of  Pagina
 
-	(calls
+	(naam "Indicatorfiches")
+	(naar
 		[mow_sitemap_Class16]
 		[mow_sitemap_Class18])
-	(is_called_by [mow_sitemap_Class11])
-	(name "Indicatorfiches")
-	(number "50"))
+	(nummer "50")
+	(opgeroepen_door [mow_sitemap_Class11]))
 
-([mow_sitemap_Class16] of  Page
+([mow_sitemap_Class16] of  Pagina
 
-	(calls
+	(naam "Indicatorfiche")
+	(naar
 		[mow_sitemap_Class39]
 		[mow_sitemap_Class41]
 		[mow_sitemap_Class43]
 		[mow_sitemap_Class45]
 		[mow_sitemap_Class47]
 		[mow_sitemap_Class36])
-	(is_called_by [mow_sitemap_Class15])
-	(name "Indicatorfiche")
-	(number "51")
-	(page_type DML_Form))
+	(nummer "51")
+	(opgeroepen_door [mow_sitemap_Class15])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class18] of  Pagina
+
+	(developer_documentatie "The challenge is to show only those fields from the indicator_report table that are relevant for the indicator. The majority of the dimensions and one of the fields aantal / percentage need to be hidden.\n\nTo hide a dimension configure the display Condition as:\nf_dimension4indicator(81, :P92_INDICATORFICHE_ID)\n\nDimension ID is fixed ID attached to dimension and documented in data_mapping.xls.\n\nThe translation dimensie_element_id id done using View on table indicator_report and function f_el.")
+	(gebruiker_documentatie "•Alle geregistreerde gebruikers kunnen alle vrijgegeven cijferrecords (tabel: indicator_report) zien. \n•Indicator beheerders kunnen de niet-vrijgegeven cijfers zien van hun indicatoren.\n•Dataroom beheerders kunnen niet-vrijgegeven cijfers zien van alle indicatoren.\n\nTabel ‘rol’ heeft link tussen indicator (indicatorfiche_id) en indicator beheerder (persoon_id) voor type ‘Indicator Beheerder’.\nTabel ‘apex_access_control’ heeft alle ‘Dataroom beheerders’: ldap ID is in veld admin_username, veld admin_privileges is ‘Edit’ of ‘Administrator’.\nTabel ‘persoon’ heeft ldap ids van alle geregistreerde gebruikers.")
+	(naam "Cijferrecords per Indicator")
+	(naar
+		[mow_sitemap_Class20]
+		[mow_sitemap_Class20000])
+	(nummer "28")
+	(opgeroepen_door [mow_sitemap_Class15])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class19] of  Pagina
+
+	(gebruiker_documentatie "(wordt niet meer gebruikt, vervangen door Page 91).")
+	(naam "Cijferrecord Toevoegen / Aanpassen")
+	(nummer "37"))
+
+([mow_sitemap_Class20] of  Pagina
+
+	(naam "Commentaar per Indicator")
+	(naar [mow_sitemap_Class21])
+	(nummer "49")
+	(opgeroepen_door [mow_sitemap_Class18])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class20000] of  Pagina
+
+	(developer_documentatie "The challenge is to show only those fields from the indicator_report table that are relevant for the indicator. The majority of the dimensions and one of the fields aantal / percentage need to be hidden.\n\nTo hide a dimension, configure display as 'Select LOV (query)', The List of Values query is:\nselect waarde d, dim_element_id r\nfrom dim_element\nwhere dimensie_id = 81\norder by waarde\n\nConfigure the display Condition as:\nf_dimension4indicator(81, :P92_INDICATORFICHE_ID)\n\nDimension ID is fixed ID attached to dimension and documented in data_mapping.xls. \n\nField aantal has Conditional Display f_indic_aantal(:P92_INDICATORFICHE_ID), percentage has not(this condition).\n\n\nStarting remarks: a tabular form attempts to keep the data in the form in sync with the database. Fields updated by triggers, such as an 'update_systime', cannot be included in the form. Also calculated fields that are shown as display only cannot be used in the form.\n\nAn example is the indicator_report table that needs to show records related to indicatorfiche_id only.\n\nCreate Form, Tabular Form\nSelect all columns except 'Laatst_Bijgewerkt'. This field is updated by a trigger. Each time a row is selected then this field is touched. As a result the web page is not in sync with database anymore and updates are no longer allowed.\nAdd Page Items 'Indicatorfiche_id' and 'indicator_naam'. The calling page needs to set page item indicatorfiche_id to the selected value. The indicator_naam is extracted from SQL statement using indicatorfiche_id.\nSet tabular column indicatorfiche_id to value of Page Item Pxx_Indicatorfiche_id.\nThis allows to handle multi-row input adding one row at a time.\nTo allow to add multiple rows, follow this procedure:\n\nIn Page Rendering, add button 'Multiple Rows' and action 'Submit Page'.\nIn Page Processing, select the tabular form, select 'Data Manipulation' and select category 'Add rows to tabular form'. Processing Point is 'On Submit - After Computations and Validations.'\nMake sure Process Condition is 'When Button Pressed' - with expected button selected.\nAdd Branch to jump to same page after creating additional rows. Make sure that the branch is handled before default branch.\nAdd Pxx_INDICATORFICHE_ID as default value in Indicatorfiche_id column.")
+	(gebruiker_documentatie "Multi-line form die toelaat om cijferrecords voor een indicator aan te passen of toe te voegen. Eén of meer lijnen kunnen tegelijk aangepast worden.")
+	(naam "Cijferrecords Toevoegen / Aanpassen")
+	(nummer "92")
+	(opgeroepen_door [mow_sitemap_Class18])
+	(scherm_type Tabular_Form))
+
+([mow_sitemap_Class21] of  Pagina
+
+	(naam "Commentaar Toevoegen / Aanpassen")
+	(nummer "58")
+	(opgeroepen_door [mow_sitemap_Class20])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class22] of  Pagina
+
+	(naam "Overzicht Personen")
+	(naar [mow_sitemap_Class23])
+	(nummer "56")
+	(opgeroepen_door
+		[mow_sitemap_Class42]
+		[mow_sitemap_Class44]
+		[mow_sitemap_Class14]))
+
+([mow_sitemap_Class23] of  Pagina
+
+	(developer_documentatie "Onderzoek als die informatie van een centrale bron geïmporteerd kan worden.")
+	(gebruiker_documentatie "De details van een individu aanpassen. De LDAP ID van de persoon moet ingevuld zijn om te kunnen aanloggen.")
+	(naam "Persoon Toevoegen / Aanpassen")
+	(nummer "57")
+	(opgeroepen_door [mow_sitemap_Class22]))
+
+([mow_sitemap_Class24] of  Pagina
+
+	(developer_documentatie "Organisatie ID -1 (geen organisatie) is vereist voor Cognos Rapportage.")
+	(gebruiker_documentatie "Overzicht van alle gedefinieerde organisaties. Een organisatie moet gedefinieerd zijn voor er een persoon of indicatorfiche kan aan toegekend worden.")
+	(naam "Overzicht Organisatie")
+	(naar [mow_sitemap_Class25])
+	(nummer "52")
+	(opgeroepen_door [mow_sitemap_Class14]))
+
+([mow_sitemap_Class25] of  Pagina
+
+	(developer_documentatie "To Do: 'afdeling' moet keuzelijst worden, 'afdeling / entiteit' gebruik labels ipv namen. 'Delete' -> Controleer dat de organisatie nergens nog gebruikt wordt.")
+	(gebruiker_documentatie "Definieer een organisatie door het toekennen van Beleidsdomein, Entiteit of Afdeling. De Keuzelijsten kunnen aangepast worden via pagina 'Overzicht Keuzelijsten'.")
+	(naam "Organisatie Toevoegen / Aanpassen")
+	(nummer "53")
+	(opgeroepen_door [mow_sitemap_Class24]))
+
+([mow_sitemap_Class26] of  Pagina
+
+	(gebruiker_documentatie "Overzicht van alle dimensies die nu in gebruik zijn.")
+	(naam "Overzicht Dimensies")
+	(naar [mow_sitemap_Class27])
+	(nummer "24")
+	(opgeroepen_door [mow_sitemap_Class14]))
+
+([mow_sitemap_Class27] of  Pagina
+
+	(developer_documentatie "To Do: Delete van elementen: controleer dat het element nergens nog gebruikt wordt.")
+	(gebruiker_documentatie "Dit scherm laat toe om de naam van een dimensie aan te passen. \nVan hier moeten ook de elementen per dimensie beheerd worden.")
+	(naam "Elementen per Dimensie")
+	(naar [mow_sitemap_Class28])
+	(nummer "25")
+	(opgeroepen_door [mow_sitemap_Class26]))
+
+([mow_sitemap_Class28] of  Pagina
+
+	(gebruiker_documentatie "Hier kan een element aan een dimensie toegevoegd worden, of een element kan een andere naam krijgen.")
+	(naam "Dimensie Element Toevoegen / Aanpassen")
+	(nummer "26")
+	(opgeroepen_door [mow_sitemap_Class27]))
+
+([mow_sitemap_Class29] of  Pagina
+
+	(developer_documentatie "Trefwoorden worden bijgehouden in de tabel Referentie, type = 'Trefwoord'. Het trefwoord staat in kolom waarde.")
+	(gebruiker_documentatie "Overzicht van en zoeken op trefwoorden.")
+	(naam "Overzicht Trefwoorden")
+	(naar [mow_sitemap_Class30])
+	(nummer "46")
+	(opgeroepen_door
+		[mow_sitemap_Class46]
+		[mow_sitemap_Class14]))
+
+([mow_sitemap_Class30] of  Pagina
+
+	(gebruiker_documentatie "Dit scherm laat toe om trefwoorden toe te voegen, te hernoemen of te verwijderen.")
+	(naam "Trefwoord Toevoegen / Aanpassen")
+	(nummer "47")
+	(opgeroepen_door [mow_sitemap_Class29]))
+
+([mow_sitemap_Class31] of  Pagina
+
+	(gebruiker_documentatie "Overzicht van alle gepubliceerde documenten.")
+	(naam "Overzicht Gepubliceerde documenten")
+	(naar [mow_sitemap_Class32])
+	(nummer "66")
+	(opgeroepen_door
+		[mow_sitemap_Class48]
+		[mow_sitemap_Class14]))
+
+([mow_sitemap_Class32] of  Pagina
+
+	(gebruiker_documentatie "Dit scherm laat toe om de naam van een gepubliceerd document aan te passen, om het document te verwijderen of om een nieuw document toe te voegen.")
+	(naam "Gepubliceerd document Toevoegen / Aanpassen")
+	(nummer "67")
+	(opgeroepen_door [mow_sitemap_Class31]))
+
+([mow_sitemap_Class33] of  Pagina
+
+	(gebruiker_documentatie "Beheer van de keuzevelden voor de tabellen 'Indicatorfiche' en 'Organisatie'. Het veld 'Actief' wordt nog niet gebruikt.")
+	(naam "Overzicht Keuzelijsten")
+	(naar [mow_sitemap_Class34])
+	(nummer "54")
+	(opgeroepen_door [mow_sitemap_Class14]))
+
+([mow_sitemap_Class34] of  Pagina
+
+	(gebruiker_documentatie "Toevoegen, aanpassen of verwijderen van verschillende opties uit de keuzelijsten.")
+	(naam "Keuzelijst Item Toevoegen / Aanpassen")
+	(nummer "55")
+	(opgeroepen_door [mow_sitemap_Class33]))
+
+([mow_sitemap_Class35] of  Pagina
+
+	(gebruiker_documentatie "'Url Invoer vernieuwen' zal alle URLs voor de cijferrecord ingave opnieuw berekenen. Dit kan nodig zijn als de hosting server van naam verandert, bevoorbeeld bij de migratie van pre-productie naar productie. \n'Url Rapport Vernieuwen' herberekent de links naar de Cognos rapportage. Let op, manuele aanpassingen aan de links nodig voor Cognos rapportage worden hierbij overschreven.")
+	(naam "URL Cijferrecord of Rapport Herberekenen")
+	(nummer "60"))
 
-([mow_sitemap_Class17] of  Page
-
-	(calls [mow_sitemap_Class18])
-	(is_called_by [mow_sitemap_Class12])
-	(name "Overzicht Indicatoren")
-	(number "27")
-	(page_type Report))
-
-([mow_sitemap_Class18] of  Page
-
-	(calls
-		[mow_sitemap_Class19]
-		[mow_sitemap_Class20])
-	(is_called_by
-		[mow_sitemap_Class17]
-		[mow_sitemap_Class15])
-	(name "Cijferrecords per Indicator")
-	(number "28")
-	(page_type DML_Form))
-
-([mow_sitemap_Class19] of  Page
-
-	(is_called_by [mow_sitemap_Class18])
-	(name "Cijferrecord Toevoegen / Aanpassen")
-	(number "37"))
-
-([mow_sitemap_Class20] of  Page
-
-	(calls [mow_sitemap_Class21])
-	(is_called_by [mow_sitemap_Class18])
-	(name "Commentaar per Indicator")
-	(number "49")
-	(page_type DML_Form))
-
-([mow_sitemap_Class21] of  Page
-
-	(is_called_by [mow_sitemap_Class20])
-	(name "Commentaar Toevoegen / Aanpassen")
-	(number "58")
-	(page_type DML_Form))
-
-([mow_sitemap_Class22] of  Page
-
-	(calls [mow_sitemap_Class23])
-	(is_called_by [mow_sitemap_Class14])
-	(name "Overzicht Personen")
-	(number "56"))
-
-([mow_sitemap_Class23] of  Page
-
-	(developer_documentation "Onderzoek als die informatie van een centrale bron geïmporteerd kan worden.")
-	(is_called_by [mow_sitemap_Class22])
-	(name "Persoon Toevoegen / Aanpassen")
-	(number "57")
-	(user_documentation "De details van een individu aanpassen. De LDAP ID van de persoon moet ingevuld zijn om te kunnen aanloggen."))
-
-([mow_sitemap_Class24] of  Page
-
-	(calls [mow_sitemap_Class25])
-	(developer_documentation "Organisatie ID -1 (geen organisatie) is vereist voor Cognos Rapportage.")
-	(is_called_by [mow_sitemap_Class14])
-	(name "Overzicht Organisatie")
-	(number "52")
-	(user_documentation "Overzicht van alle gedefinieerde organisaties. Een organisatie moet gedefinieerd zijn voor er een persoon of indicatorfiche kan aan toegekend worden."))
-
-([mow_sitemap_Class25] of  Page
-
-	(developer_documentation "To Do: 'afdeling' moet keuzelijst worden, 'afdeling / entiteit' gebruik labels ipv namen. 'Delete' -> Controleer dat de organisatie nergens nog gebruikt wordt.")
-	(is_called_by [mow_sitemap_Class24])
-	(name "Organisatie Toevoegen / Aanpassen")
-	(number "53")
-	(user_documentation "Definieer een organisatie door het toekennen van Beleidsdomein, Entiteit of Afdeling. De Keuzelijsten kunnen aangepast worden via pagina 'Overzicht Keuzelijsten'."))
-
-([mow_sitemap_Class26] of  Page
-
-	(calls [mow_sitemap_Class27])
-	(is_called_by [mow_sitemap_Class14])
-	(name "Overzicht Dimensies")
-	(number "24")
-	(user_documentation "Overzicht van alle dimensies die nu in gebruik zijn."))
-
-([mow_sitemap_Class27] of  Page
-
-	(calls [mow_sitemap_Class28])
-	(developer_documentation "To Do: Delete van elementen: controleer dat het element nergens nog gebruikt wordt.")
-	(is_called_by [mow_sitemap_Class26])
-	(name "Elementen per Dimensie")
-	(number "25")
-	(user_documentation "Dit scherm laat toe om de naam van een dimensie aan te passen. \nVan hier moeten ook de elementen per dimensie beheerd worden."))
-
-([mow_sitemap_Class28] of  Page
-
-	(is_called_by [mow_sitemap_Class27])
-	(name "Dimensie Element Toevoegen / Aanpassen")
-	(number "26")
-	(user_documentation "Hier kan een element aan een dimensie toegevoegd worden, of een element kan een andere naam krijgen."))
-
-([mow_sitemap_Class29] of  Page
-
-	(calls [mow_sitemap_Class30])
-	(developer_documentation "Trefwoorden worden bijgehouden in de tabel Referentie, type = 'Trefwoord'. Het trefwoord staat in kolom waarde.")
-	(is_called_by
-		[mow_sitemap_Class14]
-		[mow_sitemap_Class46])
-	(name "Overzicht Trefwoorden")
-	(number "46")
-	(user_documentation "Overzicht van en zoeken op trefwoorden."))
-
-([mow_sitemap_Class30] of  Page
-
-	(is_called_by [mow_sitemap_Class29])
-	(name "Trefwoord Toevoegen / Aanpassen")
-	(number "47")
-	(user_documentation "Dit scherm laat toe om trefwoorden toe te voegen, te hernoemen of te verwijderen."))
-
-([mow_sitemap_Class31] of  Page
-
-	(calls [mow_sitemap_Class32])
-	(is_called_by
-		[mow_sitemap_Class14]
-		[mow_sitemap_Class48])
-	(name "Overzicht Gepubliceerde documenten")
-	(number "66")
-	(user_documentation "Overzicht van alle gepubliceerde documenten."))
-
-([mow_sitemap_Class32] of  Page
-
-	(is_called_by [mow_sitemap_Class31])
-	(name "Gepubliceerd document Toevoegen / Aanpassen")
-	(number "67")
-	(user_documentation "Dit scherm laat toe om de naam van een gepubliceerd document aan te passen, om het document te verwijderen of om een nieuw document toe te voegen."))
-
-([mow_sitemap_Class33] of  Page
-
-	(calls [mow_sitemap_Class34])
-	(is_called_by [mow_sitemap_Class14])
-	(name "Overzicht Keuzelijsten")
-	(number "54")
-	(user_documentation "Beheer van de keuzevelden voor de tabellen 'Indicatorfiche' en 'Organisatie'. Het veld 'Actief' wordt nog niet gebruikt."))
-
-([mow_sitemap_Class34] of  Page
-
-	(is_called_by [mow_sitemap_Class33])
-	(name "Keuzelijst Item Toevoegen / Aanpassen")
-	(number "55")
-	(user_documentation "Toevoegen, aanpassen of verwijderen van verschillende opties uit de keuzelijsten."))
-
-([mow_sitemap_Class35] of  Page
-
-	(name "URL Cijferrecord of Rapport Herberekenen")
-	(number "60")
-	(user_documentation "'Url Invoer vernieuwen' zal alle URLs voor de cijferrecord ingave opnieuw berekenen. Dit kan nodig zijn als de hosting server van naam verandert, bevoorbeeld bij de migratie van pre-productie naar productie. \n'Url Rapport Vernieuwen' herberekent de links naar de Cognos rapportage. Let op, manuele aanpassingen aan de links nodig voor Cognos rapportage worden hierbij overschreven."))
-
-([mow_sitemap_Class36] of  Page
-
-	(calls [mow_sitemap_Class37])
-	(developer_documentation "Er is nog geen scherm voorzien voor het beheer van de beleidsdocumenten zelf.")
-	(is_called_by
-		[mow_sitemap_Class14]
-		[mow_sitemap_Class16])
-	(name "Beleidsdocumenten")
-	(number "61")
-	(user_documentation "Met dit scherm wordt aangegeven welke indicatoren gebruikt worden in welke sectie van beleidsdocumenten. Enkel de laagste sectie moet aangeduid worden. Andere informatie kan uit de structuur van het beleidsdocument afgeleid worden."))
-
-([mow_sitemap_Class37] of  Page
-
-	(is_called_by [mow_sitemap_Class36])
-	(name "Indicatorfiches per Beleidsdocument")
-	(number "62")
-	(user_documentation "Per sectie van een beleidsdocument kunnen indicatorfiches toegekend of verwijderd worden."))
-
-([mow_sitemap_Class38] of  Page
-
-	(developer_documentation "Dit is de implementatie van APEX ACL scherm. De rol van dataroom beheerder is voor de gebruikers met privilege 'Edit' of 'Administrator' in tabel apex_access_control.")
-	(is_called_by [mow_sitemap_Class14])
-	(name "Dataroom Beheerders")
-	(number "38")
-	(user_documentation "‘Dataroom Beheerder’ functie is geïntegreerd in de APEX Security. \nHierdoor wordt het standaard APEX scherm gebruikt ipv een scherm dat speciaal voor de toepassing gemaakt is.\nDaar de groep dataroom beheerders beperkt is (Bart & Joeri) en slechts zelden verandert stel ik voor om niet meer effort te steken in ‘Dataroom Beheerders’.\nGebruik ‘ldap-id’ (lowercase) als username.\nPrivilege ‘Edit’ is voldoende als dataroom beheerder, privilege ‘Administrator’ is ook mogelijk maar niet nodig. \nPrivilege ‘View’ is niet voldoende als dataroom beheerder.\nEen gebruiker kan zijn privileges niet verminderen (van Edit naar View) maar wel verhogen (van Edit naar Administrator).\nEen gebruiker kan zichzelf niet deleten.\nEnkel de dataroom beheerders moeten hier gedefinieerd worden. Indicator beheerders worden van hun indicator geconfigureerd.\nAls een gebruiker privilege 'Administrator' heeft, kan men ook de 'Application Mode' aanpassen. \nDe application mode moet zijn: 'Public Read Only. Edit and administrative privileges controlled by access control list.'"))
-
-([mow_sitemap_Class39] of  Page
-
-	(calls [mow_sitemap_Class40])
-	(is_called_by [mow_sitemap_Class16])
-	(name "Dimensies per Indicatorfiches")
-	(number "100")
-	(user_documentation "Dit scherm laat toe om de dimensies voor de indicatorfiche aan te passen."))
-
-([mow_sitemap_Class40] of  Page
-
-	(is_called_by [mow_sitemap_Class39])
-	(name "Dimensie Toevoegen / Aanpassen")
-	(number "102")
-	(user_documentation "Een dimensie uit de lijst van bestaande dimensies toevoegen aan de indicatorfiche, of een dimensie verwijderen."))
-
-([mow_sitemap_Class41] of  Page
-
-	(calls [mow_sitemap_Class42])
-	(is_called_by [mow_sitemap_Class16])
-	(name "Aanspreekpunten per Indicatorfiche")
-	(number "42")
-	(user_documentation "Overzicht van de aanspreekpunten voor de indicatorfiche."))
-
-([mow_sitemap_Class42] of  Page
-
-	(is_called_by [mow_sitemap_Class41])
-	(name "Aanspreekpunt Toevoegen / Aanpassen")
-	(number "59"))
-
-([mow_sitemap_Class43] of  Page
-
-	(calls [mow_sitemap_Class44])
-	(is_called_by [mow_sitemap_Class16])
-	(name "Beheerders per Indicator")
-	(number "88")
-	(user_documentation "Overzicht van de indicator beheerders. \nIndicator beheerders kunnen, samen met dataroom beheerders, cijferrecords voor de indicator toevoegen of aanpassen."))
-
-([mow_sitemap_Class44] of  Page
-
-	(developer_documentation "Indicator Beheerders worden bijgehouden in de tabel rol.")
-	(is_called_by [mow_sitemap_Class43])
-	(name "Beheerders Toevoegen / Aanpassen")
-	(number "89"))
-
-([mow_sitemap_Class45] of  Page
-
-	(calls [mow_sitemap_Class46])
-	(is_called_by [mow_sitemap_Class16])
-	(name "Trefwoorden per Indicator")
-	(number "31")
-	(user_documentation "Overzicht van de trefwoorden voor de indicator."))
-
-([mow_sitemap_Class46] of  Page
-
-	(calls [mow_sitemap_Class29])
-	(is_called_by [mow_sitemap_Class45])
-	(name "Trefwoorden Toevoegen / Aanpassen")
-	(number "32"))
-
-([mow_sitemap_Class47] of  Page
-
-	(calls [mow_sitemap_Class48])
-	(is_called_by [mow_sitemap_Class16])
-	(name "Gepubliceerde Documenten per Indicator")
-	(number "69")
-	(user_documentation "Overzicht van de gepubliceerde documenten per indicator."))
-
-([mow_sitemap_Class48] of  Page
-
-	(calls [mow_sitemap_Class31])
-	(is_called_by [mow_sitemap_Class47])
-	(name "Documenten Toevoegen / Aanpassen")
-	(number "70")
-	(user_documentation "Gepubliceerde Documenten toevoegen / aanpassen uit de lijst van gedefinieerde documenten."))
+([mow_sitemap_Class36] of  Pagina
+
+	(developer_documentatie "Er is nog geen scherm voorzien voor het beheer van de beleidsdocumenten zelf.")
+	(gebruiker_documentatie "Met dit scherm wordt aangegeven welke indicatoren gebruikt worden in welke sectie van beleidsdocumenten. Enkel de laagste sectie moet aangeduid worden. Andere informatie kan uit de structuur van het beleidsdocument afgeleid worden.")
+	(naam "Beleidsdocumenten")
+	(naar [mow_sitemap_Class37])
+	(nummer "61")
+	(opgeroepen_door
+		[mow_sitemap_Class16]
+		[mow_sitemap_Class14]))
+
+([mow_sitemap_Class37] of  Pagina
+
+	(gebruiker_documentatie "Per sectie van een beleidsdocument kunnen indicatorfiches toegekend of verwijderd worden.")
+	(naam "Indicatorfiches per Beleidsdocument")
+	(naar [mow_sitemap_Class0])
+	(nummer "62")
+	(opgeroepen_door [mow_sitemap_Class36]))
+
+([mow_sitemap_Class38] of  Pagina
+
+	(developer_documentatie "Dit is de implementatie van APEX ACL scherm. De rol van dataroom beheerder is voor de gebruikers met privilege 'Edit' of 'Administrator' in tabel apex_access_control.")
+	(gebruiker_documentatie "Dataroom Beheerder functie is geïntegreerd in de APEX Security. \nHierdoor wordt het standaard APEX scherm gebruikt ipv een scherm dat speciaal voor de toepassing gemaakt is.\nDaar de groep dataroom beheerders beperkt is (Bart & Joeri) en slechts zelden verandert stel ik voor om niet meer effort te steken in ‘Dataroom Beheerders’.\nGebruik ‘ldap-id’ (lowercase) als username.\nPrivilege ‘Edit’ is voldoende als dataroom beheerder, privilege ‘Administrator’ is ook mogelijk maar niet nodig. \nPrivilege ‘View’ is niet voldoende als dataroom beheerder.\nEen gebruiker kan zijn privileges niet verminderen (van Edit naar View) maar wel verhogen (van Edit naar Administrator).\nEen gebruiker kan zichzelf niet deleten.\nEnkel de dataroom beheerders moeten hier gedefinieerd worden. Indicator beheerders worden van hun indicator geconfigureerd.\nAls een gebruiker privilege 'Administrator' heeft, kan men ook de 'Application Mode' aanpassen. \nDe application mode moet zijn: 'Public Read Only. Edit and administrative privileges controlled by access control list.'")
+	(naam "Dataroom Beheerders")
+	(nummer "38")
+	(opgeroepen_door [mow_sitemap_Class14]))
+
+([mow_sitemap_Class39] of  Pagina
+
+	(gebruiker_documentatie "Dit scherm laat toe om de dimensies voor de indicatorfiche aan te passen.")
+	(naam "Dimensies per Indicatorfiches")
+	(naar [mow_sitemap_Class40])
+	(nummer "100")
+	(opgeroepen_door [mow_sitemap_Class16]))
+
+([mow_sitemap_Class40] of  Pagina
+
+	(gebruiker_documentatie "Een dimensie uit de lijst van bestaande dimensies toevoegen aan de indicatorfiche, of een dimensie verwijderen.")
+	(naam "Dimensie Toevoegen / Aanpassen")
+	(nummer "102")
+	(opgeroepen_door [mow_sitemap_Class39]))
+
+([mow_sitemap_Class41] of  Pagina
+
+	(gebruiker_documentatie "Overzicht van de aanspreekpunten voor de indicatorfiche.")
+	(naam "Aanspreekpunten per Indicatorfiche")
+	(naar [mow_sitemap_Class42])
+	(nummer "42")
+	(opgeroepen_door [mow_sitemap_Class16]))
+
+([mow_sitemap_Class42] of  Pagina
+
+	(naam "Aanspreekpunt Toevoegen / Aanpassen")
+	(naar [mow_sitemap_Class22])
+	(nummer "59")
+	(opgeroepen_door [mow_sitemap_Class41]))
+
+([mow_sitemap_Class43] of  Pagina
+
+	(gebruiker_documentatie "Overzicht van de indicator beheerders. \nIndicator beheerders kunnen, samen met dataroom beheerders, cijferrecords voor de indicator toevoegen of aanpassen.")
+	(naam "Beheerders per Indicator")
+	(naar [mow_sitemap_Class44])
+	(nummer "88")
+	(opgeroepen_door [mow_sitemap_Class16]))
+
+([mow_sitemap_Class44] of  Pagina
+
+	(developer_documentatie "Indicator Beheerders worden bijgehouden in de tabel rol.")
+	(naam "Beheerders Toevoegen / Aanpassen")
+	(naar [mow_sitemap_Class22])
+	(nummer "89")
+	(opgeroepen_door [mow_sitemap_Class43]))
+
+([mow_sitemap_Class45] of  Pagina
+
+	(gebruiker_documentatie "Overzicht van de trefwoorden voor de indicator.")
+	(naam "Trefwoorden per Indicator")
+	(naar [mow_sitemap_Class46])
+	(nummer "31")
+	(opgeroepen_door [mow_sitemap_Class16]))
+
+([mow_sitemap_Class46] of  Pagina
+
+	(naam "Trefwoorden Toevoegen / Aanpassen")
+	(naar [mow_sitemap_Class29])
+	(nummer "32")
+	(opgeroepen_door [mow_sitemap_Class45]))
+
+([mow_sitemap_Class47] of  Pagina
+
+	(gebruiker_documentatie "Overzicht van de gepubliceerde documenten per indicator.")
+	(naam "Gepubliceerde Documenten per Indicator")
+	(naar [mow_sitemap_Class48])
+	(nummer "69")
+	(opgeroepen_door [mow_sitemap_Class16]))
+
+([mow_sitemap_Class48] of  Pagina
+
+	(gebruiker_documentatie "Gepubliceerde Documenten toevoegen / aanpassen uit de lijst van gedefinieerde documenten.")
+	(naam "Documenten Toevoegen / Aanpassen")
+	(naar [mow_sitemap_Class31])
+	(nummer "70")
+	(opgeroepen_door [mow_sitemap_Class47]))

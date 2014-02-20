@@ -1,4 +1,4 @@
-; Mon Feb 03 17:54:04 CET 2014
+; Mon Feb 17 18:00:39 CET 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -7,40 +7,40 @@
 (defclass %3ACLIPS_TOP_LEVEL_SLOT_CLASS "Fake class to save top-level slot information"
 	(is-a USER)
 	(role abstract)
-	(multislot calls
-;+		(comment "The elements that are called by this page.")
-		(type INSTANCE)
-;+		(allowed-classes Page Structure)
-;+		(inverse-slot is_called_by)
-		(create-accessor read-write))
-	(single-slot number
+	(single-slot nummer
 ;+		(comment "Page Number")
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(multislot is_called_by
-;+		(comment "How did I end up in this element?")
-		(type INSTANCE)
-;+		(allowed-classes Page Structure)
-;+		(inverse-slot calls)
-		(create-accessor read-write))
-	(single-slot page_type
-;+		(comment "Type of the Page")
-		(type SYMBOL)
-		(allowed-values Home DML_Form Report Interactive_Report Dynamic_Form)
-;+		(cardinality 0 1)
-		(create-accessor read-write))
-	(single-slot name_
-;+		(comment "Name of the Element")
-		(type STRING)
-;+		(cardinality 0 1)
-		(create-accessor read-write))
-	(single-slot developer_documentation
+	(single-slot developer_documentatie
 ;+		(comment "Technical documentation that is relevant for the developer or maintainer of the site.")
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot user_documentation
+	(single-slot scherm_type
+;+		(comment "Type of the Page")
+		(type SYMBOL)
+		(allowed-values Home DML_Form Report Interactive_Report Dynamic_Form Navigation_Form Tabular_Form)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(multislot opgeroepen_door
+;+		(comment "How did I end up in this element?")
+		(type INSTANCE)
+;+		(allowed-classes Pagina Structure)
+;+		(inverse-slot naar)
+		(create-accessor read-write))
+	(multislot naar
+;+		(comment "The elements that are called by this page.")
+		(type INSTANCE)
+;+		(allowed-classes Pagina Structure)
+;+		(inverse-slot opgeroepen_door)
+		(create-accessor read-write))
+	(single-slot naam
+;+		(comment "Name of the Element")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(single-slot gebruiker_documentatie
 ;+		(comment "Documentation that is relevant for the user.")
 		(type STRING)
 ;+		(cardinality 0 1)
@@ -49,17 +49,17 @@
 (defclass Structure "Structure in the web configuration."
 	(is-a USER)
 	(role abstract)
-	(multislot calls
-;+		(comment "The elements that are called by this page.")
-		(type INSTANCE)
-;+		(allowed-classes Page Structure)
-		(create-accessor read-write))
-	(multislot is_called_by
+	(multislot opgeroepen_door
 ;+		(comment "How did I end up in this element?")
 		(type INSTANCE)
-;+		(allowed-classes Page Structure)
+;+		(allowed-classes Pagina Structure)
 		(create-accessor read-write))
-	(single-slot name_
+	(multislot naar
+;+		(comment "The elements that are called by this page.")
+		(type INSTANCE)
+;+		(allowed-classes Pagina Structure)
+		(create-accessor read-write))
+	(single-slot naam
 ;+		(comment "Name of the Element")
 		(type STRING)
 ;+		(cardinality 0 1)
@@ -69,46 +69,46 @@
 	(is-a Structure)
 	(role concrete))
 
-(defclass List "List-based structure"
+(defclass Lijst "List-based structure"
 	(is-a Structure)
 	(role concrete))
 
-(defclass Page "A page in the web-based structure"
+(defclass Pagina "A page in the web-based structure"
 	(is-a USER)
 	(role concrete)
-	(single-slot number
+	(single-slot nummer
 ;+		(comment "Page Number")
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(multislot calls
-;+		(comment "The elements that are called by this page.")
-		(type INSTANCE)
-;+		(allowed-classes Page Structure)
+	(single-slot gebruiker_documentatie
+;+		(comment "Documentation that is relevant for the user.")
+		(type STRING)
+;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(multislot is_called_by
-;+		(comment "How did I end up in this element?")
-		(type INSTANCE)
-;+		(allowed-classes Page Structure)
-		(create-accessor read-write))
-	(single-slot developer_documentation
+	(single-slot developer_documentatie
 ;+		(comment "Technical documentation that is relevant for the developer or maintainer of the site.")
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot name_
-;+		(comment "Name of the Element")
-		(type STRING)
-;+		(cardinality 0 1)
+	(multislot opgeroepen_door
+;+		(comment "How did I end up in this element?")
+		(type INSTANCE)
+;+		(allowed-classes Pagina Structure)
 		(create-accessor read-write))
-	(single-slot page_type
+	(multislot naar
+;+		(comment "The elements that are called by this page.")
+		(type INSTANCE)
+;+		(allowed-classes Pagina Structure)
+		(create-accessor read-write))
+	(single-slot scherm_type
 ;+		(comment "Type of the Page")
 		(type SYMBOL)
-		(allowed-values Home DML_Form Report Interactive_Report Dynamic_Form)
+		(allowed-values Home DML_Form Report Interactive_Report Dynamic_Form Navigation_Form Tabular_Form)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot user_documentation
-;+		(comment "Documentation that is relevant for the user.")
+	(single-slot naam
+;+		(comment "Name of the Element")
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write)))

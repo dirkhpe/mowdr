@@ -212,7 +212,7 @@ unless (create_record($dbt, "referentie", \@fields, \@vals)) {
 $log->info("Get entiteit");
 $veld = "Entiteit";
 $query = "SELECT distinct entiteit 
-          FROM organisatie
+          FROM organisatie_temp
  	      WHERE entiteit is not null";
 $ref = do_select($dbt, $query);
 foreach my $record (@$ref) {
@@ -227,7 +227,7 @@ foreach my $record (@$ref) {
 $log->info("Get afdeling");
 $veld = "Afdeling";
 $query = "SELECT distinct afdeling 
-          FROM organisatie
+          FROM organisatie_temp
  	      WHERE afdeling is not null";
 $ref = do_select($dbt, $query);
 foreach my $record (@$ref) {
@@ -237,6 +237,16 @@ foreach my $record (@$ref) {
 		$log->fatal("Could not insert record into referentie");
 		exit_application(1);
 	}
+}
+
+# Add -1 in referentie tabel
+my $referentie_id = -1;
+$waarde = "(geen waarde)";
+@fields = qw(referentie_id waarde type actief);
+(@vals) = map { eval ("\$" . $_ ) } @fields;
+unless (create_record($dbt, "referentie", \@fields, \@vals)) {
+	$log->fatal("Could not insert record into referentie");
+	exit_application(1);
 }
 
 exit_application(0);

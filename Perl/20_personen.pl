@@ -158,8 +158,10 @@ my $record = @$ref[0];
 my $rec_cnt = $$record{'rec_count'};
 if ($rec_cnt == 0) {
 	my $organisatie_id = -1;
-	my $beleidsdomein = "(geen organisatie)";
-	my @fields = qw (organisatie_id beleidsdomein);
+	my $beleidsdomein = -1;
+	my $entiteit = -1;
+	my $afdeling = -1;
+	my @fields = qw (organisatie_id beleidsdomein entiteit afdeling);
     my (@vals) = map { eval ("\$" . $_ ) } @fields;
 	unless (create_record($dbt, "organisatie", \@fields, \@vals)) {
 		$log->fatal("Could not insert record into organisatie");

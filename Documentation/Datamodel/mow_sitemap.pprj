@@ -1,4 +1,4 @@
-; Mon Feb 17 18:00:44 CET 2014
+; Fri Mar 21 17:36:32 CET 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -20,12 +20,12 @@
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[mow_sitemap_ProjectKB_Class10043]
-		[mow_sitemap_ProjectKB_Class10044]
-		[mow_sitemap_ProjectKB_Class10045]
-		[mow_sitemap_ProjectKB_Class10046]
-		[mow_sitemap_ProjectKB_Class10047]
-		[mow_sitemap_ProjectKB_Class10048]))
+		[mow_sitemap_ProjectKB_Class28]
+		[mow_sitemap_ProjectKB_Class29]
+		[mow_sitemap_ProjectKB_Class30]
+		[mow_sitemap_ProjectKB_Class31]
+		[mow_sitemap_ProjectKB_Class32]
+		[mow_sitemap_ProjectKB_Class33]))
 
 ([CLSES_TAB] of  Widget
 
@@ -69,7 +69,7 @@
 	(is_hidden FALSE)
 	(widget_class_name "edu.stanford.smi.protege.widget.InstancesTab"))
 
-([KB_885944_Class3] of  Map
+([KB_952171_Class3] of  Map
 )
 
 ([KB_961727_Class0] of  String
@@ -80,9 +80,9 @@
 ([KB_961727_Class1] of  Map
 
 	(entries
-		[mow_sitemap_ProjectKB_Class10049]
-		[mow_sitemap_ProjectKB_Class10050]
-		[mow_sitemap_ProjectKB_Class10051]))
+		[mow_sitemap_ProjectKB_Class34]
+		[mow_sitemap_ProjectKB_Class35]
+		[mow_sitemap_ProjectKB_Class36]))
 
 ([KB_961727_Class10] of  Property_List
 )
@@ -577,57 +577,6 @@
 	(name "layout properties")
 	(properties [VERTICAL_STRETCHER]))
 
-([mow_sitemap_ProjectKB_Class10043] of  String
-
-	(name ":INSTANCE-ANNOTATION")
-	(string_value "%3AANNOTATION-TEXT"))
-
-([mow_sitemap_ProjectKB_Class10044] of  String
-
-	(name ":PAL-CONSTRAINT")
-	(string_value "%3APAL-NAME"))
-
-([mow_sitemap_ProjectKB_Class10045] of  String
-
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
-
-([mow_sitemap_ProjectKB_Class10046] of  String
-
-	(name "Lijst")
-	(string_value "naam"))
-
-([mow_sitemap_ProjectKB_Class10047] of  String
-
-	(name "Tab")
-	(string_value "naam"))
-
-([mow_sitemap_ProjectKB_Class10048] of  String
-
-	(name "Pagina")
-	(string_value "nummer{+-+}naam"))
-
-([mow_sitemap_ProjectKB_Class10049] of  Map_Entry
-
-	(key "add_name_on_instance_form")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
-
-([mow_sitemap_ProjectKB_Class10050] of  Map_Entry
-
-	(key "change_tracking_active")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
-
-([mow_sitemap_ProjectKB_Class10051] of  Map_Entry
-
-	(key "suppress_instance_counting")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
-
 ([mow_sitemap_ProjectKB_Class115] of  String
 
 	(name "SearchTab_Query"))
@@ -718,6 +667,57 @@
 
 ([mow_sitemap_ProjectKB_Class152] of  Property_List
 )
+
+([mow_sitemap_ProjectKB_Class28] of  String
+
+	(name ":INSTANCE-ANNOTATION")
+	(string_value "%3AANNOTATION-TEXT"))
+
+([mow_sitemap_ProjectKB_Class29] of  String
+
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
+
+([mow_sitemap_ProjectKB_Class30] of  String
+
+	(name ":PAL-CONSTRAINT")
+	(string_value "%3APAL-NAME"))
+
+([mow_sitemap_ProjectKB_Class31] of  String
+
+	(name "Lijst")
+	(string_value "naam"))
+
+([mow_sitemap_ProjectKB_Class32] of  String
+
+	(name "Tab")
+	(string_value "naam"))
+
+([mow_sitemap_ProjectKB_Class33] of  String
+
+	(name "Pagina")
+	(string_value "nummer{+-+}naam"))
+
+([mow_sitemap_ProjectKB_Class34] of  Map_Entry
+
+	(key "add_name_on_instance_form")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([mow_sitemap_ProjectKB_Class35] of  Map_Entry
+
+	(key "change_tracking_active")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([mow_sitemap_ProjectKB_Class36] of  Map_Entry
+
+	(key "suppress_instance_counting")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
 
 ([mow_sitemap_ProjectKB_Class64] of  Widget
 
@@ -945,8 +945,8 @@
 	(browser_slot_names [BROWSER_SLOT_NAMES])
 	(customized_instance_widgets
 		[INSTANCE_ANNOTATION_FORM_WIDGET]
-		[STANDARD_SLOT_FORM_WIDGET]
 		[STANDARD_FACET_FORM_WIDGET]
+		[STANDARD_SLOT_FORM_WIDGET]
 		[PAL_FORM_WIDGET]
 		[mow_sitemap_ProjectKB_Class140]
 		[STANDARD_CLASS_FORM_WIDGET]

@@ -138,11 +138,6 @@ if ($log->is_trace()) {
 $dbs = db_connect("mow_access") or exit_application(1);
 $dbt = db_connect("mow_fase1")  or exit_application(1);
 
-# Remove geo_prev from geo_coordinaten.
-# This is required to allow delete.
-my $query = "UPDATE geo_coordinaten SET geo_prev = NULL";
-$dbt->do($query);
-
 # Delete tables in sequence
 my @tables = qw (geo_coordinaten geo_object);
 foreach my $table (@tables) {
@@ -157,7 +152,7 @@ foreach my $table (@tables) {
 my @fields = qw (naam label);
 
 $log->info("Get Geo Objecten");
-$query = "SELECT naam, label 
+my $query = "SELECT naam, label 
              FROM missinglinks";
 my $ref = do_select($dbs, $query);
 foreach my $record (@$ref) {
@@ -175,6 +170,17 @@ foreach my $record (@$ref) {
 my @vals = (-1, "(geen geo_object)");
 unless (create_record($dbt, "geo_object", \@fields, \@vals)) {
 	$log->fatal("Could not insert record into geo_object");
+	exit_application(1);
+}
+
+# Set Geo-Indicator to 'J' for Indicatorfiche ID 41
+$query = "UPDATE indicatorfiche 
+  		  SET geografische_info = 'J'
+		  WHERE indicatorfiche_id = 41";
+if ($dbt->do($query)) {
+	$log->debug("Geografische Info vlag for indicatorfiche_id 41 set to J");
+} else {
+	$log->fatal("Could not set Geografische info flag for ID to J. Error: " . $dbt->errstr);
 	exit_application(1);
 }
 

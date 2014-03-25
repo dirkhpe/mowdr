@@ -1,10 +1,10 @@
 =head1 NAME
 
-get_geo_coords - Get Geo Object information	
+netwerklink_Albertkanaal - Special handling for Netwerklink Albertkanaal fiches.
 
 =head1 VERSION HISTORY
 
-version 1.0 18 February 2014 DV
+version 1.0 13 March 2014 DV
 
 =over 4
 
@@ -16,15 +16,15 @@ Initial release.
 
 =head1 DESCRIPTION
 
-Extract Geo Coordinates from missing_links table.
+This procedure will add dimensie netwerklink to indicatorfiches 72 and 74 for Albertkanaal.
 
 =head1 SYNOPSIS
 
- get_geo_coords.pl
+ netwerklink_Albertkanaal.pl
 
- get_geo_coords -h	Usage
- get_geo_coords -h 1  Usage and description of the options
- get_geo_coords -h 2  All documentation
+ netwerklink_Albertkanaal -h	Usage
+ netwerklink_Albertkanaal -h 1  Usage and description of the options
+ netwerklink_Albertkanaal -h 2  All documentation
 
 =head1 OPTIONS
 
@@ -42,7 +42,8 @@ No inline options are available. There is a properties\vo.ini file that contains
 # Variables
 ########### 
 
-my ($log, $cfg, $dbs, $dbt, %geo_object);
+my ($log, $cfg, $dbt, $dim_element_id);
+my $dimensie_id = 42;	# ID for netwerklink
 
 #####
 # use
@@ -79,9 +80,6 @@ $SIG{__WARN__} = sub { Carp::confess( @_ ) };
 
 sub exit_application($) {
     my ($return_code) = @_;
-	if (defined $dbs) {
-		$dbs->disconnect;
-	}
 	if (defined $dbt) {
 		$dbt->disconnect;
 	}
@@ -135,50 +133,66 @@ if ($log->is_trace()) {
 # End handle input values
 
 # Make database connection for vo database
-$dbs = db_connect("mow_access") or exit_application(1);
 $dbt = db_connect("mow_fase1")  or exit_application(1);
 
-# Delete tables in sequence
-my @tables = qw (geo_coordinaten);
-foreach my $table (@tables) {
-	if ($dbt->do("delete from $table")) {
-		$log->debug("Contents of table $table deleted");
+# Check dim_element 'Albertkanaal' in dimensie 'Netwerklink'.
+my $query = "SELECT dim_element_id
+             FROM dim_element
+			 WHERE dimensie_id = $dimensie_id 
+			   AND waarde = 'Albertkanaal'";
+my $ref = do_select($dbt, $query);
+my $nr_recs = @$ref;
+if ($nr_recs > 1) {
+	$log->fatal("Multiple records Netwerklink - Albertkanaal found, exiting...");
+	exit_application(1);
+} elsif ($nr_recs == 1) {
+	my $record = @$ref[0];
+	$dim_element_id = $$record{dim_element_id};
+	$log->info("Netwerklink - Albertkanaal exists already, id: $dim_element_id");
+} else {
+	my @fields = qw(dimensie_id waarde);
+	my @vals   = qw(42 Albertkanaal);
+	$dim_element_id = create_record($dbt, "dim_element", \@fields, \@vals);
+    if (defined $dim_element_id) {
+		$log->info("Netwerklink - Albertkanaal added as id $dim_element_id");
 	} else {
-		$log->fatal("Failed to delete `$table'. Error: " . $dbt->errstr);
+		$log->fatal("Could not insert record into indicator_report");
 		exit_application(1);
 	}
 }
 
-# Get naam - geo_object_id links
-my $query = "SELECT naam, geo_object_id
-	         FROM geo_object";
-my $ref = do_select($dbt, $query);
-foreach my $record (@$ref) {
-	$geo_object{$$record{naam}} = $$record{geo_object_id};
+# Update Indicator_report with this element_id
+$query = "UPDATE indicator_report 
+          SET netwerklink = $dim_element_id
+		  WHERE (indicatorfiche_id = 72)
+		     OR (indicatorfiche_id = 74)";
+if ($dbt->do($query)) {
+	$log->info("Indicator_Report updated for IDs 72 and 74");
+} else {
+	$log->fatal("Failed to update Indicator_Report. Error: " . $dbt->errstr);
+	exit_application(1);
 }
 
-my @fields = qw(geo_object_id the_geom_1 the_geom_2 the_geom_3 the_geom_4
-                              the_geom_5 the_geom_6 the_geom_7 the_geom_8);
-
-$log->info("Get Geo Objecten");
-$query = "SELECT naam, the_geom_1, the_geom_2, the_geom_3, the_geom_4,
-                 the_geom_5, the_geom_6, the_geom_7, the_geom_8
-          FROM missinglinks";
-$ref = do_select($dbs, $query);
-foreach my $record (@$ref) {
-	my $naam = $$record{naam};
-	my $the_geom_1 = $$record{the_geom_1};
-   	my $the_geom_2 = $$record{the_geom_2}; 
-    my $the_geom_3 = $$record{the_geom_3};
-	my $the_geom_4 = $$record{the_geom_4};
-	my $the_geom_5 = $$record{the_geom_5};
-	my $the_geom_6 = $$record{the_geom_6};
-	my $the_geom_7 = $$record{the_geom_7};
-	my $the_geom_8 = $$record{the_geom_8};
-	my $geo_object_id = $geo_object{$naam};
+# Verify indicatorfiche - dimensie is defined
+# Delete records if they were defined already 
+# And add them again
+$query = "DELETE FROM dimensie_fiche
+		  WHERE dimensie_id = $dimensie_id 
+		    AND ((fiche_id = 72) OR 
+			     (fiche_id = 74))";
+if ($dbt->do($query)) {
+	$log->debug("Delete from dimensie_fiche for IDs 72 and 74 done");
+} else {
+	$log->fatal("Delete from dimensie_fiche failed. Error: " . $dbt->errstr);
+	exit_application(1);
+}
+# Now add the records
+my @fields = qw(dimensie_id fiche_id);
+my @fiches = (72, 74);
+foreach my $fiche_id (@fiches) {
 	my (@vals) = map { eval ("\$" . $_ ) } @fields;
-	unless (defined create_record($dbt, "geo_coordinaten", \@fields, \@vals)) {
-		$log->fatal("Could not insert record into geo_coordinaten");
+	unless (create_record($dbt, "dimensie_fiche", \@fields, \@vals)) {
+		$log->fatal("Could not insert record into dimensie_fiche. Error: " . $dbt->errstr);
 		exit_application(1);
 	}
 }

@@ -1,4 +1,4 @@
-; Mon Feb 17 18:00:39 CET 2014
+; Fri Mar 21 17:36:31 CET 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -23,17 +23,17 @@
 		(allowed-values Home DML_Form Report Interactive_Report Dynamic_Form Navigation_Form Tabular_Form)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(multislot opgeroepen_door
-;+		(comment "How did I end up in this element?")
-		(type INSTANCE)
-;+		(allowed-classes Pagina Structure)
-;+		(inverse-slot naar)
-		(create-accessor read-write))
 	(multislot naar
 ;+		(comment "The elements that are called by this page.")
 		(type INSTANCE)
 ;+		(allowed-classes Pagina Structure)
 ;+		(inverse-slot opgeroepen_door)
+		(create-accessor read-write))
+	(multislot opgeroepen_door
+;+		(comment "How did I end up in this element?")
+		(type INSTANCE)
+;+		(allowed-classes Pagina Structure)
+;+		(inverse-slot naar)
 		(create-accessor read-write))
 	(single-slot naam
 ;+		(comment "Name of the Element")
@@ -49,13 +49,13 @@
 (defclass Structure "Structure in the web configuration."
 	(is-a USER)
 	(role abstract)
-	(multislot opgeroepen_door
-;+		(comment "How did I end up in this element?")
+	(multislot naar
+;+		(comment "The elements that are called by this page.")
 		(type INSTANCE)
 ;+		(allowed-classes Pagina Structure)
 		(create-accessor read-write))
-	(multislot naar
-;+		(comment "The elements that are called by this page.")
+	(multislot opgeroepen_door
+;+		(comment "How did I end up in this element?")
 		(type INSTANCE)
 ;+		(allowed-classes Pagina Structure)
 		(create-accessor read-write))
@@ -81,23 +81,23 @@
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(single-slot gebruiker_documentatie
-;+		(comment "Documentation that is relevant for the user.")
-		(type STRING)
-;+		(cardinality 0 1)
-		(create-accessor read-write))
 	(single-slot developer_documentatie
 ;+		(comment "Technical documentation that is relevant for the developer or maintainer of the site.")
 		(type STRING)
 ;+		(cardinality 0 1)
 		(create-accessor read-write))
-	(multislot opgeroepen_door
-;+		(comment "How did I end up in this element?")
-		(type INSTANCE)
-;+		(allowed-classes Pagina Structure)
+	(single-slot gebruiker_documentatie
+;+		(comment "Documentation that is relevant for the user.")
+		(type STRING)
+;+		(cardinality 0 1)
 		(create-accessor read-write))
 	(multislot naar
 ;+		(comment "The elements that are called by this page.")
+		(type INSTANCE)
+;+		(allowed-classes Pagina Structure)
+		(create-accessor read-write))
+	(multislot opgeroepen_door
+;+		(comment "How did I end up in this element?")
 		(type INSTANCE)
 ;+		(allowed-classes Pagina Structure)
 		(create-accessor read-write))

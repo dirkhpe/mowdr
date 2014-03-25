@@ -1,10 +1,10 @@
 =head1 NAME
 
-get_geo_coords - Get Geo Object information	
+get_geo_groep - Get Geo Groep information	
 
 =head1 VERSION HISTORY
 
-version 1.0 18 February 2014 DV
+version 1.0 27 February 2014 DV
 
 =over 4
 
@@ -16,15 +16,15 @@ Initial release.
 
 =head1 DESCRIPTION
 
-Extract Geo Coordinates from missing_links table.
+Extract Geo Groep from missing_links table.
 
 =head1 SYNOPSIS
 
- get_geo_coords.pl
+ get_geo_groep.pl
 
- get_geo_coords -h	Usage
- get_geo_coords -h 1  Usage and description of the options
- get_geo_coords -h 2  All documentation
+ get_geo_groep -h	Usage
+ get_geo_groep -h 1  Usage and description of the options
+ get_geo_groep -h 2  All documentation
 
 =head1 OPTIONS
 
@@ -42,7 +42,7 @@ No inline options are available. There is a properties\vo.ini file that contains
 # Variables
 ########### 
 
-my ($log, $cfg, $dbs, $dbt, %geo_object);
+my ($log, $cfg, $dbt, %geo_object);
 
 #####
 # use
@@ -79,9 +79,6 @@ $SIG{__WARN__} = sub { Carp::confess( @_ ) };
 
 sub exit_application($) {
     my ($return_code) = @_;
-	if (defined $dbs) {
-		$dbs->disconnect;
-	}
 	if (defined $dbt) {
 		$dbt->disconnect;
 	}
@@ -135,11 +132,10 @@ if ($log->is_trace()) {
 # End handle input values
 
 # Make database connection for vo database
-$dbs = db_connect("mow_access") or exit_application(1);
 $dbt = db_connect("mow_fase1")  or exit_application(1);
 
 # Delete tables in sequence
-my @tables = qw (geo_coordinaten);
+my @tables = qw (geo_groep_fiche geo_status geo_object_groep geo_groep);
 foreach my $table (@tables) {
 	if ($dbt->do("delete from $table")) {
 		$log->debug("Contents of table $table deleted");
@@ -151,38 +147,48 @@ foreach my $table (@tables) {
 
 # Get naam - geo_object_id links
 my $query = "SELECT naam, geo_object_id
-	         FROM geo_object";
+	         FROM geo_object
+			 WHERE geo_object_id > 0";
 my $ref = do_select($dbt, $query);
 foreach my $record (@$ref) {
 	$geo_object{$$record{naam}} = $$record{geo_object_id};
 }
 
-my @fields = qw(geo_object_id the_geom_1 the_geom_2 the_geom_3 the_geom_4
-                              the_geom_5 the_geom_6 the_geom_7 the_geom_8);
+# Add geo_groep record
+my @fields = qw(naam omschrijving);
+my @vals = ("Missing Links", "Verzameling van missing links");
+my $geo_groep_id = create_record($dbt, "geo_groep", \@fields, \@vals);
+if (not defined $geo_groep_id) {
+	$log->fatal("Could not insert record into geo_groep");
+	exit_application(1);
+}
 
-$log->info("Get Geo Objecten");
-$query = "SELECT naam, the_geom_1, the_geom_2, the_geom_3, the_geom_4,
-                 the_geom_5, the_geom_6, the_geom_7, the_geom_8
-          FROM missinglinks";
-$ref = do_select($dbs, $query);
-foreach my $record (@$ref) {
-	my $naam = $$record{naam};
-	my $the_geom_1 = $$record{the_geom_1};
-   	my $the_geom_2 = $$record{the_geom_2}; 
-    my $the_geom_3 = $$record{the_geom_3};
-	my $the_geom_4 = $$record{the_geom_4};
-	my $the_geom_5 = $$record{the_geom_5};
-	my $the_geom_6 = $$record{the_geom_6};
-	my $the_geom_7 = $$record{the_geom_7};
-	my $the_geom_8 = $$record{the_geom_8};
-	my $geo_object_id = $geo_object{$naam};
+# Add geo_groep to geo_groep_fiche
+@fields = qw(geo_groep_id indicatorfiche_id);
+@vals = ($geo_groep_id, 41);
+unless (defined create_record($dbt, "geo_groep_fiche", \@fields, \@vals)) {
+	$log->fatal("Could not insert record into geo_groep_fiche");
+	exit_application(1);
+}
+
+# Add geo_object_groep
+@fields = qw(geo_object_id geo_groep_id);
+while (my ($geo_name, $geo_object_id) = each %geo_object) {
 	my (@vals) = map { eval ("\$" . $_ ) } @fields;
-	unless (defined create_record($dbt, "geo_coordinaten", \@fields, \@vals)) {
-		$log->fatal("Could not insert record into geo_coordinaten");
+	unless (defined create_record($dbt, "geo_object_groep", \@fields, \@vals)) {
+		$log->fatal("Could not insert record into geo_object_groep");
 		exit_application(1);
 	}
 }
 
+# Add 'Geen Groep' to geo_groep
+@fields = qw(geo_groep_id naam);
+@vals = (-1, "(geen groep)");
+unless (defined create_record($dbt, "geo_groep", \@fields, \@vals)) {
+	$log->fatal("Could not insert record into geo_groep");
+	exit_application(1);
+}
+	
 exit_application(0);
 
 =head1 To Do

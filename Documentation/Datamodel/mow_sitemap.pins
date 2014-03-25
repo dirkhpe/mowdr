@@ -1,4 +1,4 @@
-; Mon Feb 17 18:00:40 CET 2014
+; Fri Mar 21 17:36:31 CET 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -15,7 +15,8 @@
 	(naam "TS1")
 	(naar
 		[mow_sitemap_Class11]
-		[mow_sitemap_Class13]))
+		[mow_sitemap_Class13]
+		[mow_sitemap_Class30004]))
 
 ([mow_sitemap_Class10000] of  Pagina
 
@@ -64,16 +65,19 @@
 
 ([mow_sitemap_Class15] of  Pagina
 
+	(developer_documentatie "Create 'Form on a Table with Report'.")
 	(naam "Indicatorfiches")
 	(naar
 		[mow_sitemap_Class16]
-		[mow_sitemap_Class18])
+		[mow_sitemap_Class18]
+		[mow_sitemap_Class50000])
 	(nummer "50")
-	(opgeroepen_door [mow_sitemap_Class11]))
+	(opgeroepen_door [mow_sitemap_Class11])
+	(scherm_type Interactive_Report))
 
 ([mow_sitemap_Class16] of  Pagina
 
-	(naam "Indicatorfiche")
+	(naam "Indicatorfiche Aanpassen")
 	(naar
 		[mow_sitemap_Class39]
 		[mow_sitemap_Class41]
@@ -204,6 +208,51 @@
 	(nummer "47")
 	(opgeroepen_door [mow_sitemap_Class29]))
 
+([mow_sitemap_Class30000] of  Pagina
+
+	(developer_documentatie "Create 'Form on a Table with Report'.")
+	(gebruiker_documentatie "Overzicht van de Geo Groepen.")
+	(naam "Geo Groepen")
+	(naar [mow_sitemap_Class30001])
+	(nummer "5")
+	(opgeroepen_door [mow_sitemap_Class30004])
+	(scherm_type Interactive_Report))
+
+([mow_sitemap_Class30001] of  Pagina
+
+	(developer_documentatie "Form automatically generated as part of 5 - Interactive Report.\nAdd Functions to display and maintain indicatorfiches and objects.")
+	(gebruiker_documentatie "Hier kan de gebruiker de geo groepen onderhouden, toevoegen of verwijderen.")
+	(naam "Geo Groep Aanpassen")
+	(naar
+		[mow_sitemap_Class30002]
+		[mow_sitemap_Class40000]
+		[mow_sitemap_Class40002])
+	(nummer "6")
+	(opgeroepen_door [mow_sitemap_Class30000])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class30002] of  Pagina
+
+	(developer_documentatie "Detail Form from Master-Detail List. Master Form is removed. Link established between page 6 and this detail Page.")
+	(naam "Overzicht Indicatoren per Groep")
+	(naar [mow_sitemap_Class30003])
+	(nummer "7")
+	(opgeroepen_door [mow_sitemap_Class30001])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class30003] of  Pagina
+
+	(naam "Indicatoren per Groep Toevoegen / Aanpassen")
+	(nummer "8")
+	(opgeroepen_door [mow_sitemap_Class30002])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class30004] of  Tab
+
+	(naam "Geografische Informatie")
+	(naar [mow_sitemap_Class30000])
+	(opgeroepen_door [mow_sitemap_Class10]))
+
 ([mow_sitemap_Class31] of  Pagina
 
 	(gebruiker_documentatie "Overzicht van alle gepubliceerde documenten.")
@@ -236,12 +285,6 @@
 	(nummer "55")
 	(opgeroepen_door [mow_sitemap_Class33]))
 
-([mow_sitemap_Class35] of  Pagina
-
-	(gebruiker_documentatie "'Url Invoer vernieuwen' zal alle URLs voor de cijferrecord ingave opnieuw berekenen. Dit kan nodig zijn als de hosting server van naam verandert, bevoorbeeld bij de migratie van pre-productie naar productie. \n'Url Rapport Vernieuwen' herberekent de links naar de Cognos rapportage. Let op, manuele aanpassingen aan de links nodig voor Cognos rapportage worden hierbij overschreven.")
-	(naam "URL Cijferrecord of Rapport Herberekenen")
-	(nummer "60"))
-
 ([mow_sitemap_Class36] of  Pagina
 
 	(developer_documentatie "Er is nog geen scherm voorzien voor het beheer van de beleidsdocumenten zelf.")
@@ -250,8 +293,8 @@
 	(naar [mow_sitemap_Class37])
 	(nummer "61")
 	(opgeroepen_door
-		[mow_sitemap_Class16]
-		[mow_sitemap_Class14]))
+		[mow_sitemap_Class14]
+		[mow_sitemap_Class16]))
 
 ([mow_sitemap_Class37] of  Pagina
 
@@ -283,6 +326,50 @@
 	(naam "Dimensie Toevoegen / Aanpassen")
 	(nummer "102")
 	(opgeroepen_door [mow_sitemap_Class39]))
+
+([mow_sitemap_Class40000] of  Pagina
+
+	(gebruiker_documentatie "Overzicht van de statussen die gekozen kunnen worden in het geo_rapport voor het geo_object in een bepaalde periode.")
+	(naam "Overzicht Status per Groep")
+	(naar [mow_sitemap_Class40001])
+	(nummer "19")
+	(opgeroepen_door [mow_sitemap_Class30001])
+	(scherm_type Interactive_Report))
+
+([mow_sitemap_Class40001] of  Pagina
+
+	(gebruiker_documentatie "Hier kan de gebruiker een bestaande of een nieuwe status toevoegen of aanpassen.")
+	(naam "Status Toevoegen / Aanpassen")
+	(nummer "20")
+	(opgeroepen_door [mow_sitemap_Class40000])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class40002] of  Pagina
+
+	(developer_documentatie "This is a 'full' master-detail report. In this case the 'master' page is kept.")
+	(gebruiker_documentatie "Dit scherm toont de geo objecten die bij de groep horen. \nHet scherm kan slechts opgeroepen worden nadat een indicatorfiche toegekend is aan de geo_groep. De indicatorfiche definieert de dimensies die bij de groep horen. (Zoals elders gedocumenteerd moet elke indicatorfiche die aan de groep toegekend is dezelfde dimensies hebben).")
+	(naam "Overzicht Geo Objecten")
+	(naar [mow_sitemap_Class40003])
+	(nummer "21")
+	(opgeroepen_door [mow_sitemap_Class30001])
+	(scherm_type Interactive_Report))
+
+([mow_sitemap_Class40003] of  Pagina
+
+	(gebruiker_documentatie "Dit scherm laat toe om de attributen van een Geo Object aan te passen.\nDe dimensies die ingevuld kunnen worden is de unie van alle dimensies van de indicatoren die aan de geo_groep van het object gekoppeld zijn. \nEr kan slechts 1 geo_coordinaten record toegevoegd worden.")
+	(naam "Beheer Geo Object")
+	(naar [mow_sitemap_Class40004])
+	(nummer "22")
+	(opgeroepen_door [mow_sitemap_Class40002])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class40004] of  Pagina
+
+	(gebruiker_documentatie "Dit scherm laat toe om de geo coordinaten die horen bij een geo object aan te passen.\nElk veld (The Geom 1, The Geom 2, ...) kan maximaal 4000 karakters bevatten. De volledige geo string wordt samengesteld door alle velden in volgorde aaneen te plakken.")
+	(naam "Geo Coordinaten aanpassen")
+	(nummer "23")
+	(opgeroepen_door [mow_sitemap_Class40003])
+	(scherm_type DML_Form))
 
 ([mow_sitemap_Class41] of  Pagina
 
@@ -345,3 +432,21 @@
 	(naar [mow_sitemap_Class31])
 	(nummer "70")
 	(opgeroepen_door [mow_sitemap_Class47]))
+
+([mow_sitemap_Class50000] of  Pagina
+
+	(developer_documentatie "This is the 'middle' report from a Master-Detail Report. \nThe master (indicatorfiches) has been replaced with page 51, for the Detail a Multi-Line report has been selected.\nThe report is called from page 51 using a function to calculate dynamic URL (based on geografische_info) and to include the session number. If the session number is not there, then the user is forced to log in on each click.")
+	(gebruiker_documentatie "Overzicht van de geo statussen per object.")
+	(naam "Geo Rapport per Indicator")
+	(naar [mow_sitemap_Class50001])
+	(nummer "36")
+	(opgeroepen_door [mow_sitemap_Class15])
+	(scherm_type DML_Form))
+
+([mow_sitemap_Class50001] of  Pagina
+
+	(gebruiker_documentatie "Dit scherm laat toe om gegevens op een dynamische manier aan te passen.")
+	(naam "Geo Rapport Aanpassen")
+	(nummer "33")
+	(opgeroepen_door [mow_sitemap_Class50000])
+	(scherm_type Tabular_Form))

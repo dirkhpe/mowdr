@@ -1,10 +1,10 @@
 =head1 NAME
 
-get_geo_coords - Get Geo Object information	
+get_geo_report - Get Geo Groep information	
 
 =head1 VERSION HISTORY
 
-version 1.0 18 February 2014 DV
+version 1.0 27 February 2014 DV
 
 =over 4
 
@@ -16,15 +16,15 @@ Initial release.
 
 =head1 DESCRIPTION
 
-Extract Geo Coordinates from missing_links table.
+Extract Geo Groep from missing_links table.
 
 =head1 SYNOPSIS
 
- get_geo_coords.pl
+ get_geo_report.pl
 
- get_geo_coords -h	Usage
- get_geo_coords -h 1  Usage and description of the options
- get_geo_coords -h 2  All documentation
+ get_geo_report -h	Usage
+ get_geo_report -h 1  Usage and description of the options
+ get_geo_report -h 2  All documentation
 
 =head1 OPTIONS
 
@@ -42,7 +42,7 @@ No inline options are available. There is a properties\vo.ini file that contains
 # Variables
 ########### 
 
-my ($log, $cfg, $dbs, $dbt, %geo_object);
+my ($log, $cfg, $dbs, $dbt, %geo_object, %geo_status);
 
 #####
 # use
@@ -135,11 +135,11 @@ if ($log->is_trace()) {
 # End handle input values
 
 # Make database connection for vo database
-$dbs = db_connect("mow_access") or exit_application(1);
-$dbt = db_connect("mow_fase1")  or exit_application(1);
+$dbs = db_connect("mow_access")  or exit_application(1);
+$dbt = db_connect("mow_fase1")   or exit_application(1);
 
 # Delete tables in sequence
-my @tables = qw (geo_coordinaten);
+my @tables = qw (geo_report);
 foreach my $table (@tables) {
 	if ($dbt->do("delete from $table")) {
 		$log->debug("Contents of table $table deleted");
@@ -149,36 +149,50 @@ foreach my $table (@tables) {
 	}
 }
 
-# Get naam - geo_object_id links
-my $query = "SELECT naam, geo_object_id
-	         FROM geo_object";
+# Get geo_object links
+my $query = "SELECT geo_object_id, naam
+	         FROM geo_object
+			 WHERE geo_object_id > -1";
 my $ref = do_select($dbt, $query);
 foreach my $record (@$ref) {
 	$geo_object{$$record{naam}} = $$record{geo_object_id};
 }
 
-my @fields = qw(geo_object_id the_geom_1 the_geom_2 the_geom_3 the_geom_4
-                              the_geom_5 the_geom_6 the_geom_7 the_geom_8);
-
-$log->info("Get Geo Objecten");
-$query = "SELECT naam, the_geom_1, the_geom_2, the_geom_3, the_geom_4,
-                 the_geom_5, the_geom_6, the_geom_7, the_geom_8
-          FROM missinglinks";
-$ref = do_select($dbs, $query);
+# Get geo_status fields
+$query = "SELECT geo_status_id, waarde
+		  FROM geo_status
+		  WHERE geo_status_id > -1";
+$ref = do_select($dbt, $query);
 foreach my $record (@$ref) {
-	my $naam = $$record{naam};
-	my $the_geom_1 = $$record{the_geom_1};
-   	my $the_geom_2 = $$record{the_geom_2}; 
-    my $the_geom_3 = $$record{the_geom_3};
-	my $the_geom_4 = $$record{the_geom_4};
-	my $the_geom_5 = $$record{the_geom_5};
-	my $the_geom_6 = $$record{the_geom_6};
-	my $the_geom_7 = $$record{the_geom_7};
-	my $the_geom_8 = $$record{the_geom_8};
-	my $geo_object_id = $geo_object{$naam};
+	$geo_status{$$record{waarde}} = $$record{geo_status_id};
+}
+
+my $jaar = 2013;
+my ($dagnr);
+# Get dagnr
+$query = "SELECT min(dagnr) dagnr
+		  FROM frequenties
+		  WHERE jaar = $jaar";
+$ref = do_select($dbt, $query);
+foreach my $record (@$ref) {
+	$dagnr = $$record{dagnr};
+}
+
+my $indicatorfiche_id = 41;
+my $periode = $jaar;
+my $commentaar = "Migratie van POC Missing Links";
+my $actief = "J";
+my @fields = qw(indicatorfiche_id geo_object_id dagnr periode jaar geo_status_id commentaar actief);
+# Get missing links - states from missinglink table
+$query = "SELECT naam, d_staat
+		  FROM missinglinks";
+$ref = do_select($dbs, $query);
+foreach my $record(@$ref) {
+	my $geo_object_id = $geo_object{$$record{naam}};
+	my $geo_status_id = $geo_status{$$record{d_staat}};
 	my (@vals) = map { eval ("\$" . $_ ) } @fields;
-	unless (defined create_record($dbt, "geo_coordinaten", \@fields, \@vals)) {
-		$log->fatal("Could not insert record into geo_coordinaten");
+	unless (defined create_record($dbt, "geo_report", \@fields, \@vals)) {
+		$log->fatal("Could not insert record into geo_report");
 		exit_application(1);
 	}
 }

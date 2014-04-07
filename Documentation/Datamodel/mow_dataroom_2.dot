@@ -1,0 +1,306 @@
+digraph mow_dataroom_2 {
+	node [label="\N"];
+	graph [bb="0,0,9224,300"];
+	mow_dataroom_2_Class13 [label="tijdvenster - type dag: werkdag", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2617,106", width="2.6111", height="0.5"];
+	Dim_Element [label=Dim_Element, shape=box, color="0.0,0.0,0.0", fontcolor="0.0,0.0,0.0", pos="1576,194", width="1.2778", height="0.5"];
+	mow_dataroom_2_Class1 [label="tijdvenster - type dag", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3493,18", width="1.8611", height="0.5"];
+	mow_dataroom_2_Class12 [label="tijdvenster - type dag: verlofdag", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3114,106", width="2.6736", height="0.5"];
+	mow_dataroom_2_Class11 [label="locatie - provincie: Limburg", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="1225,106", width="2.3611", height="0.5"];
+	mow_dataroom_2_Class3 [label="locatie - provincie", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2398,18", width="1.6111", height="0.5"];
+	mow_dataroom_2_Class10 [label="locatie - provincie: Vlaams Brabant", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="1434,106", width="2.9444", height="0.5"];
+	mow_dataroom_Class8 [label="meetfrequentie - schooljaar", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="5800,18", width="2.3125", height="0.5"];
+	ReferentieTabel [label=ReferentieTabel, shape=box, color="0.0,0.0,0.0", fontcolor="0.0,0.0,0.0", pos="5033,106", width="1.4444", height="0.5"];
+	mow_dataroom_Class9 [label="meetfrequentie - kwartaal", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="5979,18", width="2.1458", height="0.5"];
+	Persoonstabel [label=Persoonstabel, shape=box, color="0.0,0.0,0.0", fontcolor="0.0,0.0,0.0", pos="4724,106", width="1.3125", height="0.5"];
+	mow_dataroom_Class6 [label="Aantal inzittenden voertuigen", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3019,194", width="2.4444", height="0.5"];
+	Indicator [label=Indicator, shape=box, color="0.0,0.0,0.0", fontcolor="0.0,0.0,0.0", pos="3324,282", width="0.92361", height="0.5"];
+	mow_dataroom_2_Class7 [label="locatie - provincie: Antwerpen", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2821,106", width="2.5556", height="0.5"];
+	mow_dataroom_2_Class14 [label="tijdvenster - type verkeerssituatie: dal", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2394,106", width="3.0625", height="0.5"];
+	mow_dataroom_Class15 [label="Aantal inzittenden voertuigen", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3846,106", width="2.4444", height="0.5"];
+	mow_dataroom_Class10007 [label="meetfrequentie - maand  * Januari 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4315,106", width="3.2292", height="0.5"];
+	mow_dataroom_Class7 [label="meetfrequentie - jaar", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3949,18", width="1.7847", height="0.5"];
+	mow_dataroom_Class10037 [label="Aantal geplande diensten", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4547,106", width="2.1458", height="0.5"];
+	Indicatorfiche [label=Indicatorfiche, shape=box, color="0.0,0.0,0.0", fontcolor="0.0,0.0,0.0", pos="4735,194", width="1.3056", height="0.5"];
+	mow_dataroom_Class10046 [label="Marc Nuytemans", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4088,18", width="1.5556", height="0.5"];
+	mow_dataroom_Class10036 [label="meetfrequentie - jaar  *  2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4052,106", width="2.4722", height="0.5"];
+	Frequentietabel [label=Frequentietabel, shape=box, color="0.0,0.0,0.0", fontcolor="0.0,0.0,0.0", pos="6712,194", width="1.3958", height="0.5"];
+	mow_dataroom_2_Class19 [label="verplaatsing - vervoersbewijs", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="1911,18", width="2.4722", height="0.5"];
+	Dimensie [label=Dimensie, shape=box, color="0.0,0.0,0.0", fontcolor="0.0,0.0,0.0", pos="2965,106", width="0.94444", height="0.5"];
+	mow_dataroom_Class10035 [label="meetfrequentie - schooljaar  * 2013-2014...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="5230,106", width="3.5278", height="0.5"];
+	mow_dataroom_2_Class18 [label="verplaatsing - verplaatsingsmotief", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="1467,18", width="2.8056", height="0.5"];
+	mow_dataroom_Class10034 [label="meetfrequentie - kwartaal  * Kwartaal_4 ...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="5770,106", width="3.4792", height="0.5"];
+	mow_dataroom_2_Class17 [label="verplaatsing - hoofdvervoerwijze", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3093,18", width="2.75", height="0.5"];
+	mow_dataroom_Class10033 [label="meetfrequentie - kwartaal  * Kwartaal_3 ...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="6039,106", width="3.4792", height="0.5"];
+	mow_dataroom_2_Class16 [label="verplaatsing - afstandsklasse", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2641,18", width="2.4236", height="0.5"];
+	mow_dataroom_Class10032 [label="meetfrequentie - kwartaal  * Kwartaal_2 ...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="6308,106", width="3.4792", height="0.5"];
+	mow_dataroom_Class10031 [label="meetfrequentie - kwartaal  * Kwartaal_1 ...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="5501,106", width="3.4792", height="0.5"];
+	mow_dataroom_2_Class15 [label="tijdvenster - type verkeerssituatie: pie...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3602,106", width="3.2292", height="0.5"];
+	mow_dataroom_2_Class2 [label="tijdvenster - type verkeerssituatie", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3309,18", width="2.75", height="0.5"];
+	mow_dataroom_Class22 [label="Bert Boterbergh", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4215,18", width="1.4722", height="0.5"];
+	mow_dataroom_2_Class21 [label="verplaatsing - vervoersbewijs: nachtbus", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="1911,106", width="3.2569", height="0.5"];
+	mow_dataroom_2_Class24 [label="verplaatsing - vervoersbewijs: ticket vo...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="464,106", width="3.3889", height="0.5"];
+	mow_dataroom_2_Class23 [label="verplaatsing - verplaatsingsmotief: tick...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="1002,106", width="3.3333", height="0.5"];
+	mow_dataroom_Class10028 [label="Aantal inzittenden voertuigen", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2769,194", width="2.4444", height="0.5"];
+	mow_dataroom_2_Class20 [label="verplaatsing - vervoersbewijs: abonnemen...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="734,106", width="3.6111", height="0.5"];
+	mow_dataroom_Class10029 [label="Aantal inzittenden voertuigen", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3324,194", width="2.4444", height="0.5"];
+	mow_dataroom_Class10023 [label="meetfrequentie - per jaar (voor periode ...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4855,18", width="3.4167", height="0.5"];
+	mow_dataroom_Class10026 [label="Aantal inzittenden voertuigen", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3810,194", width="2.4444", height="0.5"];
+	mow_dataroom_Class10025 [label="meetfrequentie - 2x per jaar (maart, okt...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="5312,18", width="3.3889", height="0.5"];
+	mow_dataroom_Class10020 [label="meetfrequentie - per twee jaar (oneven j...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="5575,18", width="3.4167", height="0.5"];
+	mow_dataroom_Class10022 [label="meetfrequentie - tweejaarlijks", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="5084,18", width="2.4444", height="0.5"];
+	mow_dataroom_2_Class0 [label="tijdvenster - dagdeel", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="247,18", width="1.7778", height="0.5"];
+	mow_dataroom_Class10021 [label="meetfrequentie - per 5 jaar", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4367,18", width="2.2292", height="0.5"];
+	mow_dataroom_Class10 [label="meetfrequentie - maand", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="7601,18", width="2.0278", height="0.5"];
+	mow_dataroom_Class10010 [label="meetfrequentie - maand  * Oktober 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="6845,106", width="3.3611", height="0.5"];
+	mow_dataroom_Class10011 [label="meetfrequentie - maand  * September 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="7112,106", width="3.5347", height="0.5"];
+	mow_dataroom_Class10014 [label="meetfrequentie - maand  * Juni 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="7366,106", width="3.0069", height="0.5"];
+	mow_dataroom_Class10015 [label="meetfrequentie - maand  * Mei 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="7601,106", width=3, height="0.5"];
+	mow_dataroom_Class10012 [label="meetfrequentie - maand  * Augustus 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="7851,106", width="3.4444", height="0.5"];
+	mow_dataroom_Class10013 [label="meetfrequentie - maand  * Juli 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="8100,106", width="2.9514", height="0.5"];
+	mow_dataroom_Class10018 [label="meetfrequentie - maand  * Februari 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="8346,106", width="3.3611", height="0.5"];
+	mow_dataroom_Class10019 [label="meetfrequentie - per winter (winterdiens...", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4590,18", width="3.4444", height="0.5"];
+	mow_dataroom_Class10016 [label="meetfrequentie - maand  * April 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="8597,106", width="3.0903", height="0.5"];
+	mow_dataroom_Class10017 [label="meetfrequentie - maand  * Maart 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="8840,106", width="3.1458", height="0.5"];
+	mow_dataroom_Class10059 [label="Aantal reizigers per type vervoersbewijs", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2228,194", width="3.3056", height="0.5"];
+	mow_dataroom_2_Class8 [label="locatie - provincie: West Vlaanderen", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2156,106", width="3.0278", height="0.5"];
+	mow_dataroom_Class10058 [label="Aantal reizigers per type vervoersbewijs", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="3348,106", width="3.3056", height="0.5"];
+	mow_dataroom_Class10057 [label="Aantal reizigers per type vervoersbewijs", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2488,194", width="3.3056", height="0.5"];
+	mow_dataroom_2_Class9 [label="locatie - provincie: Oost Vlaanderen", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="1667,106", width="3.0069", height="0.5"];
+	mow_dataroom_2_Class5 [label="tijdvenster - dagdeel: am", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="76,106", width="2.1111", height="0.5"];
+	mow_dataroom_2_Class6 [label="tijdvenster - dagdeel: pm", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="247,106", width="2.1181", height="0.5"];
+	mow_dataroom_2_Class4 [label="locatie - hoofdgemeente-deelgemeente", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="2861,18", width="3.1736", height="0.5"];
+	mow_dataroom_Class10008 [label="meetfrequentie - maand  * December 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="9098,106", width="3.5", height="0.5"];
+	mow_dataroom_Class10009 [label="meetfrequentie - maand  * November 2013", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="6579,106", width="3.5278", height="0.5"];
+	mow_dataroom_Class10048 [label="Aantal geplande diensten", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4075,194", width="2.1458", height="0.5"];
+	mow_dataroom_Class10047 [label="Aantal geplande diensten", shape=box, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="4410,194", width="2.1458", height="0.5"];
+	Dim_Element -> mow_dataroom_2_Class13 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1622.2,188.9 1632.3,187.6 1667.2,182.82 1712.5,174.01 1750,158 1761.5,153.11 1761.2,145.87 1773,142 1851.2,116.44 2431.1,131.65\
+ 2513,124 2516.3,123.69 2519.6,123.35 2523,122.97", lp="1778.5,150"];
+	mow_dataroom_2_Class13 -> mow_dataroom_2_Class1 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3426,34.743 2611.5,87.563 2609.1,76.465 2608.6,62.61 2617,54 2631.8,38.914 3319.4,38.673 3415.8,35.312", lp="2641.5,62"];
+	Dim_Element -> mow_dataroom_2_Class12 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1622,191.9 1632.4,191.62 1760.4,188.19 2069.7,178.03 2172,158 2193.7,153.76 2197.3,145.85 2219,142 2391.7,111.38 2833.3,139.92\
+ 3008,124 3011.2,123.71 3014.4,123.39 3017.6,123.03", lp="2224.5,150"];
+	mow_dataroom_2_Class12 -> mow_dataroom_2_Class1 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3490.3,36.109 3210.4,89.168 3213.7,88.756 3216.9,88.365 3220,88 3247.8,84.783 3448.2,86.191 3471,70 3479.1,64.259 3484.2,54.904\
+ 3487.5,45.763", lp="3508.5,62"];
+	Dim_Element -> mow_dataroom_2_Class11 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1529.8,181.67 1519.9,179.25 1458.7,164.26 1360.7,140.25 1294.7,124.07", lp="1437.5,150"];
+	mow_dataroom_2_Class11 -> mow_dataroom_2_Class3 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2339.9,21.829 1310.2,89.143 1313.2,88.734 1316.1,88.351 1319,88 1516.2,63.943 2125,32.494 2329.9,22.326", lp="1768.5,62"];
+	Dim_Element -> mow_dataroom_2_Class10 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1547.6,175.8 1538.8,170.47 1514.9,155.99 1484.3,137.46 1462.3,124.17", lp="1523.5,150"];
+	mow_dataroom_2_Class10 -> mow_dataroom_2_Class3 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2339.8,23.528 1540.2,88.899 1543.1,88.579 1546.1,88.278 1549,88 1732.8,70.478 1780.5,90.379 1964,70 2003.9,65.564 2013.2,59.588\
+ 2053,54 2148.7,40.557 2260.1,30.206 2329.9,24.358", lp="2077.5,62"];
+	ReferentieTabel -> mow_dataroom_Class8 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,5085.1,89.759 5095.2,88.013 5200.2,70.208 5229.5,78.523 5332,70 5498.8,56.134 5541.2,58.625 5707,36 5710.2,35.567 5713.4,35.102\
+ 5716.7,34.611", lp="5551.5,62"];
+	ReferentieTabel -> mow_dataroom_Class9 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,5085.1,89.629 5095,88.1 5301,57.098 5358,94.31 5561,70 5596.6,65.741 5604.5,58.842 5640,54 5751.3,38.824 5780.7,50.794 5892,36\
+ 5895.1,35.594 5898.2,35.149 5901.3,34.671", lp="5645.5,62"];
+	Indicator -> mow_dataroom_Class6 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,3290.5,271.55 3280.8,268.81 3228.1,253.96 3138.8,228.77 3079.3,212.01", lp="3204.5,238"];
+	mow_dataroom_Class6 -> mow_dataroom_2_Class7 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2782.8,124.12 2930.8,183.6 2859.6,175.59 2770.6,164.4 2765,158 2756.4,148.09 2763,138.15 2774.3,129.71", lp="2800.5,150"];
+	mow_dataroom_Class6 -> mow_dataroom_2_Class12 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3017.6,122.68 2930.9,185.84 2893,180.75 2854.7,172.21 2843,158 2838.5,152.5 2838.3,147.29 2843,142 2865.9,116.42 2957.6,127.15\
+ 3007.3,123.69", lp="2878.5,150"];
+	mow_dataroom_Class6 -> mow_dataroom_2_Class14 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2388.9,124.45 2930.9,182.11 2909.7,179.79 2887.1,177.57 2866,176 2839.9,174.05 2413.3,176.69 2395,158 2389,151.89 2387.4,143.12\
+ 2387.7,134.57", lp="2430.5,150"];
+	mow_dataroom_Class6 -> mow_dataroom_Class15 [label=indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3757.7,120.45 3107.1,185.96 3214.2,177.23 3382.6,162.89 3396,158 3407.7,153.73 3407.2,146.07 3419,142 3483.8,119.58 3658.8,130.85\
+ 3727,124 3733.7,123.33 3740.6,122.55 3747.5,121.72", lp="3443.5,150"];
+	mow_dataroom_Class6 -> mow_dataroom_Class10007 [label=periode, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4261.6,124.12 3107.2,184.55 3144.2,181.33 3187.6,177.97 3227,176 3281.3,173.29 4154.1,177.1 4205,158 4215.3,154.12 4214.5,147.61\
+ 4224,142 4232.8,136.78 4242.6,132.07 4252.3,127.92", lp="4245.5,150"];
+	ReferentieTabel -> mow_dataroom_Class7 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,4980.7,100.91 4970.5,100.14 4919.3,96.316 4845,91.134 4780,88 4711.7,84.708 4229.4,92.809 4165,70 4153.9,66.085 4154.8,58.563 \
+4144,54 4093.9,32.859 4076.4,46.094 4023,36 4019.9,35.413 4016.7,34.786 4013.5,34.133", lp="4170.5,62"];
+	Indicatorfiche -> mow_dataroom_Class10037 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,4727,175.8 4721.8,166.92 4716,157.79 4708.3,148.25 4699,142 4677.1,127.28 4649.8,118.7 4624.4,113.71", lp="4720.5,150"];
+	mow_dataroom_Class10037 -> mow_dataroom_Class10046 [label=aanspreekpunt, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4144.3,34.146 4469.6,92.468 4459.6,90.925 4449.6,89.4 4440,88 4380.1,79.25 4361.6,91.339 4305,70 4293,65.481 4293,58.562 4281,\
+54 4230.1,34.633 4211.3,45.934 4154.2,36.01", lp="4345.5,62"];
+	mow_dataroom_Class10037 -> mow_dataroom_Class7 [label=meetfrequentie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3999,36.021 4469.7,91.686 4459.7,90.273 4449.6,88.992 4440,88 4356.3,79.389 4141.6,97.067 4062,70 4050.2,65.992 4050,59.853 4039\
+,54 4029.4,48.872 4018.8,44.089 4008.4,39.807", lp="4103,62"];
+	mow_dataroom_Class10037 -> mow_dataroom_2_Class3 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2456.1,27.026 4469.7,91.399 4459.7,90.033 4449.7,88.842 4440,88 4379.4,82.718 3402.9,91.309 3346,70 3335.7,66.13 3337.3,57.904\
+ 3327,54 3286.3,38.613 2587.4,39.019 2544,36 2518.5,34.226 2490.6,31.236 2466.1,28.254", lp="3370.5,62"];
+	Frequentietabel -> mow_dataroom_Class10036 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6661.7,193.21 6651.4,193.25 6362.3,194.23 5131,196.11 4964,158 4947.3,154.19 4945.7,145.84 4929,142 4848.9,123.53 4271,130.07 \
+4189,124 4173.5,122.85 4157,121.19 4141,119.35", lp="4969.5,150"];
+	mow_dataroom_Class10036 -> mow_dataroom_Class7 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3945.5,36.244 3972.7,87.745 3964.7,83.15 3957.5,77.341 3952,70 3947,63.329 3945.2,54.661 3945,46.368", lp="3995.5,62"];
+	Dimensie -> mow_dataroom_2_Class19 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,2930.6,90.195 2920.7,88.299 2758.5,59.624 2387.2,102.61 2243,70 2225.9,66.139 2223.9,58.636 2207,54 2139,35.333 2059.5,26.622 \
+2000.1,22.557", lp="2248.5,62"];
+	Frequentietabel -> mow_dataroom_Class10035 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6661.5,191.86 6651.4,191.61 6461.5,186.89 5861.1,169.18 5366,124 5363,123.73 5360,123.45 5357,123.15", lp="5815.5,150"];
+	mow_dataroom_Class10035 -> mow_dataroom_Class8 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,5717.1,36.019 5357,88.871 5360,88.569 5363,88.278 5366,88 5429.6,82.034 5593.7,93.778 5653,70 5663.2,65.892 5662.2,59.131 5672\
+,54 5683,48.212 5695.1,43.308 5707.3,39.173", lp="5715.5,62"];
+	Dimensie -> mow_dataroom_2_Class18 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,2930.6,90.19 2920.8,88.298 2747.4,57.171 2349.2,95.191 2192,70 2167.7,66.106 2163.2,58.226 2139,54 2125.2,51.587 1752.6,33.036\
+ 1568.3,23.964", lp="2197.5,62"];
+	Frequentietabel -> mow_dataroom_Class10034 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6661.5,187.01 6651.3,185.81 6538.7,172.49 6305.3,145.06 6268,142 6106.6,128.75 6065.4,138.2 5904,124 5901.2,123.75 5898.4,123.49\
+ 5895.5,123.22", lp="6414.5,150"];
+	mow_dataroom_Class10034 -> mow_dataroom_Class9 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,5951.9,36.033 5860.9,87.918 5876.8,83.236 5892.7,77.354 5907,70 5916.8,64.951 5917.2,60.609 5926,54 5931.5,49.876 5937.5,45.679\
+ 5943.4,41.692", lp="5969.5,62"];
+	Dimensie -> mow_dataroom_2_Class17 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,2990.6,87.803 2999.1,82.086 3020.6,67.659 3047.8,49.342 3067.4,36.167", lp="3046.5,62"];
+	Frequentietabel -> mow_dataroom_Class10033 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6661.6,183.95 6651.7,182.17 6613.6,175.31 6563.4,166.21 6519,158 6481.2,151.01 6472.1,146.89 6434,142 6319.1,127.26 6289.3,135.24\
+ 6174,124 6170.8,123.69 6167.6,123.37 6164.4,123.03", lp="6524.5,150"];
+	mow_dataroom_Class10033 -> mow_dataroom_Class9 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,6000.7,36.118 6033.5,87.529 6029.8,77.217 6024.3,64.225 6017,54 6014.4,50.278 6011.3,46.653 6008,43.233", lp="6069.5,62"];
+	Dimensie -> mow_dataroom_2_Class16 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,2930.8,91.198 2921.1,87.787 2871.3,70.365 2857.5,66.091 2810,54 2783.7,47.305 2754.9,40.97 2728.6,35.576", lp="2874.5,62"];
+	Frequentietabel -> mow_dataroom_Class10032 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6661.4,176.67 6651.6,173.64 6617.3,163.2 6573.6,150.7 6534,142 6501.6,134.88 6466.3,128.69 6433.4,123.56", lp="6598.5,150"];
+	mow_dataroom_Class10032 -> mow_dataroom_Class9 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,6046.8,36.01 6244.8,87.917 6207.6,77.917 6159.7,65.11 6117,54 6097.5,48.913 6076.3,43.508 6056.6,38.507", lp="6217.5,62"];
+	Frequentietabel -> mow_dataroom_Class10031 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6661.6,189.28 6651.4,188.53 6524.8,179.25 6223.2,157.5 5970,142 5821.2,132.89 5783.5,137.39 5635,124 5632.2,123.75 5629.4,123.48\
+ 5626.5,123.2", lp="6219.5,150"];
+	mow_dataroom_Class10031 -> mow_dataroom_Class9 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,5901.7,34.208 5626.4,88.891 5692,80.354 5759.5,71.349 5763,70 5774.6,65.494 5774.5,58.711 5786,54 5827.5,37.051 5843,43.604 5891.5\
+,35.941", lp="5829.5,62"];
+	Dim_Element -> mow_dataroom_2_Class15 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1622.3,191.3 1632.3,190.94 1728.3,187.48 1929.7,180.45 2100,176 2150.4,174.68 2960.4,174.61 3008,158 3019.1,154.14 3018,145.98\
+ 3029,142 3075.8,125.16 3426.5,128.33 3476,124 3479.2,123.72 3482.4,123.42 3485.7,123.1", lp="3034.5,150"];
+	mow_dataroom_2_Class15 -> mow_dataroom_2_Class2 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3287.7,36.196 3485.7,89.116 3482.4,88.732 3479.2,88.359 3476,88 3454,85.523 3292.9,86.312 3278,70 3270.9,62.268 3274.3,52.692 \
+3280.9,43.934", lp="3302.5,62"];
+	Dim_Element -> mow_dataroom_2_Class14 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1597.6,175.75 1605.8,169.98 1621.3,159.34 1641.2,147.79 1661,142 1726.4,122.85 2206.1,129.79 2274,124 2277.1,123.73 2280.3,123.44\
+ 2283.5,123.12", lp="1666.5,150"];
+	mow_dataroom_2_Class14 -> mow_dataroom_2_Class2 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3209.9,35.105 2462.8,87.928 2481.8,82.696 2502.3,76.57 2521,70 2537.9,64.05 2540.5,57.876 2558,54 2694.6,23.739 3043.2,48.047 \
+3199.9,35.955", lp="2582.5,62"];
+	Persoonstabel -> mow_dataroom_Class22 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,4676.4,95.276 4666.4,93.433 4655.4,91.44 4643.8,89.524 4633,88 4549,76.2 4522.6,99.175 4443,70 4431.3,65.717 4431.6,58.462 4420\
+,54 4360.2,31.045 4339.8,48.501 4277,36 4274.2,35.434 4271.2,34.807 4268.3,34.138", lp="4448.5,62"];
+	Dim_Element -> mow_dataroom_2_Class21 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1571,175.69 1569.9,165.6 1569.6,157.06 1571.2,148.25 1577,142 1592.8,125.14 1761.1,126.53 1784,124 1787.2,123.65 1790.5,123.28\
+ 1793.7,122.9", lp="1582.5,150"];
+	mow_dataroom_2_Class21 -> mow_dataroom_2_Class19 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,1911,36.084 1911,87.597 1911,75.746 1911,59.817 1911,46.292", lp="1935.5,62"];
+	Dim_Element -> mow_dataroom_2_Class24 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1529.9,190.85 1519.6,190.34 1369.1,182.97 945.76,160.38 595,124 592.03,123.69 589.03,123.37 586.01,123.04", lp="977.5,150"];
+	mow_dataroom_2_Class24 -> mow_dataroom_2_Class19 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,1821.7,24.092 586.01,89.039 589.04,88.684 592.04,88.337 595,88 748.97,70.471 787.35,63.757 942,54 1223.8,36.223 1294.9,47.177 \
+1577,36 1655.9,32.874 1745.3,28.27 1811.7,24.642", lp="966.5,62"];
+	Dim_Element -> mow_dataroom_2_Class23 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1530,186.11 1519.9,184.6 1426.6,170.62 1237.8,142.32 1115.7,124.04", lp="1346.5,150"];
+	mow_dataroom_2_Class23 -> mow_dataroom_2_Class18 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,1375,36.008 1094.1,87.958 1172.2,73.518 1284,52.836 1364.8,37.893", lp="1301.5,62"];
+	Indicator -> mow_dataroom_Class10028 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,3290.5,275.81 3280.6,274.27 3189.6,260.18 2977.6,227.33 2857,208.64", lp="3102.5,238"];
+	mow_dataroom_Class10028 -> mow_dataroom_2_Class7 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2728.8,123.98 2680.8,178.82 2656.8,171.1 2640.9,159.43 2655,142 2657.4,138.98 2686.1,132.5 2719,125.92", lp="2690.5,150"];
+	mow_dataroom_Class10028 -> mow_dataroom_2_Class13 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2588.9,124.05 2680.8,182.3 2633,175.6 2582.2,166.62 2575,158 2567.6,149.11 2572.5,139.3 2581.3,130.67", lp="2610.5,150"];
+	mow_dataroom_Class10028 -> mow_dataroom_2_Class14 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2283.5,122.81 2680.9,182.06 2659.7,179.74 2637.1,177.54 2616,176 2587.4,173.92 2120.9,178.59 2101,158 2096.1,152.88 2096.2,147.28\
+ 2101,142 2112.8,128.91 2231,126.68 2273.5,123.7", lp="2136.5,150"];
+	mow_dataroom_Class10028 -> mow_dataroom_Class15 [label=indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3757.7,120.75 2857.2,183.3 2930.2,175.01 3024.6,163.56 3042,158 3056.4,153.41 3057.4,145.87 3072,142 3142.4,123.37 3654.5,130.16\
+ 3727,124 3733.7,123.43 3740.6,122.74 3747.6,121.95", lp="3096.5,150"];
+	mow_dataroom_Class10028 -> mow_dataroom_Class10007 [label=periode, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4206.2,124.06 2857.1,181.76 2878.3,179.45 2900.9,177.32 2922,176 2989.5,171.76 4075.7,181.65 4139,158 4149.3,154.14 4148.1,146.9\
+ 4158,142 4170.1,136.02 4183.2,131.05 4196.5,126.92", lp="4179.5,150"];
+	Dim_Element -> mow_dataroom_2_Class20 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1529.9,188.86 1519.9,187.95 1400.7,177.13 1113.4,150.5 873,124 870.1,123.68 867.17,123.35 864.21,123.02", lp="1206.5,150"];
+	mow_dataroom_2_Class20 -> mow_dataroom_2_Class19 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,1821.7,23.781 848.8,87.974 929.96,76.576 1041.4,62.208 1140,54 1333.7,37.872 1382.8,44.941 1577,36 1655.9,32.368 1745.2,27.796\
+ 1811.7,24.309", lp="1164.5,62"];
+	Indicator -> mow_dataroom_Class10029 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,3324,263.6 3324,253.34 3324,239.77 3324,223.86 3324,212.08", lp="3329.5,238"];
+	mow_dataroom_Class10029 -> mow_dataroom_2_Class7 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2873.2,124.04 3235.8,185.59 3123.8,176.08 2944,160.53 2937,158 2925.3,153.74 2925,147.79 2914,142 2904.1,136.79 2893.2,131.96 \
+2882.5,127.67", lp="2972.5,150"];
+	mow_dataroom_Class10029 -> mow_dataroom_2_Class12 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3117.4,124.24 3235.9,184.37 3195.3,178.84 3152.7,170.35 3137,158 3129.3,151.98 3124.2,142.86 3120.7,133.98", lp="3172.5,150"];
+	mow_dataroom_Class10029 -> mow_dataroom_2_Class15 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3485.6,122.77 3319.1,175.77 3317.1,164.76 3316.9,150.93 3325,142 3346,118.76 3429.2,126.81 3475.5,123.71", lp="3360.5,150"];
+	mow_dataroom_Class10029 -> mow_dataroom_Class15 [label=indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3866.3,124.4 3412.2,188.93 3565.9,181.64 3867.2,166.32 3875,158 3882,150.49 3879,140.97 3872.8,132.18", lp="3904.5,150"];
+	mow_dataroom_Class10029 -> mow_dataroom_Class10007 [label=periode, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4302.7,124.05 3412.1,188.86 3490.9,185.23 3609.6,179.93 3713,176 3744,174.82 4243,171.37 4271,158 4277.4,154.96 4287.5,143.45 \
+4296.5,132.13", lp="4309.5,150"];
+	ReferentieTabel -> mow_dataroom_Class10023 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,4997.4,87.803 4988.3,83.406 4957.9,68.738 4918.4,49.61 4890.2,36.02", lp="4965.5,62"];
+	Indicator -> mow_dataroom_Class10026 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,3357.4,275.09 3367.6,273.29 3447.1,259.21 3617.4,229.08 3722,210.57", lp="3616.5,238"];
+	mow_dataroom_Class10026 -> mow_dataroom_2_Class13 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2711.2,123.04 3721.8,189.27 3574.3,182.77 3289,169.02 3244,158 3227,153.84 3225.1,145.95 3208,142 3105.3,118.21 2843.4,133.91 \
+2721.5,123.98", lp="3279.5,150"];
+	mow_dataroom_Class10026 -> mow_dataroom_2_Class15 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3718.7,120.06 3806.9,175.78 3804,164.48 3798.4,150.31 3788,142 3777.5,133.63 3754.9,127.04 3728.8,121.94", lp="3835.5,150"];
+	mow_dataroom_Class10026 -> mow_dataroom_Class15 [label=indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3934,120.95 3898.2,184.62 3956.6,178.15 4024,168.55 4033,158 4037.6,152.6 4037.5,147.47 4033,142 4029.8,138.14 3987.5,130.05 3943.9\
+,122.63", lp="4061.5,150"];
+	mow_dataroom_Class10026 -> mow_dataroom_Class10007 [label=periode, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4331.3,124.32 3898.2,183.81 3926.8,181.03 3958.7,178.15 3988,176 4007.4,174.58 4323.6,172.08 4337,158 4343.7,150.97 4341.7,141.6\
+ 4336.9,132.81", lp="4363.5,150"];
+	ReferentieTabel -> mow_dataroom_Class10025 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,5085.2,88.925 5094.9,85.923 5143.3,70.989 5210.1,50.408 5256.8,36.027", lp="5203.5,62"];
+	ReferentieTabel -> mow_dataroom_Class10020 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,5085.1,89.993 5095.1,88.143 5144.8,79.614 5328.2,53.648 5453.7,36.008", lp="5322.5,62"];
+	ReferentieTabel -> mow_dataroom_Class10022 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,5043.3,87.597 5048.5,78.943 5056.7,65.041 5066.6,48.327 5073.9,36.084", lp="5069.5,62"];
+	Dimensie -> mow_dataroom_2_Class0 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,2930.6,90.183 2920.5,88.517 2797.6,72.063 2205.5,97.517 2124,70 2112.5,66.132 2113.5,57.847 2102,54 2080.3,46.721 635.38,24.785\
+ 311.11,19.95", lp="2129.5,62"];
+	ReferentieTabel -> mow_dataroom_Class10021 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,4980.8,99.94 4970.6,98.922 4864.7,88.291 4643.2,64.699 4457,36 4453.9,35.515 4450.7,35.003 4447.4,34.47", lp="4699.5,62"];
+	ReferentieTabel -> mow_dataroom_Class10 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,5085.1,89.574 5095,88.377 5216.2,76.647 5793.8,97.768 5873,70 5884.1,66.119 5882.9,57.866 5894,54 5972.1,26.751 7211.5,20.412 \
+7527.9,19.235", lp="5899.5,62"];
+	Indicatorfiche -> mow_dataroom_Class15 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,4687.8,177.57 4678.2,174.43 4633.7,159.86 4579.2,142.03 4579,142 4442.1,118.17 4092.4,136.83 3954,124 3947.5,123.4 3940.8,122.65\
+ 3934,121.8", lp="4631.5,150"];
+	mow_dataroom_Class15 -> mow_dataroom_Class22 [label=aanspreekpunt, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4207.3,36.306 3934,90.577 3940.8,89.645 3947.5,88.772 3954,88 4003.6,82.113 4134.5,94.452 4178,70 4188.1,64.318 4196.2,54.586 \
+4202.2,45.137", lp="4236.5,62"];
+	mow_dataroom_Class15 -> mow_dataroom_Class7 [label=meetfrequentie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3884.5,35.872 3846.9,87.527 3848.3,76.696 3851.8,63.152 3860,54 3864.5,48.938 3869.9,44.6 3875.7,40.884", lp="3901,62"];
+	mow_dataroom_Class15 -> mow_dataroom_2_Class1 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3560.2,21.422 3820.4,87.8 3802.1,76.36 3776.5,62.013 3752,54 3692.9,34.683 3622.8,26.018 3570.4,22.136", lp="3812.5,62"];
+	mow_dataroom_Class15 -> mow_dataroom_2_Class2 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3361.8,36.18 3757.7,91.55 3747.4,90.223 3737,89 3727,88 3658.6,81.13 3481.9,95.452 3418,70 3407.7,65.915 3408.5,59.632 3399,54\
+ 3390.3,48.868 3380.8,44.219 3371.3,40.109", lp="3442.5,62"];
+	Frequentietabel -> mow_dataroom_Class10010 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6738.6,175.8 6747.1,170.28 6769.5,155.82 6798,137.4 6818.5,124.17", lp="6795.5,150"];
+	mow_dataroom_Class10010 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7527.7,23.987 6950.2,87.972 7019.3,77.184 7111.9,63.522 7194,54 7305.8,41.041 7435.3,30.703 7517.7,24.714", lp="7237.5,62"];
+	Frequentietabel -> mow_dataroom_Class10011 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6762.3,182.2 6772.2,180.07 6841.6,165.14 6956,140.54 7032.7,124.06", lp="6952.5,150"];
+	mow_dataroom_Class10011 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7527.8,29.306 7193.8,87.954 7244.7,77.581 7311.5,64.377 7371,54 7419.5,45.532 7474.1,37.186 7517.8,30.769", lp="7414.5,62"];
+	Dim_Element -> Dimensie [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2930.6,121.83 1622.2,189.71 1671.4,185.43 1751.2,176.22 1818,158 1836.1,153.07 1838.6,145.78 1857,142 2085.7,94.907 2673.5,168.2\
+ 2920.5,123.75", lp="1881.5,150"];
+	Frequentietabel -> mow_dataroom_Class10014 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6762.3,186.78 6772.4,185.52 6871.7,173.17 7075.6,147.51 7248,124 7251.2,123.57 7254.4,123.12 7257.7,122.67", lp="7105.5,150"];
+	mow_dataroom_Class10014 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7554.4,36.061 7412.7,87.906 7450.8,73.984 7504.6,54.286 7544.9,39.514", lp="7547.5,62"];
+	Frequentietabel -> mow_dataroom_Class10015 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6762.6,189.47 6772.8,188.74 6903.2,179.34 7219.2,155.17 7483,124 7486.3,123.61 7489.6,123.21 7493,122.78", lp="7319.5,150"];
+	mow_dataroom_Class10015 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7601,36.084 7601,87.597 7601,75.746 7601,59.817 7601,46.292", lp="7644.5,62"];
+	Frequentietabel -> mow_dataroom_Class10012 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6762.4,190.93 6772.7,190.47 6929.5,183.6 7360.7,162.44 7718,124 7720.9,123.69 7723.8,123.37 7726.8,123.04", lp="7530.5,150"];
+	mow_dataroom_Class10012 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7650.6,36.061 7801.3,87.906 7760.7,73.925 7703.1,54.119 7660.1,39.327", lp="7791.5,62"];
+	Frequentietabel -> mow_dataroom_Class10013 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6762.5,192.32 6772.7,192.15 6956,189.06 7519.9,175.71 7984,124 7987.1,123.65 7990.3,123.28 7993.5,122.9", lp="7781.5,150"];
+	mow_dataroom_Class10013 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7674.1,28.839 8018.2,87.99 7966.8,77.568 7899.2,64.3 7839,54 7787.7,45.224 7730,36.701 7684.2,30.263", lp="7968.5,62"];
+	Frequentietabel -> mow_dataroom_Class10018 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6762.3,192.22 6772.7,192.04 6936.9,189.24 7403.5,179.81 7791,158 7979.8,147.38 8027,143.73 8215,124 8218.2,123.66 8221.4,123.32\
+ 8224.7,122.95", lp="8036.5,150"];
+	mow_dataroom_Class10018 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7674.2,23.639 8247.7,87.984 8182.2,77.098 8094.1,63.322 8016,54 7901.3,40.317 7768.1,30.081 7684.2,24.319", lp="8168.5,62"];
+	ReferentieTabel -> mow_dataroom_Class10019 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,4980.9,94.882 4970.9,92.949 4894.5,78.121 4764.4,52.847 4677.8,36.036", lp="4857.5,62"];
+	Frequentietabel -> mow_dataroom_Class10016 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6762.3,192.63 6772.6,192.55 6961.2,190.89 7555,183.84 8046,158 8237.4,147.93 8285.4,144.9 8476,124 8479.2,123.65 8482.4,123.29\
+ 8485.6,122.91", lp="8302.5,150"];
+	mow_dataroom_Class10016 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7674,21.426 8485.6,89.305 8482.4,88.864 8479.2,88.428 8476,88 8360.5,72.337 8332,64.874 8216,54 8026.1,36.208 7802.4,26.222 7684.1\
+,21.798", lp="8393.5,62"];
+	Frequentietabel -> mow_dataroom_Class10017 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6762.5,193.03 6772.8,193.02 6985,192.82 7712.4,189.7 8312,158 8492.4,148.46 8537.5,143.93 8717,124 8720.1,123.66 8723.3,123.29\
+ 8726.4,122.92", lp="8546.5,150"];
+	mow_dataroom_Class10017 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7674.2,20.058 8728.1,87.953 8648.2,76.468 8538.3,62.004 8441,54 8164.4,31.24 7835.3,22.981 7684.3,20.239", lp="8626.5,62"];
+	Indicator -> mow_dataroom_Class10059 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,3290.6,279.33 3280.6,278.81 3144.6,271.76 2714.7,247.98 2360,212 2355.7,211.57 2351.4,211.11 2347.1,210.63", lp="2736.5,238"];
+	mow_dataroom_Class10059 -> mow_dataroom_2_Class8 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2046.7,122.65 2108.8,187.32 2025.3,182.09 1926.3,172.84 1913,158 1908.3,152.7 1908.3,147.37 1913,142 1913.1,141.84 1975.1,132.91\
+ 2036.5,124.11", lp="1948.5,150"];
+	mow_dataroom_Class10059 -> mow_dataroom_2_Class21 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,1793.6,123.08 2108.8,193.86 1956.1,193.69 1707.7,188.62 1679,158 1674.1,152.81 1674.4,147.39 1679,142 1681,139.72 1730.7,132.06\
+ 1783.7,124.49", lp="1714.5,150"];
+	mow_dataroom_Class10059 -> mow_dataroom_Class10058 [label=indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3228.9,123.19 2228.8,175.84 2230.4,164.26 2234.5,149.74 2245,142 2265.8,126.7 3110.7,126.05 3218.7,123.56", lp="2269.5,150"];
+	mow_dataroom_Class10059 -> mow_dataroom_Class10036 [label=periode, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3962.9,121.68 2347,177.04 2351.4,176.66 2355.7,176.31 2360,176 2426.6,171.23 3499.4,181.37 3562,158 3572.3,154.14 3570.7,146.04\
+ 3581,142 3656,112.51 3862.9,132.22 3943,124 3946.2,123.67 3949.5,123.3 3952.8,122.92", lp="3602.5,150"];
+	Indicatorfiche -> mow_dataroom_Class10058 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,4687.9,189.34 4677.6,188.56 4629.2,184.9 4558.1,179.73 4496,176 4414.3,171.1 4207.8,176.16 4128,158 4110.1,153.93 4107.9,145.89\
+ 4090,142 3956.6,113.02 3612.1,135 3476,124 3473.1,123.77 3470.2,123.51 3467.2,123.24", lp="4133.5,150"];
+	mow_dataroom_Class10058 -> mow_dataroom_Class10046 [label=aanspreekpunt, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4032,34.245 3467.2,89.056 3470.2,88.696 3473.1,88.344 3476,88 3552.3,78.939 3577.3,100.08 3648,70 3658.2,65.68 3656.7,58.046 3667\
+,54 3740.5,25.048 3943.9,47.912 4022,36 4022.1,35.984 4022.2,35.969 4022.3,35.953", lp="3707.5,62"];
+	mow_dataroom_Class10058 -> mow_dataroom_Class7 [label=meetfrequentie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3884.5,21.689 3467,88.987 3490.6,84.141 3514.8,77.926 3537,70 3550.9,65.04 3551.9,58.317 3566,54 3621.7,36.901 3779.7,26.844 3874.4\
+,22.178", lp="3607,62"];
+	mow_dataroom_Class10058 -> mow_dataroom_2_Class3 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2456.2,26.096 3228.9,88.9 3225.6,88.579 3222.3,88.278 3219,88 3167.8,83.639 2804.9,88.549 2757,70 2746.7,66.014 2748.2,58.26 2738\
+,54 2698.1,37.291 2587.1,40.504 2544,36 2518.6,33.34 2490.7,30.158 2466.2,27.27", lp="2781.5,62"];
+	mow_dataroom_Class10058 -> mow_dataroom_2_Class19 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2000.2,22.768 3228.9,88.877 3225.6,88.563 3222.3,88.269 3219,88 3159.8,83.116 2740.4,91.29 2685,70 2674.7,66.041 2676.3,58.024\
+ 2666,54 2658.5,51.049 2213.6,31.835 2010.3,23.196", lp="2709.5,62"];
+	Indicator -> mow_dataroom_Class10057 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,3290.5,277.58 3280.2,276.53 3215.2,269.89 3089.1,257.01 2982,246 2853.9,232.83 2707.1,217.67 2607,207.32", lp="2987.5,238"];
+	mow_dataroom_Class10057 -> mow_dataroom_2_Class7 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2728.9,122.99 2368.9,176.71 2335.2,170.92 2306.2,164.27 2301,158 2296.5,152.53 2296.1,147.14 2301,142 2316.1,126.26 2649.4,126.35\
+ 2718.5,123.6", lp="2336.5,150"];
+	mow_dataroom_Class10057 -> mow_dataroom_2_Class21 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,1946.7,124.04 2369,177.26 2364.6,176.81 2360.3,176.39 2356,176 2208.4,162.52 2166.9,193.33 2023,158 2015.8,156.24 1983.9,141.58\
+ 1955.9,128.42", lp="2058.5,150"];
+	mow_dataroom_Class10057 -> mow_dataroom_Class10058 [label=indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3228.9,123.16 2493.5,175.81 2498.2,164.05 2506.4,149.32 2519,142 2551.1,123.39 3123.9,126.68 3218.7,123.64", lp="2543.5,150"];
+	mow_dataroom_Class10057 -> mow_dataroom_Class10036 [label=periode, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,3962.9,121.59 2607.2,180.7 2628.7,178.85 2651,177.17 2672,176 2725,173.05 3577.5,174.37 3628,158 3639.8,154.16 3639.2,146.09 3651\
+,142 3712.4,120.65 3878.4,131.02 3943,124 3946.2,123.65 3949.5,123.27 3952.8,122.87", lp="3672.5,150"];
+	Dim_Element -> mow_dataroom_2_Class9 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1553.4,175.57 1546.7,168.12 1540.1,159.65 1536.8,150.24 1543,142 1548.3,135 1562,129 1578.5,124.05", lp="1548.5,150"];
+	mow_dataroom_2_Class9 -> mow_dataroom_2_Class3 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2339.9,34.557 1775.3,88.848 1778.2,88.545 1781.1,88.261 1784,88 1889,78.408 2156.7,98.984 2258,70 2271.8,66.059 2272.9,59.727 \
+2286,54 2300,47.891 2315.4,42.355 2330.2,37.582", lp="2310.5,62"];
+	Dim_Element -> mow_dataroom_2_Class7 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1622.2,191.03 1632.2,190.23 1675.1,186.55 1735,177.97 1784,158 1795.5,153.3 1795.2,145.84 1807,142 1903.5,110.68 2619,133.45 2720\
+,124 2722.9,123.73 2725.9,123.42 2728.9,123.08", lp="1812.5,150"];
+	mow_dataroom_2_Class7 -> mow_dataroom_2_Class3 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2406.6,36.403 2728.9,89.089 2725.9,88.702 2722.9,88.337 2720,88 2657.6,80.779 2493.6,99.26 2438,70 2427.3,64.38 2418.6,54.525 \
+2412,44.967", lp="2462.5,62"];
+	Dim_Element -> mow_dataroom_2_Class8 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1582.8,175.81 1587.6,166.9 1593.2,157.36 1601,147.56 1611,142 1652.4,119.05 1989.8,128.36 2037,124 2040.2,123.7 2043.5,123.38 \
+2046.8,123.03", lp="1616.5,150"];
+	mow_dataroom_2_Class8 -> mow_dataroom_2_Class3 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2382.7,36.328 2265.2,88.915 2296.1,83.31 2325.1,76.731 2339,70 2352.4,63.512 2365.2,53.187 2375.4,43.519", lp="2387.5,62"];
+	Dim_Element -> mow_dataroom_2_Class5 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1529.8,192.7 1519.6,192.61 1358.4,191.2 881.73,184.89 487,158 341.66,148.1 305.02,145.86 161,124 158.17,123.57 155.3,123.11 152.4\
+,122.63", lp="492.5,150"];
+	mow_dataroom_2_Class5 -> mow_dataroom_2_Class0 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,213.16,36.02 110.19,87.803 137.19,74.224 175.02,55.198 204.06,40.594", lp="201.5,62"];
+	Dim_Element -> mow_dataroom_2_Class6 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,1529.8,193.05 1519.7,193.03 1343.6,192.44 787.91,185.47 333,124 329.83,123.57 326.61,123.1 323.35,122.59", lp="644.5,150"];
+	mow_dataroom_2_Class6 -> mow_dataroom_2_Class0 [label=dimensie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,247,36.084 247,87.597 247,75.746 247,59.817 247,46.292", lp="271.5,62"];
+	Dimensie -> mow_dataroom_2_Class3 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,2930.6,90.249 2920.7,88.342 2817.3,70.789 2594,98.381 2510,70 2498.2,66.015 2498,59.874 2487,54 2474.6,47.343 2460.6,41.248 2447.4\
+,36.076", lp="2515.5,62"];
+	Dimensie -> mow_dataroom_2_Class4 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,2944,87.597 2935.9,80.909 2918.6,66.643 2897.2,48.91 2881.7,36.084", lp="2928.5,62"];
+	Indicatorfiche -> Persoonstabel [label="aanspreekpunt*", color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4771.3,109.94 4782.1,185.36 4814.3,177.99 4848.4,164.54 4832,142 4820.2,125.71 4800.6,116.85 4781.3,112.08", lp="4881,150"];
+	Indicatorfiche -> ReferentieTabel [label=type_indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,5085.3,123.77 4782.1,192.15 4879.1,189.9 5093.9,182.23 5116,158 5120.8,152.75 5119.9,147.93 5116,142 5112.8,137.21 5104.6,132.29\
+ 5094.6,127.7", lp="5160.5,150"];
+	Indicatorfiche -> ReferentieTabel [label=meetfrequentie, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,5030.1,124.42 4782,192.54 4851.2,190.96 4975.9,184.42 5011,158 5018.7,152.19 5023.8,143.11 5027.1,134.21", lp="5065,150"];
+	Indicatorfiche -> Dimensie [label="dimensie*", color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2999.4,121.83 4687.9,189.14 4639.7,185.31 4562.7,179.52 4496,176 4379.9,169.87 4086.8,181.95 3973,158 3954.3,154.06 3951.8,145.8\
+ 3933,142 3734.7,101.8 3225.8,162.48 3009.5,123.75", lp="4001,150"];
+	Indicatorfiche -> Persoonstabel [label="beheerder*", color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4738.1,124.16 4743.5,175.87 4747.3,165.9 4750.3,153.15 4747,142 4746.1,138.96 4744.8,135.95 4743.4,133.03", lp="4780,150"];
+	Dimensie -> mow_dataroom_2_Class1 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,2999,90.674 3008.7,88.181 3069.6,73.043 3087.7,77.893 3146,70 3196.7,63.136 3209.2,60.47 3260,54 3329.7,45.118 3347.7,47.682 3417\
+,36 3419.9,35.505 3422.9,34.97 3425.9,34.405", lp="3265.5,62"];
+	Dimensie -> mow_dataroom_2_Class2 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,2999.1,90.979 3008.8,87.986 3084.2,64.912 3160.7,47.764 3218.5,36.024", lp="3136.5,62"];
+	Frequentietabel -> ReferentieTabel [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,5085.1,122.24 6661.7,192.36 6498.6,190.11 5969.8,181.39 5533,158 5340.8,147.71 5288.5,157.64 5095,123.98", lp="5576.5,150"];
+	Frequentietabel -> mow_dataroom_Class10007 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6661.5,192.85 6651.4,192.82 6356,191.79 5077.5,185.74 4998,158 4986.9,154.13 4988.1,145.95 4977,142 4922.9,122.67 4517.3,128.35\
+ 4460,124 4450.6,123.29 4441,122.43 4431.3,121.48", lp="5003.5,150"];
+	mow_dataroom_Class10007 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7527.7,19.814 4391.4,87.99 4411.9,82.817 4433.9,76.706 4454,70 4471.4,64.19 4474.1,57.728 4492,54 4494.4,53.505 7022,25.426 7517.4\
+,19.928", lp="4535.5,62"];
+	Frequentietabel -> mow_dataroom_Class10008 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6762.3,193.24 6772.5,193.27 7004,194 7855.7,193.93 8556,158 8736.8,148.72 8781.9,142.79 8962,124 8965.2,123.67 8968.4,123.32 8971.7\
+,122.97", lp="8791.5,150"];
+	mow_dataroom_Class10008 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7674.3,19.248 8980.4,87.994 8895.4,76.411 8777.9,61.812 8674,54 8305.9,26.322 7865.2,20.521 7684.5,19.314", lp="8880.5,62"];
+	Persoonstabel -> mow_dataroom_Class10046 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,4676.5,95.14 4666.4,93.302 4655.4,91.321 4643.9,89.442 4633,88 4583.1,81.365 4454.1,87.997 4407,70 4396,65.809 4397,58.178 4386\
+,54 4288.9,17.014 4255.4,53.209 4153,36 4150.1,35.517 4147.2,34.966 4144.2,34.365", lp="4412.5,62"];
+	Frequentietabel -> mow_dataroom_Class10009 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,6685.4,175.8 6676.9,170.28 6654.5,155.82 6626,137.4 6605.5,124.17", lp="6662.5,150"];
+	mow_dataroom_Class10009 -> mow_dataroom_Class10 [label=frequentie_type, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,7527.6,21.582 6697.9,87.985 6779.2,76.888 6889.4,62.869 6987,54 7176.3,36.79 7399.3,26.588 7517.6,21.972", lp="7030.5,62"];
+	Indicator -> Dim_Element [label="dim_element*", color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,1622.1,197.8 3290.6,279.77 3177.8,275.57 2800.6,261.23 2489,246 2164.5,230.14 1775.4,207.05 1632.3,198.42", lp="2528,238"];
+	Indicator -> Indicatorfiche [label=indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4687.8,198.41 3357.5,279.4 3454.7,274.71 3745.7,260.43 3987,246 4213.3,232.47 4269.8,227.6 4496,212 4558.1,207.72 4629.2,202.64\
+ 4677.6,199.16", lp="4258.5,238"];
+	Indicator -> Frequentietabel [label=periode, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,6661.6,196.28 3357.3,280.16 3678.3,272.01 6224.2,207.38 6651.3,196.54", lp="5343.5,238"];
+	Indicator -> mow_dataroom_Class10048 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,3357.7,277.14 3367.9,275.97 3491.1,261.86 3841.2,221.77 3997.7,203.85", lp="3772.5,238"];
+	mow_dataroom_Class10048 -> mow_dataroom_2_Class8 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2265.2,123.24 3997.7,184.23 3969.2,181.25 3936.7,178.14 3907,176 3860.4,172.65 3530.5,174.95 3487,158 3476.7,153.99 3478.3,145.86\
+ 3468,142 3407.9,119.53 2407.8,128.6 2275.5,123.77", lp="3522.5,150"];
+	mow_dataroom_Class10048 -> mow_dataroom_Class10037 [label=indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4538,124.34 4152.3,187.5 4274.3,178.71 4498.3,162.09 4506,158 4516.8,152.3 4525.7,142.43 4532.5,132.88", lp="4550.5,150"];
+	mow_dataroom_Class10048 -> mow_dataroom_Class10036 [label=periode, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4141.1,118.58 4152.7,187.32 4247,180.03 4394.7,167.24 4403,158 4407.8,152.71 4407.8,147.23 4403,142 4386.8,124.43 4212.7,126.47\
+ 4189,124 4176.8,122.73 4163.9,121.28 4151.3,119.79", lp="4428.5,150"];
+	Indicator -> mow_dataroom_Class10047 [dir=back, label=io, color="0.0,1.0,1.0", fontcolor="0.0,1.0,1.0", pos="s,3357.3,278.51 3367.7,277.73 3449.2,271.62 3629.8,257.99 3782,246 3980.5,230.36 4214.2,211.18 4332.7,201.4", lp="3977.5,238"];
+	mow_dataroom_Class10047 -> mow_dataroom_2_Class7 [label=dim_element, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,2913.1,123.07 4332.6,187.16 4283.5,183.59 4218.5,179.12 4161,176 4111.3,173.3 3759.4,176.02 3713,158 3702.7,154.01 3704.3,145.91\
+ 3694,142 3616.3,112.59 3044.8,130.91 2923.4,123.83", lp="3748.5,150"];
+	mow_dataroom_Class10047 -> mow_dataroom_Class10037 [label=indicator, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4620.4,124.1 4487.3,191.76 4546.5,188.98 4621.3,180.87 4641,158 4651.5,145.76 4644.1,135.95 4629.6,128.34", lp="4670.5,150"];
+	mow_dataroom_Class10047 -> mow_dataroom_Class10036 [label=periode, color="0.6666667,1.0,1.0", fontcolor="0.6666667,1.0,1.0", style=filled, pos="e,4141.1,118.78 4439.3,175.94 4453,165.89 4464.3,153.02 4454,142 4433.9,120.44 4218.4,126.82 4189,124 4176.8,122.83 4163.9,121.44\
+ 4151.2,119.97", lp="4480.5,150"];
+}

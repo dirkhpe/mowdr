@@ -1,6 +1,6 @@
 =head1 NAME
 
-indicator_report - Map indicatorfiche to indicator information. (test)
+indicator_report - Map indicatorfiche to indicator information.
 
 =head1 VERSION HISTORY
 

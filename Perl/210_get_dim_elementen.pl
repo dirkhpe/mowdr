@@ -180,6 +180,14 @@ foreach my $record (@$ref) {
 	$a_dims{$table_name} = 1;
 }
 
+# Insert 'geen waarde' as default value in dim_element table
+$query = "INSERT INTO dim_element (dim_element_id, dimensie_id, waarde)
+                 VALUES (-1, -1, 'geen waarde')";
+if (not($dbt->do($query))) {
+	$log->fatal("Could not enter -1 default values into dim_element");
+	exit_application(1);
+}
+
 my @fields = qw (dimensie_id waarde);
 
 # Collect all F1 Dimensies for which an Access dimensie exists

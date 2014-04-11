@@ -1,4 +1,4 @@
-; Fri Mar 21 17:36:31 CET 2014
+; Fri Apr 11 11:35:31 CEST 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -6,7 +6,7 @@
 ([mow_sitemap_Class0] of  Pagina
 
 	(gebruiker_documentatie "Hier wordt aangegeven welke indicator gemeten wordt bij welke sectie van een beleidsdocument.")
-	(naam "Indicatorfiche per Beleidsdocument")
+	(naam "Indicatoren Toevoegen / Aanpassen")
 	(nummer "63")
 	(opgeroepen_door [mow_sitemap_Class37]))
 
@@ -58,9 +58,9 @@
 		[mow_sitemap_Class31]
 		[mow_sitemap_Class33]
 		[mow_sitemap_Class10000]
-		[mow_sitemap_Class36]
 		[mow_sitemap_Class38]
-		[mow_sitemap_Class10001])
+		[mow_sitemap_Class10001]
+		[mow_sitemap_Class60000])
 	(opgeroepen_door [mow_sitemap_Class13]))
 
 ([mow_sitemap_Class15] of  Pagina
@@ -84,7 +84,7 @@
 		[mow_sitemap_Class43]
 		[mow_sitemap_Class45]
 		[mow_sitemap_Class47]
-		[mow_sitemap_Class36])
+		[mow_sitemap_Class60000])
 	(nummer "51")
 	(opgeroepen_door [mow_sitemap_Class15])
 	(scherm_type DML_Form))
@@ -287,19 +287,16 @@
 
 ([mow_sitemap_Class36] of  Pagina
 
-	(developer_documentatie "Er is nog geen scherm voorzien voor het beheer van de beleidsdocumenten zelf.")
 	(gebruiker_documentatie "Met dit scherm wordt aangegeven welke indicatoren gebruikt worden in welke sectie van beleidsdocumenten. Enkel de laagste sectie moet aangeduid worden. Andere informatie kan uit de structuur van het beleidsdocument afgeleid worden.")
 	(naam "Beleidsdocumenten")
 	(naar [mow_sitemap_Class37])
 	(nummer "61")
-	(opgeroepen_door
-		[mow_sitemap_Class14]
-		[mow_sitemap_Class16]))
+	(opgeroepen_door [mow_sitemap_Class60000]))
 
 ([mow_sitemap_Class37] of  Pagina
 
 	(gebruiker_documentatie "Per sectie van een beleidsdocument kunnen indicatorfiches toegekend of verwijderd worden.")
-	(naam "Indicatorfiches per Beleidsdocument")
+	(naam "Indicatoren per Beleidsdocument")
 	(naar [mow_sitemap_Class0])
 	(nummer "62")
 	(opgeroepen_door [mow_sitemap_Class36]))
@@ -450,3 +447,33 @@
 	(nummer "33")
 	(opgeroepen_door [mow_sitemap_Class50000])
 	(scherm_type Tabular_Form))
+
+([mow_sitemap_Class60000] of  Pagina
+
+	(developer_documentatie "Form on Table with Report - Classic Interface.")
+	(gebruiker_documentatie "Overzicht van de Beleidsdocumenten. Van hier kan de gebruiker kiezen om een nieuw document te maken, de naam van het document te veranderen, Indicatoren aan Doelstellingen van het document te beheren of de inhoud van het document te beheren.")
+	(naam "Overzicht Beleidsdocumenten")
+	(naar
+		[mow_sitemap_Class36]
+		[mow_sitemap_Class60001]
+		[mow_sitemap_Class60002])
+	(nummer "4")
+	(opgeroepen_door
+		[mow_sitemap_Class14]
+		[mow_sitemap_Class16]))
+
+([mow_sitemap_Class60001] of  Pagina
+
+	(developer_documentatie "Parent_ID van een Document naam is -1. TOC is onbelangrijk, maar kan NULL zijn (opletten met SELECT!).\nDOC_ID voor een nieuw document is max(doc_id)+1 van tabel beleidsdocument. Dit wordt met PLSQL after Computations & Validations ingesteld.")
+	(gebruiker_documentatie "Nieuw Document toevoegen, naam van bestaand document wijzigen of een bestaand document verwijderen. Een document kan slechts verwijderd worden als er geen doelstellingen meer aan het document gekoppeld zijn.")
+	(naam "Beheer Beleidsdocument")
+	(nummer "9")
+	(opgeroepen_door [mow_sitemap_Class60000]))
+
+([mow_sitemap_Class60002] of  Pagina
+
+	(developer_documentatie "Tabular Form on Beleidsdocument. Validation on TOC: NOT NULL and complies to REGEXP: ^([[:alnum:]]+[\\.]{0,1})+$\nTOC is alphanumeric, no blanks, level delimiter is dot. Loosely coupled TOC, parent is based on SORT from TOC field. \nParent is calculated for all entries from the document on submit. \nDOC_ID must be a TEXT field, not DISPLAY ONLY otherwise it will not be taken into account for INSERT RECORD. Hide display in Overview Attributes.")
+	(gebruiker_documentatie "TOC moet alfanumeriek zijn, geen spaties. \nToekennen van Parent ID gebeurt op Level. Level delimiter is Punt '.'\n'Los' gekoppelde structuur is toegelaten.")
+	(naam "Beleidsdoelstellingen")
+	(nummer "10")
+	(opgeroepen_door [mow_sitemap_Class60000]))

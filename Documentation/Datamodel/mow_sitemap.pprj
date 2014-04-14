@@ -1,4 +1,4 @@
-; Fri Apr 11 11:35:31 CEST 2014
+; Fri Apr 11 14:20:56 CEST 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -20,12 +20,12 @@
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[mow_sitemap_ProjectKB_Class13]
-		[mow_sitemap_ProjectKB_Class14]
-		[mow_sitemap_ProjectKB_Class15]
-		[mow_sitemap_ProjectKB_Class16]
-		[mow_sitemap_ProjectKB_Class17]
-		[mow_sitemap_ProjectKB_Class18]))
+		[mow_sitemap_ProjectKB_Class4]
+		[mow_sitemap_ProjectKB_Class5]
+		[mow_sitemap_ProjectKB_Class6]
+		[mow_sitemap_ProjectKB_Class7]
+		[mow_sitemap_ProjectKB_Class8]
+		[mow_sitemap_ProjectKB_Class9]))
 
 ([CLSES_TAB] of  Widget
 
@@ -69,7 +69,7 @@
 	(is_hidden FALSE)
 	(widget_class_name "edu.stanford.smi.protege.widget.InstancesTab"))
 
-([KB_883160_Class3] of  Map
+([KB_252370_Class3] of  Map
 )
 
 ([KB_961727_Class0] of  String
@@ -80,9 +80,9 @@
 ([KB_961727_Class1] of  Map
 
 	(entries
-		[mow_sitemap_ProjectKB_Class19]
-		[mow_sitemap_ProjectKB_Class20]
-		[mow_sitemap_ProjectKB_Class21]))
+		[mow_sitemap_ProjectKB_Class10]
+		[mow_sitemap_ProjectKB_Class11]
+		[mow_sitemap_ProjectKB_Class12]))
 
 ([KB_961727_Class10] of  Property_List
 )
@@ -577,19 +577,30 @@
 	(name "layout properties")
 	(properties [VERTICAL_STRETCHER]))
 
+([mow_sitemap_ProjectKB_Class10] of  Map_Entry
+
+	(key "add_name_on_instance_form")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([mow_sitemap_ProjectKB_Class11] of  Map_Entry
+
+	(key "change_tracking_active")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
 ([mow_sitemap_ProjectKB_Class115] of  String
 
 	(name "SearchTab_Query"))
 
-([mow_sitemap_ProjectKB_Class13] of  String
+([mow_sitemap_ProjectKB_Class12] of  Map_Entry
 
-	(name ":INSTANCE-ANNOTATION")
-	(string_value "%3AANNOTATION-TEXT"))
-
-([mow_sitemap_ProjectKB_Class14] of  String
-
-	(name ":PAL-CONSTRAINT")
-	(string_value "%3APAL-NAME"))
+	(key "suppress_instance_counting")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
 
 ([mow_sitemap_ProjectKB_Class140] of  Widget
 
@@ -659,11 +670,6 @@
 	(boolean_value FALSE)
 	(name "ButtonDisplayed-View References to Value"))
 
-([mow_sitemap_ProjectKB_Class15] of  String
-
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
-
 ([mow_sitemap_ProjectKB_Class150] of  Boolean
 
 	(boolean_value FALSE)
@@ -683,41 +689,20 @@
 ([mow_sitemap_ProjectKB_Class152] of  Property_List
 )
 
-([mow_sitemap_ProjectKB_Class16] of  String
+([mow_sitemap_ProjectKB_Class4] of  String
 
-	(name "Lijst")
-	(string_value "naam"))
+	(name ":INSTANCE-ANNOTATION")
+	(string_value "%3AANNOTATION-TEXT"))
 
-([mow_sitemap_ProjectKB_Class17] of  String
+([mow_sitemap_ProjectKB_Class5] of  String
 
-	(name "Tab")
-	(string_value "naam"))
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
 
-([mow_sitemap_ProjectKB_Class18] of  String
+([mow_sitemap_ProjectKB_Class6] of  String
 
-	(name "Pagina")
-	(string_value "nummer{+-+}naam"))
-
-([mow_sitemap_ProjectKB_Class19] of  Map_Entry
-
-	(key "add_name_on_instance_form")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
-
-([mow_sitemap_ProjectKB_Class20] of  Map_Entry
-
-	(key "change_tracking_active")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
-
-([mow_sitemap_ProjectKB_Class21] of  Map_Entry
-
-	(key "suppress_instance_counting")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
+	(name ":PAL-CONSTRAINT")
+	(string_value "%3APAL-NAME"))
 
 ([mow_sitemap_ProjectKB_Class64] of  Widget
 
@@ -766,6 +751,11 @@
 	(width 200)
 	(x 0)
 	(y 240))
+
+([mow_sitemap_ProjectKB_Class7] of  String
+
+	(name "Lijst")
+	(string_value "naam"))
 
 ([mow_sitemap_ProjectKB_Class70] of  Property_List
 )
@@ -833,6 +823,11 @@
 	(boolean_value FALSE)
 	(name "ButtonDisplayed-View References to Value"))
 
+([mow_sitemap_ProjectKB_Class8] of  String
+
+	(name "Tab")
+	(string_value "naam"))
+
 ([mow_sitemap_ProjectKB_Class80] of  Boolean
 
 	(boolean_value FALSE)
@@ -865,6 +860,11 @@
 
 ([mow_sitemap_ProjectKB_Class84] of  Property_List
 )
+
+([mow_sitemap_ProjectKB_Class9] of  String
+
+	(name "Pagina")
+	(string_value "nummer{+-+}naam"))
 
 ([option_instance] of  Options
 
@@ -945,8 +945,8 @@
 	(browser_slot_names [BROWSER_SLOT_NAMES])
 	(customized_instance_widgets
 		[INSTANCE_ANNOTATION_FORM_WIDGET]
-		[STANDARD_SLOT_FORM_WIDGET]
 		[STANDARD_FACET_FORM_WIDGET]
+		[STANDARD_SLOT_FORM_WIDGET]
 		[PAL_FORM_WIDGET]
 		[mow_sitemap_ProjectKB_Class140]
 		[STANDARD_CLASS_FORM_WIDGET]

@@ -1,4 +1,4 @@
-; Fri Apr 11 11:35:31 CEST 2014
+; Fri Apr 11 14:20:56 CEST 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -120,7 +120,7 @@
 	(developer_documentatie "The challenge is to show only those fields from the indicator_report table that are relevant for the indicator. The majority of the dimensions and one of the fields aantal / percentage need to be hidden.\n\nTo hide a dimension, configure display as 'Select LOV (query)', The List of Values query is:\nselect waarde d, dim_element_id r\nfrom dim_element\nwhere dimensie_id = 81\norder by waarde\n\nConfigure the display Condition as:\nf_dimension4indicator(81, :P92_INDICATORFICHE_ID)\n\nDimension ID is fixed ID attached to dimension and documented in data_mapping.xls. \n\nField aantal has Conditional Display f_indic_aantal(:P92_INDICATORFICHE_ID), percentage has not(this condition).\n\n\nStarting remarks: a tabular form attempts to keep the data in the form in sync with the database. Fields updated by triggers, such as an 'update_systime', cannot be included in the form. Also calculated fields that are shown as display only cannot be used in the form.\n\nAn example is the indicator_report table that needs to show records related to indicatorfiche_id only.\n\nCreate Form, Tabular Form\nSelect all columns except 'Laatst_Bijgewerkt'. This field is updated by a trigger. Each time a row is selected then this field is touched. As a result the web page is not in sync with database anymore and updates are no longer allowed.\nAdd Page Items 'Indicatorfiche_id' and 'indicator_naam'. The calling page needs to set page item indicatorfiche_id to the selected value. The indicator_naam is extracted from SQL statement using indicatorfiche_id.\nSet tabular column indicatorfiche_id to value of Page Item Pxx_Indicatorfiche_id.\nThis allows to handle multi-row input adding one row at a time.\nTo allow to add multiple rows, follow this procedure:\n\nIn Page Rendering, add button 'Multiple Rows' and action 'Submit Page'.\nIn Page Processing, select the tabular form, select 'Data Manipulation' and select category 'Add rows to tabular form'. Processing Point is 'On Submit - After Computations and Validations.'\nMake sure Process Condition is 'When Button Pressed' - with expected button selected.\nAdd Branch to jump to same page after creating additional rows. Make sure that the branch is handled before default branch.\nAdd Pxx_INDICATORFICHE_ID as default value in Indicatorfiche_id column.")
 	(gebruiker_documentatie "Multi-line form die toelaat om cijferrecords voor een indicator aan te passen of toe te voegen. Eén of meer lijnen kunnen tegelijk aangepast worden.")
 	(naam "Cijferrecords Toevoegen / Aanpassen")
-	(nummer "92")
+	(nummer "2")
 	(opgeroepen_door [mow_sitemap_Class18])
 	(scherm_type Tabular_Form))
 

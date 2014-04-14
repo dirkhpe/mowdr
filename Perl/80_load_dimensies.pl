@@ -1,8 +1,16 @@
 =head1 NAME
 
-load_dimensies - This script will load the dimensies table from excel.
+load_dimensies - This script will load the dimensies and dimensie elements table from excel.
 
 =head1 VERSION HISTORY
+
+version 1.1 14 April 2014 DV
+
+=over 4
+
+Add dim_element.
+
+=back
 
 version 1.0 07 January 2014 DV
 
@@ -153,7 +161,7 @@ $dbh = db_connect('mow_fase1') or exit_application(1);
 $dbs = db_connect('mow_access') or exit_application(1);
 
 # Truncate table
-my @tables = qw (dimensie);
+my @tables = qw (dimensie dim_element);
 foreach my $table (@tables) {
     if ($dbh->do("delete from $table")) {
 	    $log->debug("Table $table truncated");
@@ -183,6 +191,17 @@ if ($dbh->do($query)) {
 	$log->fatal("Failed to disable auto_increment for dimensie. Error: " . $dbh->errstr);
 	exit_application(1);
 }
+
+# Set auto_increment OFF during load for dim_element
+my $query = "ALTER TABLE  `dim_element` 
+			 CHANGE `dim_element_id` `dim_element_id` INT(11) NOT NULL";
+if ($dbh->do($query)) {
+	$log->debug("Dim_element table auto_increment disabled");
+} else {
+	$log->fatal("Failed to disable auto_increment for dim_element. Error: " . $dbh->errstr);
+	exit_application(1);
+}
+
 
 # Open Excel object, define cell handler for memory savings
 $log->info("Launch excel");
@@ -229,6 +248,10 @@ foreach my $worksheet ($workbook->worksheets()) {
 		$worksheets->{$worksheet_name} = $worksheet;
 		$log->debug("Ready to load worksheet: $worksheet_name");
 		import_sheet($worksheet, $dbs, "beleidsdocumenten");
+	} elsif (index($worksheet_name, "dim_element") > -1) {
+		$worksheets->{$worksheet_name} = $worksheet;
+		$log->debug("Ready to load worksheet: $worksheet_name");
+		import_sheet($worksheet, $dbh, "dim_element");
 	}
 }
 
@@ -239,6 +262,16 @@ if ($dbh->do($query)) {
 	$log->debug("Dimensie table auto_increment enabled");
 } else {
 	$log->fatal("Failed to enable auto_increment for dimensie. Error: " . $dbh->errstr);
+	exit_application(1);
+}
+
+# Set auto_increment ON for table dimensie.
+$query = "ALTER TABLE  `dim_element` 
+		  CHANGE  `dim_element_id`  `dim_element_id` INT( 11 ) NOT NULL AUTO_INCREMENT";
+if ($dbh->do($query)) {
+	$log->debug("Dim_element table auto_increment enabled");
+} else {
+	$log->fatal("Failed to enable auto_increment for dim_element. Error: " . $dbh->errstr);
 	exit_application(1);
 }
 

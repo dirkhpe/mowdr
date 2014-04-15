@@ -120,19 +120,19 @@ sub get_cols($$) {
 			next;
 		}
 		if (exists $tx_meetfrequentie{$col_name}) {
-			if (defined $aantal_flag) {
-				$log->error("Duplicate aantal flag in table $indic_table");
-				$valid_rec = "No";
-			} else {
-				$aantal_flag = 1;
-			    $cols{$col_name} = $tx_meetfrequentie{$col_name};
-			}
-		} elsif (exists $tx_aantal_percentage{$col_name}) {
 			if (defined $frequentie_flag) {
-				$log->error("Duplicate frequentie flag in table $indic_table");
+				$log->error("Duplicate Frequentie flag in table $indic_table");
 				$valid_rec = "No";
 			} else {
 				$frequentie_flag = 1;
+			    $cols{$col_name} = $tx_meetfrequentie{$col_name};
+			}
+		} elsif (exists $tx_aantal_percentage{$col_name}) {
+			if (defined $aantal_flag) {
+				$log->error("Duplicate Aantal/Percentage flag in table $indic_table");
+				$valid_rec = "No";
+			} else {
+				$aantal_flag = 1;
 			    $cols{$col_name} = $tx_aantal_percentage{$col_name};
 				if ($cols{$col_name} eq "percentage") {
 					# Update Aantal / Percentage flag in indicatorfiche
@@ -181,9 +181,16 @@ sub tx_value($$$) {
 		if ($field_type eq 'jaar') {
 			return $freq_jaar{$acc_value};
 		} elsif ($field_type eq 'schooljaar') {
-			return $freq_schjr{$acc_value};
-		} elsif ($field_type eq 'winter') {
-			return $freq_winter{$acc_value};
+			# It might be required to include other values for $acc_key, 
+			# depending on behaviour indicatoren
+			# Note that indic 17 (ton gestrooide smeltmiddelen) the period
+			# in indicator table access needs to be changed from schooljaar
+			# to winter.
+			if ($acc_key eq 'winter') {
+			    return $freq_winter{$acc_value};
+			} else {
+			    return $freq_schjr{$acc_value};
+			}
 		} elsif ($field_type eq 'maand') {
 			return $freq_maand{$acc_value};
 		} elsif ($field_type eq 'kwartaal') {
@@ -194,7 +201,7 @@ sub tx_value($$$) {
 		}
 	}
 	# Not frequentie so now get dim_element number
-	my $acc_element = $acc_value . $acc_key;
+	my $acc_element = $acc_value . $field_type;
 	if (exists $map_dim_element{$acc_element}) {
 		return $map_dim_element{$acc_element};
 	} else {

@@ -42,7 +42,7 @@ No inline options are available. There is a properties\vo.ini file that contains
 # Variables
 ########### 
 
-my ($log, $cfg, $dbs, $dbt, %dimensies, %a_dims, %dim_el_hash, $dim_element_id);
+my ($log, $cfg, $dbs, $dbt, %dimensies, %a_dims, %dim_el_hash, %map_el_hash, $dim_element_id);
 
 #####
 # use
@@ -224,25 +224,29 @@ foreach my $record (@$ref) {
 				}
 				# Now go for the value!
 				$waarde = $$e_rec{$dim_key};
-				# Did I know this value as an element within this dimensie already?
-				my $dim_el_record = $dimensies{$f1_dim} . $waarde;
-				if (not(exists $dim_el_hash{$dim_el_record})) {
-					$log->error("New dim_element $waarde in dimensie $f1_dim");
-					$dim_el_hash{$dim_el_record} = $dim_element_id++;
-					my @fields = qw(dim_element_id dimensie_id waarde);
-					my @vals = ($dim_el_hash{$dim_el_record}, $dimensies{$f1_dim}, $waarde);
-					unless (create_record($dbt, "dim_element", \@fields, \@vals)) {
-						$log->fatal("Could not insert record into map_dim_element");
-						exit_application(1);
-					}
+				} # End read columns from row
+			# Did I know this value as an element within this dimensie already?
+			# From dim_element I know dimensie_id.name_of_the_element
+			my $dim_el_record = $dimensies{$f1_dim} . $waarde;
+			# I need to know the reverse for map_dim_element: ID_element.name_dimensie
+			my $map_el_record = $el_id . $f1_dim;
+			if (not(exists $dim_el_hash{$dim_el_record})) {
+				$log->error("New dim_element $waarde in dimensie $f1_dim");
+				$dim_el_hash{$dim_el_record} = $dim_element_id++;
+				my @fields = qw(dim_element_id dimensie_id waarde);
+				my @vals = ($dim_el_hash{$dim_el_record}, $dimensies{$f1_dim}, $waarde);
+				unless (create_record($dbt, "dim_element", \@fields, \@vals)) {
+					$log->fatal("Could not insert record into dim_element");
+					exit_application(1);
 				}
-			} # End read columns from row
+			} # Add dim_element_id to map_dim_element record:
+			$map_el_hash{$map_el_record} = $dim_el_hash{$dim_el_record};
 		} # End read elementen from table
 	} # End handle this dimensie - so time to write to dim_element for this dimensie
 } 
 
 my @el_fields = qw (rec_id acc_element);
-while (my ($acc_element, $rec_id) = each %dim_el_hash) {
+while (my ($acc_element, $rec_id) = each %map_el_hash) {
 	my (@el_vals) = map { eval ("\$" . $_ ) } @el_fields;
 	unless (create_record($dbs, "map_dim_element", \@el_fields, \@el_vals)) {
 		$log->fatal("Could not insert record into map_dim_element");

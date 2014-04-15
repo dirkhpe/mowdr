@@ -193,7 +193,7 @@ if ($dbh->do($query)) {
 }
 
 # Set auto_increment OFF during load for dim_element
-my $query = "ALTER TABLE  `dim_element` 
+$query = "ALTER TABLE  `dim_element` 
 			 CHANGE `dim_element_id` `dim_element_id` INT(11) NOT NULL";
 if ($dbh->do($query)) {
 	$log->debug("Dim_element table auto_increment disabled");

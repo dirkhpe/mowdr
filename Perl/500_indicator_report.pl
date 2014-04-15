@@ -201,7 +201,7 @@ sub tx_value($$$) {
 		}
 	}
 	# Not frequentie so now get dim_element number
-	my $acc_element = $acc_value . $field_type;
+	my $acc_element = $acc_value . $acc_key;
 	if (exists $map_dim_element{$acc_element}) {
 		return $map_dim_element{$acc_element};
 	} else {

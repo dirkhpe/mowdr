@@ -229,7 +229,7 @@ foreach my $record (@$ref) {
 			# From dim_element I know dimensie_id.name_of_the_element
 			my $dim_el_record = $dimensies{$f1_dim} . $waarde;
 			# I need to know the reverse for map_dim_element: ID_element.name_dimensie
-			my $map_el_record = $el_id . $f1_dim;
+			my $map_el_record = $el_id . $$a_rec{'huidig'};
 			if (not(exists $dim_el_hash{$dim_el_record})) {
 				$log->error("New dim_element $waarde in dimensie $f1_dim");
 				$dim_el_hash{$dim_el_record} = $dim_element_id++;

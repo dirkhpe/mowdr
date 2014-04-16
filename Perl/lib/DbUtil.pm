@@ -80,42 +80,67 @@ connect to source or target database
 
 sub db_connect {
   my $db = shift;
-  my ($port, $server, $username, $password);
+  my ($type);
 
   my $cfg = get_ini();
   my $log = get_logger();
 
   if (defined $cfg) {
     if ($cfg->SectionExists($db)) {
-      if ($cfg->val($db, 'port')) { $port = $cfg->val($db, 'port'); }
-      if ($cfg->val($db, 'server')) { $server = $cfg->val($db, 'server'); }
-      if ($cfg->val($db, 'username')) { $username = $cfg->val($db, 'username'); }
-      if ($cfg->val($db, 'password')) { $password = $cfg->val($db, 'password'); }
+      if ($cfg->val($db, 'type')) { $type = $cfg->val($db, 'type'); }
     }
-  }
-
-  $log->trace("Trying database connection to ${db} with ${username}/${password}\@${server}:${port}");
-  # Make database connection for target database
-  my $dbh = DBI->connect("DBI:mysql:database=$db;host=$server;port=$port", $username, $password,
-                         { mysql_enable_utf8 => 1,
-						   mysql_server_prepare => 1,
-                          'PrintError' => 1,   # Set to 1 for debug info
-                          'RaiseError' => 0}); # Do not die on error
-
-  # mysql_enable_utf8=1
-
-  if (defined $dbh) {
-	$log->debug("Database connection to $db on host $server:$port configured");
   } else {
-    $log->error("Could not open database `$db' on host `$server:$port'");
-    return;
+	  $log->error("Could not find Config file");
+	  return;
   }
 
-  do_stmt($dbh, "SET SESSION sql_mode='STRICT_ALL_TABLES'") or do { $log->warn("Can't set database in strict mode !"); };
+  if (lc($type) eq "mysql") {
+    my ($port, $server, $username, $password);
+    if ($cfg->val($db, 'port')) { $port = $cfg->val($db, 'port'); }
+    if ($cfg->val($db, 'server')) { $server = $cfg->val($db, 'server'); }
+    if ($cfg->val($db, 'username')) { $username = $cfg->val($db, 'username'); }
+    if ($cfg->val($db, 'password')) { $password = $cfg->val($db, 'password'); }
+    $log->trace("Trying database connection to ${db} with ${username}/${password}\@${server}:${port}");
+    # Make database connection for target database
+    my $dbh = DBI->connect("DBI:mysql:database=$db;host=$server;port=$port", $username, $password,
+                           { mysql_enable_utf8 => 1,
+	  					     mysql_server_prepare => 1,
+                            'PrintError' => 1,   # Set to 1 for debug info
+                            'RaiseError' => 0}); # Do not die on error
 
-  do_stmt($dbh, "SET NAMES 'utf8'") or do { $log->warn("Can't set database in utf8 mode !"); };
+    # mysql_enable_utf8=1
 
-  return $dbh;
+    if (defined $dbh) {
+	  $log->debug("Database connection to $db on host $server:$port configured");
+    } else {
+      $log->error("Could not open database `$db' on host `$server:$port'");
+      return;
+    }
+
+    do_stmt($dbh, "SET SESSION sql_mode='STRICT_ALL_TABLES'") or do { $log->warn("Can't set database in strict mode !"); };
+
+    do_stmt($dbh, "SET NAMES 'utf8'") or do { $log->warn("Can't set database in utf8 mode !"); };
+
+    return $dbh;
+  } elsif (lc($type) eq "msaccess") {
+    my ($path);
+    if ($cfg->val($db, 'path')) { $path = $cfg->val($db, 'path'); }
+	my $dbh = DBI->connect("dbi:ODBC:driver=Microsoft Access Driver (*.mdb, *.accdb);dbq=$path");
+	if (defined $dbh) {
+	  $log->debug("MSAccess Database connection to $db configured");
+	  return $dbh;
+    } else {
+	  $log->error("Could not connect to MSAccess database $db on path $path");
+	  return;
+    }
+  } else {
+	if (defined $type) {
+		$log->error("Database type $type not known");
+	} else {
+		$log->error("Database type not defined");
+	}
+	return;
+  }
 }
 
 

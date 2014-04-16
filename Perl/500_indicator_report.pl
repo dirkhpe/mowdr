@@ -42,7 +42,7 @@ No inline options are available. There is a properties\vo.ini file that contains
 # Variables
 ########### 
 
-my ($log, $cfg, $dbs, $dbt, $field_val);
+my ($log, $cfg, $dba, $dbs, $dbt, $field_val);
 my (%tx_indicatortabel, %tx_dimensie, %cols, %tx_aantal_percentage, %tx_meetfrequentie, %tx_dim2column);
 my (%freq_jaar, %freq_maand, %freq_schjr, %freq_winter, %freq_kw, %known_errors, %ind_freq);
 my (%fiches, %dimensies, %dim_els, @fields, @vals, %meetfrequentie, %map_dim_element);
@@ -201,6 +201,22 @@ sub tx_value($$$) {
 		}
 	}
 	# Not frequentie so now get dim_element number
+	# Did I get reference number of name?
+	if (not($acc_value =~ /^[1-9][0-9]*$/)) {
+		# I got a name, not a reference number.
+		# Find the corresponding ID number
+		my $query = "SELECT Id FROM [dimensie $acc_key] WHERE [$acc_key] = '$acc_value'";
+		my $ref = do_select($dba, $query);
+		foreach my $record (@$ref) {
+			# There should be exactly one value,
+			# but accept all values if there are duplicates in dimensie tabel
+			$acc_value = $$record{Id};
+		}
+		if (not defined($acc_value)) {
+			$log->error("$acc_value not found in Dimensie Table with query $query");
+			$acc_value = 1;
+		}
+	}
 	my $acc_element = $acc_value . $acc_key;
 	if (exists $map_dim_element{$acc_element}) {
 		return $map_dim_element{$acc_element};
@@ -286,6 +302,7 @@ if ($log->is_trace()) {
 # Make database connection for vo database
 $dbs = db_connect("mow_access") or exit_application(1);
 $dbt = db_connect("mow_fase1")  or exit_application(1);
+$dba = db_connect("cijferdatabank") or exit_application(1);
 
 # Delete tables in sequence
 my @tables = qw (indicator_report);
@@ -413,12 +430,6 @@ foreach my $record(@$ref) {
 }
 
 my $actief = "J";
-$query = "SELECT a.Id, (select min(dagnr) from mow_fase1.frequenties where jaar = a.jaar) dagnr
-          FROM `frequentie jaarlijks` a";
-$ref = do_select($dbs, $query);
-foreach my $record(@$ref) {
-	$freq_jaar{$$record{Id}} = $$record{dagnr};
-}
 
 while (my ($acc_ind, $f1_ind) = each %tx_indicatortabel) {
 	$log->info("Investigating $acc_ind");
@@ -428,7 +439,7 @@ while (my ($acc_ind, $f1_ind) = each %tx_indicatortabel) {
 		next;
 	}
 	my $query = "SELECT * FROM `$acc_ind`";
-	my $ref = do_select($dbs, $query);
+	my $ref = do_select($dba, $query);
 	foreach my $record (@$ref) {
 		undef @fields;
 		undef @vals;

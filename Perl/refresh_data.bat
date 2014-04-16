@@ -13,6 +13,6 @@ perl 80_load_dimensies.pl -x "C:\Projects\Vo\MOW Dataroom\Data_mapping.xls"
 perl 100_indicatorfiche.pl
 perl 120_handle_beleidsdocumenten.pl
 perl 205_indicator2fiche.pl
-perl 215_get_dim_elementen.pl
+perl 220_get_dim_elementen.pl
 perl 500_indicator_report.pl
-perl 600_netwerklink_Albertkanaal.pl
+rem perl 600_netwerklink_Albertkanaal.pl

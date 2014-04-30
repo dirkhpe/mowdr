@@ -1,0 +1,189 @@
+; Wed Apr 30 18:00:05 CEST 2014
+; 
+;+ (version "3.4.8")
+;+ (build "Build 629")
+
+([HandleCSVFiles_Class0] of  Script
+
+	(description "Script that runs daily to fetch the unix logfile and makes it accessible as an external Oracle table. The script needs to run daily because the filename changes daily.\nThis script will create table mdk_log. As a consequence, Oracle will 'invalidate' all scripts that are using the table. If this script was part of a procedure, then other scripts in the procedure would not be reachable again. Therefore this script must be the only one that is called in the same call.")
+	(is_called_by [HandleCSVFiles_Class5])
+	(name "p_get_logfile")
+	(reads_from [HandleCSVFiles_Class1])
+	(script_type plsql)
+	(writes_to [HandleCSVFiles_Class2]))
+
+([HandleCSVFiles_Class1] of  Artifact
+
+	(description "Logfile with hourly information on the file move from Dropserver to APEX server.")
+	(is_part_of [HandleCSVFiles_Class13])
+	(is_read_from [HandleCSVFiles_Class0])
+	(name "mdk2apex.sh.XX"))
+
+([HandleCSVFiles_Class10] of  Script
+
+	(is_called_by [HandleCSVFiles_Class6])
+	(name "p_comm_load")
+	(script_type plsql))
+
+([HandleCSVFiles_Class11] of  Artifact
+
+	(description "Table that contains all the information from the customer cijfers *csv file that passed initial validation.")
+	(is_read_from
+		[HandleCSVFiles_Class16]
+		[HandleCSVFiles_Class20])
+	(is_written_by
+		[HandleCSVFiles_Class8]
+		[HandleCSVFiles_Class16])
+	(name "csv_load"))
+
+([HandleCSVFiles_Class12] of  Artifact
+
+	(description "CSV file containing cijfers records. For filename and format refer to documentation.")
+	(is_part_of [HandleCSVFiles_Class13])
+	(is_read_from [HandleCSVFiles_Class8])
+	(is_written_by [HandleCSVFiles_Class18])
+	(name "customer_cijfers.csv"))
+
+([HandleCSVFiles_Class13] of  Container
+
+	(has_artifacts
+		[HandleCSVFiles_Class12]
+		[HandleCSVFiles_Class1])
+	(name "UNIX Filesystem"))
+
+([HandleCSVFiles_Class14] of  Artifact
+
+	(description "Detailed status information collected during load of csv files.")
+	(is_part_of [HandleCSVFiles_Class3])
+	(is_written_by
+		[HandleCSVFiles_Class8]
+		[HandleCSVFiles_Class16]
+		[HandleCSVFiles_Class20])
+	(name "file_process"))
+
+([HandleCSVFiles_Class16] of  Script
+
+	(calls
+		[HandleCSVFiles_Class18]
+		[HandleCSVFiles_Class20])
+	(description "This script checks table csv_load for valid indicator_ids. \nIf Indicator_id is found then call p_dump_cijfers to keep a safe copy in file from the cijfers. Then remove records from indicator_report.\nIf Indicator_id is not found, then remove records from csv_load.")
+	(is_called_by [HandleCSVFiles_Class6])
+	(name "p_csv_merge")
+	(reads_from [HandleCSVFiles_Class11])
+	(runs_after [HandleCSVFiles_Class8])
+	(script_type plsql)
+	(writes_to
+		[HandleCSVFiles_Class11]
+		[HandleCSVFiles_Class14]
+		[HandleCSVFiles_Class17]))
+
+([HandleCSVFiles_Class17] of  Artifact
+
+	(description "Contains all cijferrecords for all indicators.")
+	(is_part_of [HandleCSVFiles_Class4])
+	(is_read_from [HandleCSVFiles_Class18])
+	(is_written_by
+		[HandleCSVFiles_Class16]
+		[HandleCSVFiles_Class20])
+	(name "indicator_report"))
+
+([HandleCSVFiles_Class18] of  Script
+
+	(description "Dumps cijferrecords from indicator_report.")
+	(is_called_by [HandleCSVFiles_Class16])
+	(name "p_dump_cijfers")
+	(reads_from [HandleCSVFiles_Class17])
+	(runs_before [HandleCSVFiles_Class20])
+	(script_type plsql)
+	(writes_to [HandleCSVFiles_Class12]))
+
+([HandleCSVFiles_Class19] of  Artifact
+)
+
+([HandleCSVFiles_Class2] of  Artifact
+
+	(description "Access to mdk2apex.sh.XX file using external table.")
+	(is_part_of [HandleCSVFiles_Class3])
+	(is_read_from [HandleCSVFiles_Class6])
+	(is_written_by [HandleCSVFiles_Class0])
+	(name "mdk_log"))
+
+([HandleCSVFiles_Class20] of  Script
+
+	(description "This script will handle one indicatorfiche_id from the table csv_load.\nAll records are validated and loaded into indicator_report.")
+	(is_called_by [HandleCSVFiles_Class16])
+	(name "p_csv_handle_id")
+	(reads_from [HandleCSVFiles_Class11])
+	(runs_after [HandleCSVFiles_Class18])
+	(script_type plsql)
+	(writes_to
+		[HandleCSVFiles_Class14]
+		[HandleCSVFiles_Class17]))
+
+([HandleCSVFiles_Class3] of  Container
+
+	(description "Collections of table schemas related to csv files.")
+	(has_artifacts
+		[HandleCSVFiles_Class2]
+		[HandleCSVFiles_Class7]
+		[HandleCSVFiles_Class14])
+	(is_part_of [HandleCSVFiles_Class4])
+	(name "csv_environment"))
+
+([HandleCSVFiles_Class4] of  Container
+
+	(description "Dataroom Workspace in Oracle")
+	(has_artifacts
+		[HandleCSVFiles_Class3]
+		[HandleCSVFiles_Class17])
+	(name "mow_dataroom"))
+
+([HandleCSVFiles_Class5] of  Script
+
+	(calls
+		[HandleCSVFiles_Class0]
+		[HandleCSVFiles_Class6])
+	(description "JobScheduler")
+	(name "JobScheduler"))
+
+([HandleCSVFiles_Class6] of  Script
+
+	(calls
+		[HandleCSVFiles_Class8]
+		[HandleCSVFiles_Class9]
+		[HandleCSVFiles_Class10]
+		[HandleCSVFiles_Class16])
+	(description "Script that runs hourly to check the mdk_log table for incoming files from the dropserver.")
+	(is_called_by [HandleCSVFiles_Class5])
+	(name "p_read_logfile")
+	(reads_from
+		[HandleCSVFiles_Class2]
+		[HandleCSVFiles_Class7])
+	(script_type plsql)
+	(writes_to [HandleCSVFiles_Class7]))
+
+([HandleCSVFiles_Class7] of  Artifact
+
+	(description "Stores the File identifier as soon as it is discovered. This ensures that a file is handled only once.")
+	(is_part_of [HandleCSVFiles_Class3])
+	(is_read_from [HandleCSVFiles_Class6])
+	(is_written_by [HandleCSVFiles_Class6])
+	(name "file_object"))
+
+([HandleCSVFiles_Class8] of  Script
+
+	(description "Reads the cijfers *csv file from the customer and loads in into csv_load table. All possible columns are accepted. All additional columns are ignored (but will result in a message per line in csv_log).")
+	(is_called_by [HandleCSVFiles_Class6])
+	(name "p_csv_load")
+	(reads_from [HandleCSVFiles_Class12])
+	(runs_before [HandleCSVFiles_Class16])
+	(script_type plsql)
+	(writes_to
+		[HandleCSVFiles_Class11]
+		[HandleCSVFiles_Class14]))
+
+([HandleCSVFiles_Class9] of  Script
+
+	(is_called_by [HandleCSVFiles_Class6])
+	(name "p_load_report")
+	(script_type plsql))

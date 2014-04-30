@@ -1,0 +1,186 @@
+; Wed Apr 30 18:00:05 CEST 2014
+; 
+;+ (version "3.4.8")
+;+ (build "Build 629")
+
+
+(defclass %3ACLIPS_TOP_LEVEL_SLOT_CLASS "Fake class to save top-level slot information"
+	(is-a USER)
+	(role abstract)
+	(single-slot script_type
+;+		(comment "Type of the Script.")
+		(type SYMBOL)
+		(allowed-values bat perl java plsql)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(multislot calls
+;+		(comment "Which script is called?")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+;+		(inverse-slot is_called_by)
+		(create-accessor read-write))
+	(multislot reads_from
+;+		(comment "Reads the Data elements from Artifact.")
+		(type INSTANCE)
+;+		(allowed-classes Artifact)
+;+		(inverse-slot is_read_from)
+		(create-accessor read-write))
+	(multislot writes_to
+;+		(comment "Where the script writes the information to.")
+		(type INSTANCE)
+;+		(allowed-classes Artifact)
+;+		(inverse-slot is_written_by)
+		(create-accessor read-write))
+	(multislot is_called_by
+;+		(comment "Where the script is called from.")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+;+		(inverse-slot calls)
+		(create-accessor read-write))
+	(multislot is_written_by
+;+		(comment "Connects to the script that has written this data element.")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+;+		(inverse-slot writes_to)
+		(create-accessor read-write))
+	(multislot runs_after
+;+		(comment "Sequence in which the script runs.")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+;+		(inverse-slot runs_before)
+		(create-accessor read-write))
+	(multislot is_part_of
+;+		(comment "Artifact is part of a Container.")
+		(type INSTANCE)
+;+		(allowed-classes Container)
+;+		(inverse-slot has_artifacts)
+		(create-accessor read-write))
+	(multislot is_read_from
+;+		(comment "Which script is reading from this artifact?")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+;+		(inverse-slot reads_from)
+		(create-accessor read-write))
+	(multislot has_artifacts
+		(type INSTANCE)
+;+		(allowed-classes Artifact Container)
+;+		(inverse-slot is_part_of)
+		(create-accessor read-write))
+	(single-slot name_
+;+		(comment "Name of the object.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(multislot runs_before
+;+		(comment "Sequence in which the script runs.")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+;+		(inverse-slot runs_after)
+		(create-accessor read-write))
+	(single-slot description
+;+		(comment "Describes the purpose or goal of the script.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write)))
+
+(defclass Script "Script or application. The object can be a (small) application, but the nature of the solution is script-based."
+	(is-a USER)
+	(role concrete)
+	(multislot reads_from
+;+		(comment "Reads the Data elements from Artifact.")
+		(type INSTANCE)
+;+		(allowed-classes Artifact)
+		(create-accessor read-write))
+	(single-slot script_type
+;+		(comment "Type of the Script.")
+		(type SYMBOL)
+		(allowed-values bat perl java plsql)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(multislot calls
+;+		(comment "Which script is called?")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+		(create-accessor read-write))
+	(multislot writes_to
+;+		(comment "Where the script writes the information to.")
+		(type INSTANCE)
+;+		(allowed-classes Artifact)
+		(create-accessor read-write))
+	(multislot is_called_by
+;+		(comment "Where the script is called from.")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+		(create-accessor read-write))
+	(multislot runs_before
+;+		(comment "Sequence in which the script runs.")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+		(create-accessor read-write))
+	(multislot runs_after
+;+		(comment "Sequence in which the script runs.")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+		(create-accessor read-write))
+	(single-slot name_
+;+		(comment "Name of the object.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(single-slot description
+;+		(comment "Describes the purpose or goal of the script.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write)))
+
+(defclass Container "Collection of Data Artefacts."
+	(is-a USER)
+	(role concrete)
+	(multislot is_part_of
+;+		(comment "Artifact is part of a Container.")
+		(type INSTANCE)
+;+		(allowed-classes Container)
+		(create-accessor read-write))
+	(multislot has_artifacts
+		(type INSTANCE)
+;+		(allowed-classes Artifact Container)
+		(create-accessor read-write))
+	(single-slot name_
+;+		(comment "Name of the object.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(single-slot description
+;+		(comment "Describes the purpose or goal of the script.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write)))
+
+(defclass Artifact "Unit of data. A class in an object model, a table in a database, a worksheet in excel."
+	(is-a USER)
+	(role concrete)
+	(multislot is_part_of
+;+		(comment "Artifact is part of a Container.")
+		(type INSTANCE)
+;+		(allowed-classes Container)
+		(create-accessor read-write))
+	(multislot is_read_from
+;+		(comment "Which script is reading from this artifact?")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+		(create-accessor read-write))
+	(multislot is_written_by
+;+		(comment "Connects to the script that has written this data element.")
+		(type INSTANCE)
+;+		(allowed-classes Script)
+		(create-accessor read-write))
+	(single-slot name_
+;+		(comment "Name of the object.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(single-slot description
+;+		(comment "Describes the purpose or goal of the script.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write)))

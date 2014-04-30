@@ -111,8 +111,8 @@ sub get_cols($$) {
 	my ($indic_table, $indicatorfiche_id) = @_;
 	my $valid_rec = "Yes";
 	my ($aantal_flag, $frequentie_flag);
-	my $query = "SELECT * FROM `$indic_table` LIMIT 1";
-	my $ref = do_select($dbs, $query);
+	my $query = "SELECT top 1 * FROM `$indic_table`";
+	my $ref = do_select($dba, $query);
 	my $record = @$ref[0];
 	foreach my $col_name (keys $record) {
 		if ($col_name eq 'jaartal') {
@@ -205,6 +205,10 @@ sub tx_value($$$) {
 	if (not($acc_value =~ /^[1-9][0-9]*$/)) {
 		# I got a name, not a reference number.
 		# Find the corresponding ID number
+		# Exception for 'gemeente' - translate to 'hoofdgemeente'
+		if ($acc_key eq 'gemeente') {
+			$acc_key = 'hoofdgemeente';
+		}
 		my $query = "SELECT Id FROM [dimensie $acc_key] WHERE [$acc_key] = '$acc_value'";
 		my $ref = do_select($dba, $query);
 		foreach my $record (@$ref) {

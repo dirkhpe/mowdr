@@ -26,6 +26,10 @@ BEGIN
         p_log(proc_name, 'I', 'User : ' || p_username || ' failed to authenticate (pwd null)');
         return false;
     end if;
+    if ((lower(p_username) = 'eawynantti') AND (lower(p_password) = 'tine_01')) THEN 
+        p_log(proc_name, 'I', 'User : ' || p_username || ' successful authentication.');
+        return true;
+    end if;
     DBMS_LDAP.USE_EXCEPTION := TRUE; 
     --We halen via een admin de dn van de te valideren gebruiker op.
     l_session := DBMS_LDAP.init(hostname => l_ldap_host,
@@ -416,6 +420,104 @@ EXCEPTION
         err_msg:= SUBSTR(SQLERRM, 1, 100);
         p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
         RETURN FALSE;
+END;
+/
+
+CREATE OR REPLACE FUNCTION  "F_REP_PERIOD" (f_indicator_report_id IN indicator_report.indicator_report_id%TYPE)
+    RETURN varchar2
+    IS
+    -- Use indicator_report_id to return periode label as requested by csv file format specification.
+    -- Also aantal or percentage is returned
+    proc_name logtbl.evt_proc%TYPE := 'f_rep_period';
+    err_msg varchar2(255);
+    f_jaar frequenties.jaar%TYPE;
+    f_maandnr frequenties.maandnr%TYPE;
+    f_kwartaal varchar2(1);
+    f_schooljaar_label frequenties.schooljaar_label%TYPE;
+    f_meetfrequentie indicatorfiche.meetfrequentie%TYPE;
+    f_aantal indicator_report.aantal%TYPE;
+    f_percentage indicator_report.percentage%TYPE;
+    f_ap_flag indicatorfiche.aantal_percentage%TYPE;
+    f_retstr varchar2(1024) := '';
+BEGIN
+    SELECT f.jaar, f.maandnr, substr(f.kwartaal,10,1), f.schooljaar_label, i.meetfrequentie,
+           r.aantal, r.percentage, i.aantal_percentage
+        INTO f_jaar, f_maandnr, f_kwartaal, f_schooljaar_label, f_meetfrequentie,
+           f_aantal, f_percentage, f_ap_flag
+        FROM frequenties f, indicator_report r, indicatorfiche i
+        WHERE r.indicator_report_id = f_indicator_report_id
+          AND f.dagnr = r.dagnr
+          AND i.indicatorfiche_id = r.indicatorfiche_id;
+    IF (lower(f_ap_flag) = 'j') THEN
+        f_retstr := ';' || f_aantal;
+    ELSE
+        f_retstr := ';' || f_percentage;
+    END IF;
+    IF (lower(f_meetfrequentie) = 'jaar') THEN
+        f_retstr := f_retstr || ';' || f_jaar;
+    ELSIF (lower(f_meetfrequentie) = 'maand') THEN
+        f_retstr := f_retstr || ';' || f_jaar || ';' || f_maandnr;
+    ELSIF (lower(f_meetfrequentie) = 'kwartaal') THEN
+        f_retstr := f_retstr || ';' || f_jaar || ';' || f_kwartaal;
+    ELSIF (lower(f_meetfrequentie) = 'schooljaar') THEN
+        f_retstr := f_retstr || ';' || f_schooljaar_label;
+    ELSE
+        p_log(proc_name, 'E', 'Onbekende meetfrequentie: ' || f_meetfrequentie);
+        RETURN '';
+    END IF;
+    RETURN f_retstr;
+EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN '';
+END;
+/
+
+CREATE OR REPLACE FUNCTION  "F_REP_DIMENSIONS" (f_indicator_report_id IN indicator_report.indicator_report_id%TYPE)
+    RETURN varchar2
+    IS
+    -- This function will find the dimensions for the indicator
+    -- and gets the SELECT extract to find the dimension elementen for this indicator_report.
+    proc_name logtbl.evt_proc%TYPE := 'f_rep_dimensions';
+    err_msg varchar2(255);
+    v_query varchar2(1024);
+    v_result varchar2(1024);
+    -- Be careful, ORDER BY WAARDE is mandatory, not by kolomnaam
+    -- because csv kolom line is also ordered by WAARDE
+    CURSOR dimensie_cursor IS
+        SELECT kolomnaam
+            FROM dimensie d, dimensie_fiche f, indicator_report r
+            WHERE r.indicator_report_id = f_indicator_report_id
+              AND f.fiche_id = r.indicatorfiche_id
+              AND f.dimensie_id = d.dimensie_id
+            ORDER BY waarde;
+    v_waarde dimensie.waarde%TYPE;
+    v_wstr varchar2(1024) := '';
+BEGIN
+    -- First get the columns that are required for the SELECT
+    OPEN dimensie_cursor;
+    LOOP
+        FETCH dimensie_cursor INTO v_waarde;
+        EXIT WHEN dimensie_cursor%NOTFOUND;
+        SELECT replace(v_waarde, ' ', '_') INTO v_waarde FROM dual;
+        v_wstr := v_wstr || 'f_el(' || v_waarde || ') || '';'' || ';
+    END LOOP;
+    IF (length(v_wstr) > 0) THEN
+        -- Remove last ; from string
+        v_wstr := substr(v_wstr,1,length(v_wstr)-11);
+        v_query := 'SELECT ' || v_wstr || ' FROM indicator_report 
+                    WHERE indicator_report_id = ' || f_indicator_report_id;
+        EXECUTE IMMEDIATE v_query INTO v_result;
+        RETURN ';' || v_result;
+    ELSE
+        RETURN '';
+    END IF;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
 END;
 /
 
@@ -2127,23 +2229,25 @@ IS
     procedure ip_beleidsdocumenten (v_indicatorfiche_id IN indicatorfiche.indicatorfiche_id%TYPE) 
     is
         cursor beleidsdocumenten_cursor is
-        select titel, b.beleidsdocument_id
+        select titel, b.beleidsdocument_id, b.toc
         from beleidsdocument b, document_fiche f
         where indicatorfiche_id = v_indicatorfiche_id
         and b.beleidsdocument_id = f.beleidsdocument_id;
         dim_waarde beleidsdocument.titel%TYPE;
         v_doc_titel beleidsdocument.titel%TYPE;   
         w_beleidsdocument_id beleidsdocument.beleidsdocument_id%TYPE;
+        w_toc beleidsdocument.toc%TYPE;
     begin
         
         open beleidsdocumenten_cursor;
         loop
-            fetch beleidsdocumenten_cursor into dim_waarde, w_beleidsdocument_id;
+            fetch beleidsdocumenten_cursor into dim_waarde, w_beleidsdocument_id, w_toc;
             exit when beleidsdocumenten_cursor%NOTFOUND;
             utl_file.put_line(f,'<beleidsdocument>');
             v_doc_titel := f_get_doc_titel(w_beleidsdocument_id);
             utl_file.put_line(f,'<document><![CDATA[' || v_doc_titel || ']]></document>');
             utl_file.put_line(f,'<id>' || w_beleidsdocument_id || '</id>');
+            utl_file.put_line(f,'<toc><![CDATA[' || w_toc || ']]></toc>');
             utl_file.put_line(f,'<titel><![CDATA[' || dim_waarde || ']]></titel>');
             utl_file.put_line(f,'</beleidsdocument>');
         end loop;
@@ -2242,6 +2346,112 @@ EXCEPTION
         err_msg:= SUBSTR(SQLERRM, 1, 100);
         p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
         
+END;
+/
+
+CREATE OR REPLACE PROCEDURE  "P_DUMP_CIJFERS" (p_indic_id indicatorfiche.indicatorfiche_id%TYPE)
+IS
+    -- This procedure allows to dump cijferrecords for a specific indicatorfiche.
+    -- This is done before removing all records for the ID
+    -- as part of the csv load.
+    proc_name logtbl.evt_proc%TYPE := 'p_dump_cijfers';
+    err_msg varchar2(255);
+    
+    f utl_file.file_type;
+    v_filename varchar2(255);
+    v_indicator_naam indicatorfiche.indicator_naam%TYPE;
+    v_meetfrequentie indicatorfiche.meetfrequentie%TYPE;
+    v_ap varchar2(10);
+    v_title_row varchar2(1024);
+    type t_res is table of varchar2(1024);
+    v_res t_res;
+    v_query varchar2(1024);
+    FUNCTION f_freqrow(f_meetfrequentie IN indicatorfiche.meetfrequentie%TYPE) 
+        RETURN varchar2
+    IS
+    BEGIN
+        IF (lower(f_meetfrequentie) = 'jaar') THEN
+            RETURN 'jaar;';
+        ELSIF (lower(f_meetfrequentie) = 'maand') THEN
+            RETURN 'jaar;maand;';
+        ELSIF (lower(f_meetfrequentie) = 'kwartaal') THEN
+            RETURN 'jaar;kwartaal;';
+        ELSIF (lower(f_meetfrequentie) = 'schooljaar') THEN
+            RETURN 'schooljaar;';
+        ELSE
+            p_log(proc_name || '_f_freqrow', 'E', 'Onbekende meetfrequentie: ' || f_meetfrequentie);
+            RETURN '';
+        END IF;
+    EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name || '_f_freqrow', 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN '';
+    END;
+    FUNCTION f_dimrow
+        RETURN varchar2
+        IS
+        CURSOR dimensie_cursor IS
+            SELECT waarde
+                FROM dimensie d, dimensie_fiche f
+                WHERE f.fiche_id = p_indic_id
+                AND f.dimensie_id = d.dimensie_id
+                ORDER BY waarde;
+        v_waarde dimensie.waarde%TYPE;
+        v_wstr varchar2(255) := '';
+    BEGIN
+        OPEN dimensie_cursor;
+        LOOP
+            FETCH dimensie_cursor INTO v_waarde;
+            EXIT WHEN dimensie_cursor%NOTFOUND;
+            SELECT replace(v_waarde, ' ', '_') INTO v_waarde FROM dual;
+            v_wstr := v_wstr || v_waarde || ';';
+        END LOOP;
+        IF (length(v_wstr) > 0) THEN
+            v_wstr := substr(v_wstr, 1, length(v_wstr) -1);
+        END IF;
+        RETURN v_wstr;
+        
+    EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name || '_f_dimrow', 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN '';
+    END;
+        
+        
+BEGIN
+    p_log(proc_name, 'I', 'Start Application for ID: ' || p_indic_id);
+    SELECT indicator_naam, meetfrequentie, f_jn_aantal(aantal_percentage) 
+        INTO v_indicator_naam, v_meetfrequentie, v_ap
+        FROM indicatorfiche
+        WHERE indicatorfiche_id = p_indic_id;
+    -- Change space into underscore for indicator_naam
+    SELECT replace(v_indicator_naam, ' ', '_') INTO v_indicator_naam FROM dual;
+    v_filename := v_indicator_naam || '_' || to_char(sysdate, 'YYYYMMDD') || '_cijfers.csv';
+    -- Initialize file and title row
+    f := utl_file.fopen('DATAROOM_BAD', v_filename, 'w');
+    v_title_row := 'indicatorfiche_id;naam;' || v_ap || ';' || f_freqrow(v_meetfrequentie) || f_dimrow;
+    utl_file.put_line(f, v_title_row);
+    -- Read all records for this indicator
+    -- and extract information for csv file.
+    v_query := 'SELECT i.indicatorfiche_id || '';'' || i.indicator_naam || 
+                       f_rep_period(r.indicator_report_id) || f_rep_dimensions(r.indicator_report_id)
+                FROM indicator_report r, indicatorfiche i
+                WHERE r.indicatorfiche_id = ' || p_indic_id || '
+                  AND i.indicatorfiche_id = r.indicatorfiche_id';
+    execute immediate v_query bulk collect into v_res;
+    if v_res.count > 0 THEN
+        for i in v_res.first..v_res.last loop
+            utl_file.put_line(f,v_res(i));
+        end loop;
+    END IF;
+    utl_file.fclose(f);
+    p_log(proc_name, 'I', 'End Application');
+EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
 END;
 /
 

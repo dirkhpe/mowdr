@@ -491,7 +491,7 @@ CREATE OR REPLACE FUNCTION  "F_REP_DIMENSIONS" (f_indicator_report_id IN indicat
             WHERE r.indicator_report_id = f_indicator_report_id
               AND f.fiche_id = r.indicatorfiche_id
               AND f.dimensie_id = d.dimensie_id
-            ORDER BY waarde;
+            ORDER BY kolomnaam;
     v_waarde dimensie.waarde%TYPE;
     v_wstr varchar2(1024) := '';
 BEGIN
@@ -1638,6 +1638,7 @@ END;
 
 CREATE OR REPLACE PROCEDURE  "P_WORK_ON_CSV_FILE" (p_csv_files_id IN varchar2)
 IS
+    -- This procedure is no longer used, replaced by p_csv_merge
     proc_name logtbl.evt_proc%TYPE := 'p_work_on_csv_file';
     err_msg varchar2(255);
     v_indicatorfiche_id number;
@@ -1649,6 +1650,7 @@ IS
 BEGIN
     
     p_log(proc_name, 'I', 'Start Application');
+    p_log(proc_name, 'E', 'Procedures should not be used anymore, investigate!');
     -- Check if only valid indicatorfiche_ids have been found
     OPEN valid_ids_cursor;
     LOOP
@@ -1818,6 +1820,7 @@ BEGIN
                 p_log(proc_name, 'E', 'Cijfer file gevonden: ' || v_filename);
                 p_csv_log(v_file_object_id, 'Cijfer file gevonden');
                 p_csv_load(v_filename, v_file_object_id);
+                p_csv_merge(v_file_object_id);
                 p_load_report(v_file_object_id);
             ELSIF instr(lower(v_filename), 'commentaar') > 0 THEN
                 -- Error message to force mail
@@ -2032,6 +2035,7 @@ END;
 CREATE OR REPLACE PROCEDURE  "P_HANDLE_FILE" (p_filename IN varchar2, p_scriptname IN varchar2,
                                           p_datestr  IN varchar2, p_timestr    IN varchar2)
 IS
+    -- Follow-up: this procedure is not used and can be removed.
     proc_name logtbl.evt_proc%TYPE := 'p_handle_file';
     err_msg varchar2(255);
     v_query varchar2(1000);
@@ -2040,6 +2044,7 @@ IS
 BEGIN
     
     p_log(proc_name, 'I', 'Start Application');
+    p_log(proc_name, 'E', 'Assumption was that this procedure is not used anymore');
     INSERT INTO csv_files (scriptfile, datestr, timestr, filename, status)
         VALUES (p_scriptname, p_datestr, p_timestr, p_filename, 'Start Processing')
         RETURNING csv_files_id INTO v_csv_files_id;
@@ -2392,11 +2397,11 @@ IS
         RETURN varchar2
         IS
         CURSOR dimensie_cursor IS
-            SELECT waarde
+            SELECT kolomnaam
                 FROM dimensie d, dimensie_fiche f
                 WHERE f.fiche_id = p_indic_id
                 AND f.dimensie_id = d.dimensie_id
-                ORDER BY waarde;
+                ORDER BY kolomnaam;
         v_waarde dimensie.waarde%TYPE;
         v_wstr varchar2(255) := '';
     BEGIN
@@ -2428,7 +2433,7 @@ BEGIN
         WHERE indicatorfiche_id = p_indic_id;
     -- Change space into underscore for indicator_naam
     SELECT replace(v_indicator_naam, ' ', '_') INTO v_indicator_naam FROM dual;
-    v_filename := v_indicator_naam || '_' || to_char(sysdate, 'YYYYMMDD') || '_cijfers.csv';
+    v_filename := v_indicator_naam || '_' || to_char(sysdate, 'YYYYMMDDHH24MI') || '_cijfers.csv';
     -- Initialize file and title row
     f := utl_file.fopen('DATAROOM_BAD', v_filename, 'w');
     v_title_row := 'indicatorfiche_id;naam;' || v_ap || ';' || f_freqrow(v_meetfrequentie) || f_dimrow;
@@ -2519,15 +2524,16 @@ BEGIN
         FETCH fiches_cursor into v_indicatorfiche_id;
         EXIT WHEN fiches_cursor%NOTFOUND;
         
-        IF v_indicatorfiche_id MEMBER OF valid_ids THEN
+        --IF v_indicatorfiche_id MEMBER OF valid_ids THEN
+            p_dump_cijfers(v_indicatorfiche_id);
             p_csv_log(p_file_object_id, v_status, 'Indicatorfiche ID ' || v_indicatorfiche_id || ' gedelete uit indicator_report');
             v_query := 'DELETE FROM indicator_report WHERE indicatorfiche_id = ' || v_indicatorfiche_id;
             EXECUTE IMMEDIATE v_query;
-        ELSE
-            p_csv_log(p_file_object_id, v_status, 'Ongeldige indicatofiche_id: ' || v_indicatorfiche_id);
-            v_query := 'DELETE FROM csv_load WHERE indicatorfiche_id = ' || v_indicatorfiche_id;
-            EXECUTE IMMEDIATE v_query;
-        END IF;
+        --ELSE
+        --    p_csv_log(p_file_object_id, v_status, 'Ongeldige indicatofiche_id: ' || v_indicatorfiche_id);
+        --    v_query := 'DELETE FROM csv_load WHERE indicatorfiche_id = ' || v_indicatorfiche_id;
+        --    EXECUTE IMMEDIATE v_query;
+        --END IF;
     END LOOP;
     -- Then handle all remaining indicatorfiches
     OPEN fiches_freq_cursor;
@@ -2571,6 +2577,8 @@ END;
 CREATE OR REPLACE PROCEDURE  "P_CSV_LOAD" (p_filename IN varchar2, p_file_object_id IN file_process.file_object_id%TYPE)
 IS
     -- Procedure to read the csv file and load it in the table csv_load
+    -- No checking is done on content, except format (e.g. numbers must be numbers,
+    -- no checking on alphanumeric strings).
     proc_name logtbl.evt_proc%TYPE := 'p_csv_load';
     err_msg varchar2(255);
     v_status file_process.status%TYPE := 'File in csv tabel laden';
@@ -2592,11 +2600,19 @@ IS
     IS
         v_value varchar2(255);
         TYPE str_val_type IS TABLE OF varchar2(255);
-        str_val str_val_type := str_val_type('naam', 'entiteit', 'type_medewerker');
+        -- str_val str_val_type := str_val_type('naam', 'entiteit', 'type_medewerker');
+        str_val str_val_type;
         TYPE num_val_type IS TABLE OF varchar2(255);
         num_val num_val_type := num_val_type('aantal', 'percentage', 'jaar', 'kwartaal', 'maand', 'indicatorfiche_id');
+        CURSOR col_names_cursor IS
+            SELECT lower(kolomnaam)
+            FROM dimensie
+            WHERE kolomnaam is not null;
     BEGIN
-        IF f_column member of str_val THEN
+        -- First build up str_val array
+        OPEN col_names_cursor;
+        FETCH col_names_cursor BULK COLLECT INTO str_val;
+        IF ((f_column member of str_val) OR (lower(f_column) = 'naam')) THEN
             -- No further checking required, add single quotes to string
             RETURN f_value;
         ELSIF f_column member of num_val THEN
@@ -2628,14 +2644,14 @@ BEGIN
     -- Get the columns
     utl_file.get_line(csv_file, v_line);
     v_linecnt := v_linecnt + 1;
-    v_col := string_fnc.split(v_line, v_delim);
+    v_col := string_fnc.split(lower(v_line) || ';' , v_delim);
     
     -- Then handle all lines
     LOOP
         BEGIN
             utl_file.get_line(csv_file, v_line);
             v_linecnt := v_linecnt + 1;
-            v_array := string_fnc.split(v_line, v_delim);
+            v_array := string_fnc.split(lower(v_line) || ';', v_delim);
             v_col_str := 'linenumber';
             v_array_str := v_linecnt;
             v_lineok := true;
@@ -2682,63 +2698,56 @@ IS
     proc_name logtbl.evt_proc%TYPE := 'p_csv_handle_id';
     err_msg varchar2(255);
     v_status file_process.status%TYPE := 'Records overladen voor ID ' || p_indicatorfiche_id;
-    v_query varchar2(1000);
+    v_query varchar2(1024);
     v_cols varchar2(1024);
     v_vals varchar2(1024);
     v_lineok boolean;
     v_rec_ok number := 0;
     v_rec_tot number := 0;
+    v_dim_el_key varchar2(255);
     csv_rec csv_load%ROWTYPE;
     dim_cnt number;
     TYPE maand_type IS VARRAY(12) OF varchar2(20);
     naam_maand maand_type := maand_type('januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december');
-    TYPE dim_el_type IS TABLE OF number INDEX BY varchar2(64);
+    TYPE dim_el_type IS TABLE OF number INDEX BY varchar2(255);
     dim_el dim_el_type;
     dim2id dim_el_type;
-    dimensies string_fnc.t_array;
-    i number;
-    v_dim_id dimensie.dimensie_id%TYPE;
-    v_dim_waarde dimensie.waarde%TYPE;
+    TYPE dim_incl_type IS TABLE of dimensie.dimensie_id%TYPE INDEX BY dimensie.kolomnaam%TYPE;
+    dim_incl dim_incl_type;
     v_dim_el_id dim_element.dim_element_id%TYPE;
     v_dim_el_waarde dim_element.waarde%TYPE;
-    dim_arr_id string_fnc.t_array;
-    dim_arr_name string_fnc.t_array;
+    v_dimensie_id dimensie.dimensie_id%TYPE;
+    v_kolomnaam dimensie.kolomnaam%TYPE;
     CURSOR csv_rec_cursor IS
         SELECT * 
         FROM csv_load
         WHERE indicatorfiche_id = p_indicatorfiche_id;
-    CURSOR dimensies_cursor IS
-        SELECT f.dimensie_id, d.waarde
-        FROM dimensie d, dimensie_fiche f
-        WHERE f.fiche_id = p_indicatorfiche_id
-        AND f.dimensie_id = d.dimensie_id;
     CURSOR dim_el_cursor IS
-        SELECT dimensie_id || '_' || waarde, dim_element_id
-        FROM dim_element
-        WHERE dim_element_id > 0;
+        SELECT lower(d.kolomnaam) || '_' || lower(e.waarde), e.dim_element_id
+        FROM dim_element e, dimensie d
+        WHERE dim_element_id > 0
+          AND d.dimensie_id = e.dimensie_id;
+    CURSOR dim_incl_cursor IS
+        SELECT d.dimensie_id, d.kolomnaam
+        FROM dimensie d, dimensie_fiche f
+        WHERE d.dimensie_id = f.dimensie_id
+        AND f.fiche_id = p_indicatorfiche_id;
 BEGIN
     
     p_log(proc_name, 'I', 'Start Application');
-    -- Find if there are any dimensies for the indicatorfiche_id
-    dim_cnt := 0;
-    OPEN dimensies_cursor;
+    -- Get dimensies for Indicatorfiche
+    OPEN dim_incl_cursor;
     LOOP
-        dim_cnt := dim_cnt + 1;
-        FETCH dimensies_cursor INTO v_dim_id, v_dim_waarde;
-        EXIT WHEN dimensies_cursor%NOTFOUND;
-        SELECT replace(v_dim_waarde, ' ', '_') INTO v_dim_waarde FROM dual;
-        dim_arr_name(dim_cnt) := v_dim_waarde;
-        dim_arr_id(dim_cnt) := v_dim_id;
+        FETCH dim_incl_cursor INTO v_dimensie_id, v_kolomnaam;
+        EXIT WHEN dim_incl_cursor%NOTFOUND;
+        dim_incl(v_kolomnaam) := v_dimensie_id;
     END LOOP;
-    IF i > 0 THEN 
-    -- Dimensies found, check for dimensie elementen
-        OPEN dim_el_cursor;
-        LOOP
-            FETCH dim_el_cursor into v_dim_el_waarde, v_dim_el_id;
-            EXIT WHEN dim_el_cursor%NOTFOUND;
-            dim_el(v_dim_el_waarde) := v_dim_el_id;
-        END LOOP;
-    END IF;
+    OPEN dim_el_cursor;
+    LOOP
+        FETCH dim_el_cursor into v_dim_el_waarde, v_dim_el_id;
+        EXIT WHEN dim_el_cursor%NOTFOUND;
+        dim_el(v_dim_el_waarde) := v_dim_el_id;
+    END LOOP;
     OPEN csv_rec_cursor;
     LOOP
         FETCH csv_rec_cursor into csv_rec;
@@ -2784,7 +2793,7 @@ BEGIN
         IF p_aantal_percentage = 'J' THEN
             IF (length(csv_rec.aantal) > 0) THEN
                 v_cols := 'aantal,' || v_cols;
-                v_vals := csv_rec.aantal || ',' || v_vals; 
+                v_vals := '''' || csv_rec.aantal || ''',' || v_vals; 
             ELSE
                 p_csv_log(p_file_object_id, v_status, 'Aantal vereist, maar niet ingevuld', csv_rec.linenumber);
                 v_lineok := false;
@@ -2792,15 +2801,188 @@ BEGIN
         ELSE
             IF ((csv_rec.percentage >= 0) and (csv_rec.percentage <= 100)) THEN
                 v_cols := 'percentage,' || v_cols;
-                v_vals := csv_rec.percentage || ',' || v_vals; 
+                v_vals := '''' || csv_rec.percentage || ''',' || v_vals;
             ELSE
                 p_csv_log(p_file_object_id, v_status, 'Percentage niet (correct) ingevuld' || csv_rec.percentage, csv_rec.linenumber);
                 v_lineok := false;
             END IF;
         END IF;
-        -- Handle dimensies
--- Can I work with csv_rec.dim_arr_name(cnt) ???
--- If not, I need to list all dimensies individually...
+ 
+-- Handle dimensies
+-- As it is not possible to pass the column name of a rowtype dynamically,
+-- we need to hard-code each dimension
+-- Use Field 'kolomnaam' for dimensie
+        IF dim_incl.EXISTS('afstandsklasse') THEN
+            IF dim_el.EXISTS('afstandsklasse_' || lower(csv_rec.afstandsklasse)) THEN
+                v_cols := 'afstandsklasse' || ', ' || v_cols;
+                v_vals := '''' || dim_el('afstandsklasse_' || lower(csv_rec.afstandsklasse)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'afstandsklasse onbekend element ' || csv_rec.afstandsklasse);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('dagdeel') THEN
+            IF dim_el.EXISTS('dagdeel_' || lower(csv_rec.dagdeel)) THEN
+                v_cols := 'dagdeel' || ', ' || v_cols;
+                v_vals := '''' || dim_el('dagdeel_' || lower(csv_rec.dagdeel)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'dagdeel onbekend element ' || csv_rec.dagdeel);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('entiteit') THEN
+            IF dim_el.EXISTS('entiteit_' || lower(csv_rec.entiteit)) THEN
+                v_cols := 'entiteit' || ', ' || v_cols;
+                v_vals := '''' || dim_el('entiteit_' || lower(csv_rec.entiteit)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'entiteit onbekend element ' || csv_rec.entiteit);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('gemeente') THEN
+            IF dim_el.EXISTS('gemeente_' || lower(csv_rec.gemeente)) THEN
+                v_cols := 'gemeente' || ', ' || v_cols;
+                v_vals := '''' || dim_el('gemeente_' || lower(csv_rec.gemeente)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'gemeente onbekend element ' || csv_rec.gemeente);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('hoofdvervoerswijze') THEN
+            IF dim_el.EXISTS('hoofdvervoerswijze_' || lower(csv_rec.hoofdvervoerswijze)) THEN
+                v_cols := 'hoofdvervoerswijze' || ', ' || v_cols;
+                v_vals := '''' || dim_el('hoofdvervoerswijze_' || lower(csv_rec.hoofdvervoerswijze)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'hoofdvervoerswijze onbekend element ' || csv_rec.hoofdvervoerswijze);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('klasse_fietspaden') THEN
+            IF dim_el.EXISTS('klasse_fietspaden_' || lower(csv_rec.klasse_fietspaden)) THEN
+                v_cols := 'klasse_fietspaden' || ', ' || v_cols;
+                v_vals := '''' || dim_el('klasse_fietspaden_' || lower(csv_rec.klasse_fietspaden)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'klasse_fietspaden onbekend element ' || csv_rec.klasse_fietspaden);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('netwerk') THEN
+            IF dim_el.EXISTS('netwerk_' || lower(csv_rec.netwerk)) THEN
+                v_cols := 'netwerk' || ', ' || v_cols;
+                v_vals := '''' || dim_el('netwerk_' || lower(csv_rec.netwerk)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'netwerk onbekend element ' || csv_rec.netwerk);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('netwerklink') THEN
+            IF dim_el.EXISTS('netwerklink_' || lower(csv_rec.netwerklink)) THEN
+                v_cols := 'netwerklink' || ', ' || v_cols;
+                v_vals := '''' || dim_el('netwerklink_' || lower(csv_rec.netwerklink)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'netwerklink onbekend element ' || csv_rec.netwerklink);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('provincie') THEN
+            IF dim_el.EXISTS('provincie_' || lower(csv_rec.provincie)) THEN
+                v_cols := 'provincie' || ', ' || v_cols;
+                v_vals := '''' || dim_el('provincie_' || lower(csv_rec.provincie)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'provincie onbekend element ' || csv_rec.provincie);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_dag') THEN
+            IF dim_el.EXISTS('type_dag_' || lower(csv_rec.type_dag)) THEN
+                v_cols := 'type_dag' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_dag_' || lower(csv_rec.type_dag)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_dag onbekend element ' || csv_rec.type_dag);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_dooimiddel') THEN
+            IF dim_el.EXISTS('type_dooimiddel_' || lower(csv_rec.type_dooimiddel)) THEN
+                v_cols := 'type_dooimiddel' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_dooimiddel_' || lower(csv_rec.type_dooimiddel)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_dooimiddel onbekend element ' || csv_rec.type_dooimiddel);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_infrastructuur') THEN
+            IF dim_el.EXISTS('type_infrastructuur_' || lower(csv_rec.type_infrastructuur)) THEN
+                v_cols := 'type_infrastructuur' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_infrastructuur_' || lower(csv_rec.type_infrastructuur)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_infrastructuur onbekend element ' || csv_rec.type_infrastructuur);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_medewerker') THEN
+            IF dim_el.EXISTS('type_medewerker_' || lower(csv_rec.type_medewerker)) THEN
+                v_cols := 'type_medewerker' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_medewerker_' || lower(csv_rec.type_medewerker)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_medewerker onbekend element ' || csv_rec.type_medewerker);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_monitoringsysteem') THEN
+            IF dim_el.EXISTS('type_monitoringsysteem_' || lower(csv_rec.type_monitoringsysteem)) THEN
+                v_cols := 'type_monitoringsysteem' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_monitoringsysteem_' || lower(csv_rec.type_monitoringsysteem)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_monitoringsysteem onbekend element ' || csv_rec.type_monitoringsysteem);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_onderhoud') THEN
+            IF dim_el.EXISTS('type_onderhoud_' || lower(csv_rec.type_onderhoud)) THEN
+                v_cols := 'type_onderhoud' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_onderhoud_' || lower(csv_rec.type_onderhoud)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_onderhoud onbekend element ' || csv_rec.type_onderhoud);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_verkeerssituatie') THEN
+            IF dim_el.EXISTS('type_verkeerssituatie_' || lower(csv_rec.type_verkeerssituatie)) THEN
+                v_cols := 'type_verkeerssituatie' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_verkeerssituatie_' || lower(csv_rec.type_verkeerssituatie)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_verkeerssituatie onbekend element ' || csv_rec.type_verkeerssituatie);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('verplaatsingsmotief') THEN
+            IF dim_el.EXISTS('verplaatsingsmotief_' || lower(csv_rec.verplaatsingsmotief)) THEN
+                v_cols := 'verplaatsingsmotief' || ', ' || v_cols;
+                v_vals := '''' || dim_el('verplaatsingsmotief_' || lower(csv_rec.verplaatsingsmotief)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'verplaatsingsmotief onbekend element ' || csv_rec.verplaatsingsmotief);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('vervoersbewijs') THEN
+            IF dim_el.EXISTS('vervoersbewijs_' || lower(csv_rec.vervoersbewijs)) THEN
+                v_cols := 'vervoersbewijs' || ', ' || v_cols;
+                v_vals := '''' || dim_el('vervoersbewijs_' || lower(csv_rec.vervoersbewijs)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'vervoersbewijs onbekend element ' || csv_rec.vervoersbewijs);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('voertuigtype') THEN
+            IF dim_el.EXISTS('voertuigtype_' || lower(csv_rec.voertuigtype)) THEN
+                v_cols := 'voertuigtype' || ', ' || v_cols;
+                v_vals := '''' || dim_el('voertuigtype_' || lower(csv_rec.voertuigtype)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'voertuigtype onbekend element ' || csv_rec.voertuigtype);
+                v_lineok := false;
+            END IF;
+        END IF;
         
         
         IF v_lineok THEN

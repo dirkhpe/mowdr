@@ -1,4 +1,4 @@
-; Wed Apr 30 18:00:05 CEST 2014
+; Tue May 06 10:57:41 CEST 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -260,7 +260,7 @@
 ([KB_051108_Class99] of  Property_List
 )
 
-([KB_086692_Class3] of  Map
+([KB_483188_Class3] of  Map
 )
 
 ([LAYOUT_PROPERTIES] of  Property_List

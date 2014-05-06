@@ -1,4 +1,4 @@
-; Wed Apr 30 18:00:05 CEST 2014
+; Tue May 06 10:57:41 CEST 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -55,6 +55,7 @@
 
 	(description "Detailed status information collected during load of csv files.")
 	(is_part_of [HandleCSVFiles_Class3])
+	(is_read_from [HandleCSVFiles_Class9])
 	(is_written_by
 		[HandleCSVFiles_Class8]
 		[HandleCSVFiles_Class16]
@@ -71,6 +72,7 @@
 	(name "p_csv_merge")
 	(reads_from [HandleCSVFiles_Class11])
 	(runs_after [HandleCSVFiles_Class8])
+	(runs_before [HandleCSVFiles_Class9])
 	(script_type plsql)
 	(writes_to
 		[HandleCSVFiles_Class11]
@@ -110,7 +112,7 @@
 
 ([HandleCSVFiles_Class20] of  Script
 
-	(description "This script will handle one indicatorfiche_id from the table csv_load.\nAll records are validated and loaded into indicator_report.")
+	(description "This script will handle one indicatorfiche_id from the table csv_load.\nAll records are validated and loaded into indicator_report.\n\nDimensions need to be hard-coded in the script, since PLSQL cannot handle dynamic attribute assignment.\nOnly dimensions that are in use at time of development are hard-coded. Review for future extensions!")
 	(is_called_by [HandleCSVFiles_Class16])
 	(name "p_csv_handle_id")
 	(reads_from [HandleCSVFiles_Class11])
@@ -186,4 +188,6 @@
 
 	(is_called_by [HandleCSVFiles_Class6])
 	(name "p_load_report")
+	(reads_from [HandleCSVFiles_Class14])
+	(runs_after [HandleCSVFiles_Class16])
 	(script_type plsql))

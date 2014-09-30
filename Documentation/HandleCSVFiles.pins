@@ -1,4 +1,4 @@
-; Tue May 06 10:57:41 CEST 2014
+; Mon May 12 11:25:30 CEST 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -21,9 +21,72 @@
 
 ([HandleCSVFiles_Class10] of  Script
 
+	(description "Reads the commentaar *csv file fro the customer and loads into comm_load table. All possible columns are accepted.")
 	(is_called_by [HandleCSVFiles_Class6])
 	(name "p_comm_load")
+	(reads_from [HandleCSVFiles_Class10002])
+	(runs_before [HandleCSVFiles_Class10000])
 	(script_type plsql))
+
+([HandleCSVFiles_Class10000] of  Script
+
+	(calls
+		[HandleCSVFiles_Class10003]
+		[HandleCSVFiles_Class10004])
+	(description "This script checks table comm_load for valid indicator IDs.\nIf indicator_id is found, then call p_dump_commentaar to keep a safe copy in file from the cijfers. Then remove records from indicator_report.\nIf indicator_id is not found, then remove records from comm_load.")
+	(is_called_by [HandleCSVFiles_Class6])
+	(name "p_comm_merge")
+	(reads_from [HandleCSVFiles_Class10001])
+	(runs_after [HandleCSVFiles_Class10])
+	(runs_before [HandleCSVFiles_Class9])
+	(script_type plsql)
+	(writes_to [HandleCSVFiles_Class10001]))
+
+([HandleCSVFiles_Class10001] of  Artifact
+
+	(description "Table that contains all the information from the customer commentaar *csv file that passed initial validation.")
+	(is_part_of [HandleCSVFiles_Class3])
+	(is_read_from
+		[HandleCSVFiles_Class10000]
+		[HandleCSVFiles_Class10004])
+	(is_written_by [HandleCSVFiles_Class10000])
+	(name "comm_load"))
+
+([HandleCSVFiles_Class10002] of  Artifact
+
+	(description "CSV file containing commentaar records. For filename and format refer to documentation.")
+	(is_part_of [HandleCSVFiles_Class13])
+	(is_read_from [HandleCSVFiles_Class10])
+	(is_written_by [HandleCSVFiles_Class10003])
+	(name "customer_commentaar.csv"))
+
+([HandleCSVFiles_Class10003] of  Script
+
+	(description "Dump commentaar records from commentaar table.")
+	(is_called_by [HandleCSVFiles_Class10000])
+	(name "p_dump_commentaar")
+	(runs_before [HandleCSVFiles_Class10004])
+	(script_type plsql)
+	(writes_to [HandleCSVFiles_Class10002]))
+
+([HandleCSVFiles_Class10004] of  Script
+
+	(description "This script will handle one indicatorfiche _id from the comm_load table.\nAll records are validated and loaded into commentaar.")
+	(is_called_by [HandleCSVFiles_Class10000])
+	(name "p_comm_handle_id")
+	(reads_from [HandleCSVFiles_Class10001])
+	(runs_after [HandleCSVFiles_Class10003])
+	(script_type plsql)
+	(writes_to
+		[HandleCSVFiles_Class14]
+		[HandleCSVFiles_Class10005]))
+
+([HandleCSVFiles_Class10005] of  Artifact
+
+	(description "Commentaar Table for all indicatorfiche IDs.")
+	(is_part_of [HandleCSVFiles_Class4])
+	(is_written_by [HandleCSVFiles_Class10004])
+	(name "commentaar"))
 
 ([HandleCSVFiles_Class11] of  Artifact
 
@@ -48,7 +111,8 @@
 
 	(has_artifacts
 		[HandleCSVFiles_Class12]
-		[HandleCSVFiles_Class1])
+		[HandleCSVFiles_Class1]
+		[HandleCSVFiles_Class10002])
 	(name "UNIX Filesystem"))
 
 ([HandleCSVFiles_Class14] of  Artifact
@@ -59,7 +123,8 @@
 	(is_written_by
 		[HandleCSVFiles_Class8]
 		[HandleCSVFiles_Class16]
-		[HandleCSVFiles_Class20])
+		[HandleCSVFiles_Class20]
+		[HandleCSVFiles_Class10004])
 	(name "file_process"))
 
 ([HandleCSVFiles_Class16] of  Script
@@ -128,7 +193,8 @@
 	(has_artifacts
 		[HandleCSVFiles_Class2]
 		[HandleCSVFiles_Class7]
-		[HandleCSVFiles_Class14])
+		[HandleCSVFiles_Class14]
+		[HandleCSVFiles_Class10001])
 	(is_part_of [HandleCSVFiles_Class4])
 	(name "csv_environment"))
 
@@ -137,7 +203,8 @@
 	(description "Dataroom Workspace in Oracle")
 	(has_artifacts
 		[HandleCSVFiles_Class3]
-		[HandleCSVFiles_Class17])
+		[HandleCSVFiles_Class17]
+		[HandleCSVFiles_Class10005])
 	(name "mow_dataroom"))
 
 ([HandleCSVFiles_Class5] of  Script
@@ -152,9 +219,10 @@
 
 	(calls
 		[HandleCSVFiles_Class8]
-		[HandleCSVFiles_Class9]
+		[HandleCSVFiles_Class16]
 		[HandleCSVFiles_Class10]
-		[HandleCSVFiles_Class16])
+		[HandleCSVFiles_Class10000]
+		[HandleCSVFiles_Class9])
 	(description "Script that runs hourly to check the mdk_log table for incoming files from the dropserver.")
 	(is_called_by [HandleCSVFiles_Class5])
 	(name "p_read_logfile")
@@ -189,5 +257,7 @@
 	(is_called_by [HandleCSVFiles_Class6])
 	(name "p_load_report")
 	(reads_from [HandleCSVFiles_Class14])
-	(runs_after [HandleCSVFiles_Class16])
+	(runs_after
+		[HandleCSVFiles_Class16]
+		[HandleCSVFiles_Class10000])
 	(script_type plsql))

@@ -550,6 +550,34 @@ EXCEPTION
 END;
 /
 
+CREATE OR REPLACE FUNCTION  "F_PREP_OR_PROD" (f_filename IN varchar2)
+    RETURN varchar2
+    IS
+    -- This procedure will check if you are running on apexprep or apexprod.
+    -- In case of apexprep then 'prep_' is added to filename,
+    -- otherwise filename is returned without change.
+    -- This procedure is used during dump of cijferrecords or commentaar records.
+    proc_name logtbl.evt_proc%TYPE := 'f_prep_or_prod';
+    err_msg varchar2(255);
+    v_host varchar2(1024);
+    v_prod number;
+BEGIN
+    v_host := owa_util.get_cgi_env('HTTP_HOST');
+p_log(proc_name, 'E', v_host);
+    select instr(v_host, 'prod') into v_prod from dual;
+    if v_prod > 0 then
+        RETURN f_filename;
+    else
+        RETURN 'prep_' || f_filename;
+    end if;
+EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN f_filename;
+END;
+/
+
 CREATE OR REPLACE FUNCTION  "F_PERIODE_SCHOOLJAAR" (indic_id IN indicatorfiche.indicatorfiche_id%TYPE)
 RETURN boolean
 IS
@@ -586,8 +614,6 @@ CREATE OR REPLACE FUNCTION  "F_PERIODE_LABEL" (indic_id IN indicatorfiche.indica
 RETURN boolean
 IS
     proc_name logtbl.evt_proc%TYPE := 'f_periode_label';
-    err_num number;
-    err_line number;
     err_msg varchar2(255);
     freq indicatorfiche.meetfrequentie%TYPE;
 BEGIN
@@ -607,9 +633,7 @@ EXCEPTION
         RETURN TRUE;
     WHEN OTHERS THEN
         err_msg:= SUBSTR(SQLERRM, 1, 100);
-        err_num:= SQLCODE;
-        err_line := $$PLSQL_LINE;
-        p_log(proc_name, 'E', 'Onverwachte fout lijn: ' || err_line || ' nr: ' || err_num || ' msg: ' || err_msg);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
         RETURN TRUE;
 END;
 /
@@ -1374,31 +1398,76 @@ IS
     proc_name logtbl.evt_proc%TYPE := 'f_dagnr_lbl';
     lbl    frequenties.maand%TYPE;  -- lbl is kwartaal of maand, afhankelijk van de meetfrequentie.
     periode indicatorfiche.meetfrequentie%TYPE;
-    err_num number;
-    err_line number;
     err_msg varchar2(255);
+    v_dagnr_calc indicator_report.dagnr%TYPE;
 BEGIN
-    
+    IF v_dagnr is null THEN
+        v_dagnr_calc := 27759;
+    ELSE
+        v_dagnr_calc := v_dagnr;
+    END IF;
     select meetfrequentie into periode
     from indicatorfiche
     where indicatorfiche_id = indic_id;
     if (lower(periode) = 'maand') THEN
         select maand into lbl 
         from frequenties 
-        where dagnr = v_dagnr;
+        where dagnr = v_dagnr_calc;
     elsif (lower(periode) = 'kwartaal') THEN 
         select kwartaal into lbl 
         from frequenties 
-        where dagnr = v_dagnr;
+        where dagnr = v_dagnr_calc;
     end if;
     RETURN lbl;
 EXCEPTION
     
     WHEN OTHERS THEN
         err_msg:= SUBSTR(SQLERRM, 1, 100);
-        err_num:= SQLCODE;
-        err_line := $$PLSQL_LINE;
-        p_log(proc_name, 'E', 'Onverwachte fout lijn: ' || err_line || ' nr: ' || err_num || ' msg: ' || err_msg);
+        p_log(proc_name, 'E', 'Indic ID: ' || indic_id || ' - dagnr: ' || v_dagnr || ' Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN '';
+END;
+/
+
+CREATE OR REPLACE FUNCTION  "F_CREP_PERIOD" (f_commentaar_id IN commentaar.commentaar_id%TYPE)
+    RETURN varchar2
+    IS
+    -- Use indicator_report_id to return periode label as requested by csv file format specification.
+    -- Also aantal or percentage is returned
+    proc_name logtbl.evt_proc%TYPE := 'f_rep_period';
+    err_msg varchar2(255);
+    f_jaar frequenties.jaar%TYPE;
+    f_maandnr frequenties.maandnr%TYPE;
+    f_kwartaal varchar2(1);
+    f_schooljaar_label frequenties.schooljaar_label%TYPE;
+    f_meetfrequentie indicatorfiche.meetfrequentie%TYPE;
+    f_aantal indicator_report.aantal%TYPE;
+    f_percentage indicator_report.percentage%TYPE;
+    f_ap_flag indicatorfiche.aantal_percentage%TYPE;
+    f_retstr varchar2(1024) := '';
+BEGIN
+    SELECT f.jaar, f.maandnr, substr(f.kwartaal,10,1), f.schooljaar_label, i.meetfrequentie
+        INTO f_jaar, f_maandnr, f_kwartaal, f_schooljaar_label, f_meetfrequentie
+        FROM frequenties f, commentaar r, indicatorfiche i
+        WHERE r.commentaar_id = f_commentaar_id
+          AND f.dagnr = r.dagnr
+          AND i.indicatorfiche_id = r.indicatorfiche_id;
+    IF (lower(f_meetfrequentie) = 'jaar') THEN
+        f_retstr := f_retstr || ';' || f_jaar;
+    ELSIF (lower(f_meetfrequentie) = 'maand') THEN
+        f_retstr := f_retstr || ';' || f_jaar || ';' || f_maandnr;
+    ELSIF (lower(f_meetfrequentie) = 'kwartaal') THEN
+        f_retstr := f_retstr || ';' || f_jaar || ';' || f_kwartaal;
+    ELSIF (lower(f_meetfrequentie) = 'schooljaar') THEN
+        f_retstr := f_retstr || ';' || f_schooljaar_label;
+    ELSE
+        p_log(proc_name, 'E', 'Onbekende meetfrequentie: ' || f_meetfrequentie);
+        RETURN '';
+    END IF;
+    RETURN f_retstr;
+EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
         RETURN '';
 END;
 /
@@ -1504,6 +1573,51 @@ EXCEPTION
 END;
 /
 
+CREATE OR REPLACE FUNCTION  "F_CALC_DAGNR_COMM" (indic_id IN indicatorfiche.indicatorfiche_id%TYPE,
+                                         period_str IN varchar2)
+RETURN number
+IS
+    -- Temporary Procedure to correct issue with dagnr calculation for commentaar
+    proc_name logtbl.evt_proc%TYPE := 'f_calc_dagnr_comm';
+    l_vc_arr2 APEX_APPLICATION_GLOBAL.VC_ARR2;
+    sch_yr frequenties.schooljaar_label%TYPE;
+    yr     frequenties.jaar%TYPE;
+    lbl    frequenties.maand%TYPE;  -- lbl is kwartaal of maand, afhankelijk van de meetfrequentie.
+    periode indicatorfiche.meetfrequentie%TYPE;
+    dagnr indicator_report.dagnr%TYPE;
+    err_msg varchar2(255);
+    v_query varchar2(255);
+BEGIN
+    p_log(proc_name, 'T', indic_id || ' - ' || period_str);    
+    l_vc_arr2 := APEX_UTIL.STRING_TO_TABLE(period_str, '*');
+    sch_yr := l_vc_arr2(1);
+    yr := l_vc_arr2(2);
+    lbl := l_vc_arr2(3);
+    select meetfrequentie into periode
+    from indicatorfiche
+    where indicatorfiche_id = indic_id;
+    if (lower(periode) = 'jaar') THEN
+        v_query := 'select min(dagnr) from frequenties where jaar = ' || yr;
+    elsif (lower(periode) = 'schooljaar') THEN
+        v_query := 'select min(dagnr) from frequenties where schooljaar_label = ' || sch_yr;
+    elsif (lower(periode) = 'maand') THEN
+        v_query := 'select min(dagnr) from frequenties where jaar = ' || yr || ' and maand = ''' || lower(lbl) || '''';
+    elsif (lower(periode) = 'kwartaal') THEN 
+        v_query := 'select min(dagnr) from frequenties where jaar = ' || yr || ' and kwartaal = ''' || lower(lbl) || '''';
+    else
+        p_log(proc_name, 'E', 'Meetfrequentie niet gedefinieerd: ' || periode);
+        RETURN 27759;      -- Return 1/01/1980, because this is a foreign key that needs to be defined
+    end if;
+    EXECUTE IMMEDIATE v_query INTO dagnr;
+    RETURN dagnr;
+EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN 27759;      -- Return 1/01/1980, because this is a foreign key that needs to be defined
+END;
+/
+
 CREATE OR REPLACE FUNCTION  "F_CALC_DAGNR" (indic_id IN indicatorfiche.indicatorfiche_id%TYPE,
                                          period_str IN varchar2)
 RETURN number
@@ -1515,11 +1629,10 @@ IS
     lbl    frequenties.maand%TYPE;  -- lbl is kwartaal of maand, afhankelijk van de meetfrequentie.
     periode indicatorfiche.meetfrequentie%TYPE;
     dagnr indicator_report.dagnr%TYPE;
-    err_num number;
-    err_line number;
     err_msg varchar2(255);
+    v_query varchar2(255);
 BEGIN
-    
+    p_log(proc_name, 'T', indic_id || ' - ' || period_str);    
     l_vc_arr2 := APEX_UTIL.STRING_TO_TABLE(period_str, '*');
     sch_yr := l_vc_arr2(1);
     yr := l_vc_arr2(2);
@@ -1528,35 +1641,23 @@ BEGIN
     from indicatorfiche
     where indicatorfiche_id = indic_id;
     if (lower(periode) = 'jaar') THEN
-        select min(dagnr) into dagnr 
-        from frequenties 
-        where jaar = yr;
+        v_query := 'select min(dagnr) from frequenties where jaar = ' || yr;
     elsif (lower(periode) = 'schooljaar') THEN
-        select min(dagnr) into dagnr 
-        from frequenties 
-        where schooljaar_label = sch_yr;
+        v_query := 'select min(dagnr) from frequenties where schooljaar_label = ' || sch_yr;
     elsif (lower(periode) = 'maand') THEN
-        select min(dagnr) into dagnr 
-        from frequenties 
-        where jaar = yr
-        and maand = lbl;
+        v_query := 'select min(dagnr) from frequenties where jaar = ' || yr || ' and maandnr = ' || lbl;
     elsif (lower(periode) = 'kwartaal') THEN 
-        select min(dagnr) into dagnr 
-        from frequenties 
-        where jaar = yr
-        and kwartaal = lbl;
+        v_query := 'select min(dagnr) from frequenties where jaar = ' || yr || ' and kwartaal = ' || lbl;
     else
         p_log(proc_name, 'E', 'Meetfrequentie niet gedefinieerd: ' || periode);
         RETURN 27759;      -- Return 1/01/1980, because this is a foreign key that needs to be defined
     end if;
+    EXECUTE IMMEDIATE v_query INTO dagnr;
     RETURN dagnr;
 EXCEPTION
-    
     WHEN OTHERS THEN
         err_msg:= SUBSTR(SQLERRM, 1, 100);
-        err_num:= SQLCODE;
-        err_line := $$PLSQL_LINE;
-        p_log(proc_name, 'E', 'Onverwachte fout lijn: ' || err_line || ' nr: ' || err_num || ' msg: ' || err_msg);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
         RETURN 27759;      -- Return 1/01/1980, because this is a foreign key that needs to be defined
 END;
 /
@@ -1827,6 +1928,7 @@ BEGIN
                 p_log(proc_name, 'E', 'Commentaar file gevonden: ' || v_filename);
                 p_csv_log(v_file_object_id, 'Commentaar file gevonden');
                 p_comm_load(v_filename, v_file_object_id);
+                p_comm_merge(v_file_object_id);
                 p_load_report(v_file_object_id);
             ELSE 
                 p_log(proc_name, 'E', 'Onbekend file type gevonden: ' || v_filename);
@@ -2354,6 +2456,83 @@ EXCEPTION
 END;
 /
 
+CREATE OR REPLACE PROCEDURE  "P_DUMP_COMMENTAAR" (p_indic_id indicatorfiche.indicatorfiche_id%TYPE)
+IS
+    -- This procedure allows to dump commentaarrecords for a specific indicatorfiche.
+    -- This is done before removing all records for the ID
+    -- as part of the csv load.
+    proc_name logtbl.evt_proc%TYPE := 'p_dump_commentaar';
+    err_msg varchar2(255);
+    
+    f utl_file.file_type;
+    v_filename varchar2(255);
+    v_indicator_naam indicatorfiche.indicator_naam%TYPE;
+    v_meetfrequentie indicatorfiche.meetfrequentie%TYPE;
+    v_title_row varchar2(1024);
+    type t_res is table of varchar2(1024);
+    v_res t_res;
+    v_query varchar2(1024);
+    FUNCTION f_freqrow(f_meetfrequentie IN indicatorfiche.meetfrequentie%TYPE) 
+        RETURN varchar2
+    IS
+    BEGIN
+        IF (lower(f_meetfrequentie) = 'jaar') THEN
+            RETURN 'jaar;';
+        ELSIF (lower(f_meetfrequentie) = 'maand') THEN
+            RETURN 'jaar;maand;';
+        ELSIF (lower(f_meetfrequentie) = 'kwartaal') THEN
+            RETURN 'jaar;kwartaal;';
+        ELSIF (lower(f_meetfrequentie) = 'schooljaar') THEN
+            RETURN 'schooljaar;';
+        ELSE
+            p_log(proc_name || '_f_freqrow', 'E', 'Onbekende meetfrequentie: ' || f_meetfrequentie);
+            RETURN '';
+        END IF;
+    EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name || '_f_freqrow', 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN '';
+    END;
+        
+BEGIN
+    p_log(proc_name, 'I', 'Start Application for ID: ' || p_indic_id);
+    SELECT indicator_naam, meetfrequentie 
+        INTO v_indicator_naam, v_meetfrequentie
+        FROM indicatorfiche
+        WHERE indicatorfiche_id = p_indic_id;
+    -- Change space into underscore for indicator_naam
+    SELECT replace(v_indicator_naam, ' ', '_') INTO v_indicator_naam FROM dual;
+    v_filename := v_indicator_naam || '_' || to_char(sysdate, 'YYYYMMDDHH24MI') || '_commentaar.csv';
+    v_filename := f_prep_or_prod(v_filename);
+    -- Initialize file and title row
+    f := utl_file.fopen('DATAROOM_OUT', v_filename, 'w');
+    v_title_row := 'indicatorfiche_id;naam;' || f_freqrow(v_meetfrequentie) || 'commentaar';
+    utl_file.put_line(f, v_title_row);
+    -- Read all records for this indicator
+    -- and extract information for csv file.
+    v_query := 'SELECT i.indicatorfiche_id || '';'' || i.indicator_naam || 
+                f_crep_period(c.commentaar_id) || '';'' ||
+                replace(replace(c.beschrijving,chr(10),''CHR10''),chr(13),''CHR13'')
+                FROM commentaar c, indicatorfiche i
+                WHERE c.indicatorfiche_id = ' || p_indic_id || '
+                  AND i.indicatorfiche_id = c.indicatorfiche_id';
+p_log(proc_name, 'T', v_query);
+    execute immediate v_query bulk collect into v_res;
+    if v_res.count > 0 THEN
+        for i in v_res.first..v_res.last loop
+            utl_file.put_line(f,v_res(i));
+        end loop;
+    END IF;
+    utl_file.fclose(f);
+    p_log(proc_name, 'I', 'End Application');
+EXCEPTION
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+END;
+/
+
 CREATE OR REPLACE PROCEDURE  "P_DUMP_CIJFERS" (p_indic_id indicatorfiche.indicatorfiche_id%TYPE)
 IS
     -- This procedure allows to dump cijferrecords for a specific indicatorfiche.
@@ -2434,8 +2613,9 @@ BEGIN
     -- Change space into underscore for indicator_naam
     SELECT replace(v_indicator_naam, ' ', '_') INTO v_indicator_naam FROM dual;
     v_filename := v_indicator_naam || '_' || to_char(sysdate, 'YYYYMMDDHH24MI') || '_cijfers.csv';
+    -- v_filename := f_prep_or_prod(v_filename); 
     -- Initialize file and title row
-    f := utl_file.fopen('DATAROOM_BAD', v_filename, 'w');
+    f := utl_file.fopen('DATAROOM_OUT', v_filename, 'w');
     v_title_row := 'indicatorfiche_id;naam;' || v_ap || ';' || f_freqrow(v_meetfrequentie) || f_dimrow;
     utl_file.put_line(f, v_title_row);
     -- Read all records for this indicator
@@ -2609,6 +2789,7 @@ IS
             FROM dimensie
             WHERE kolomnaam is not null;
     BEGIN
+        -- p_csv_log(p_file_object_id, v_status, 'Check for column *' || f_column || '* and value *' || asciistr(f_value) || '*');
         -- First build up str_val array
         OPEN col_names_cursor;
         FETCH col_names_cursor BULK COLLECT INTO str_val;
@@ -2643,6 +2824,7 @@ BEGIN
     csv_file := utl_file.fopen('DATAROOM_IN', p_filename, 'r');
     -- Get the columns
     utl_file.get_line(csv_file, v_line);
+    v_line := replace(v_line, chr(13), '');  -- Windows CRLF removal
     v_linecnt := v_linecnt + 1;
     v_col := string_fnc.split(lower(v_line) || ';' , v_delim);
     
@@ -2650,13 +2832,14 @@ BEGIN
     LOOP
         BEGIN
             utl_file.get_line(csv_file, v_line);
+            v_line := replace(v_line, chr(13), '');  -- Windows CRLF removal
             v_linecnt := v_linecnt + 1;
             v_array := string_fnc.split(lower(v_line) || ';', v_delim);
             v_col_str := 'linenumber';
             v_array_str := v_linecnt;
             v_lineok := true;
             FOR i IN 1..v_array.count LOOP
-                IF (length(v_array(i)) > 0) THEN 
+                IF (v_array(i) is not null) THEN 
                     v_value := if_verify_field(v_col(i), v_array(i), v_linecnt);
                     IF (length(v_value) > 0) THEN
                         v_col_str := v_col(i) || ',' || v_col_str;
@@ -2666,7 +2849,7 @@ BEGIN
             END LOOP;
             IF v_lineok THEN
                 v_query := 'INSERT into csv_load (' || v_col_str || ') VALUES (' || v_array_str || ')';
-                -- p_log(proc_name, 'T', 'Ready to execute query: ' || v_query);
+                p_log(proc_name, 'T', 'Ready to execute query: ' || v_query);
                 EXECUTE IMMEDIATE v_query;
             END IF;
         EXCEPTION
@@ -2893,6 +3076,33 @@ BEGIN
                 v_lineok := false;
             END IF;
         END IF;
+        IF dim_incl.EXISTS('referentiejaar') THEN
+            IF dim_el.EXISTS('referentiejaar_' || lower(csv_rec.referentiejaar)) THEN
+                v_cols := 'referentiejaar' || ', ' || v_cols;
+                v_vals := '''' || dim_el('referentiejaar_' || lower(csv_rec.referentiejaar)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'referentiejaar onbekend element ' || csv_rec.referentiejaar);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('stormvloedpeil') THEN
+            IF dim_el.EXISTS('stormvloedpeil_' || lower(csv_rec.stormvloedpeil)) THEN
+                v_cols := 'stormvloedpeil' || ', ' || v_cols;
+                v_vals := '''' || dim_el('stormvloedpeil_' || lower(csv_rec.stormvloedpeil)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'stormvloedpeil onbekend element ' || csv_rec.stormvloedpeil);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_aanvrager_expertise') THEN
+            IF dim_el.EXISTS('type_aanvrager_expertise_' || lower(csv_rec.type_aanvrager_expertise)) THEN
+                v_cols := 'type_aanvrager_expertise' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_aanvrager_expertise_' || lower(csv_rec.type_aanvrager_expertise)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_aanvrager_expertise onbekend element ' || csv_rec.type_aanvrager_expertise);
+                v_lineok := false;
+            END IF;
+        END IF;
         IF dim_incl.EXISTS('type_dag') THEN
             IF dim_el.EXISTS('type_dag_' || lower(csv_rec.type_dag)) THEN
                 v_cols := 'type_dag' || ', ' || v_cols;
@@ -2911,12 +3121,30 @@ BEGIN
                 v_lineok := false;
             END IF;
         END IF;
+        IF dim_incl.EXISTS('type_incident') THEN
+            IF dim_el.EXISTS('type_incident_' || lower(csv_rec.type_incident)) THEN
+                v_cols := 'type_incident' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_incident_' || lower(csv_rec.type_incident)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_incident onbekend element ' || csv_rec.type_incident);
+                v_lineok := false;
+            END IF;
+        END IF;
         IF dim_incl.EXISTS('type_infrastructuur') THEN
             IF dim_el.EXISTS('type_infrastructuur_' || lower(csv_rec.type_infrastructuur)) THEN
                 v_cols := 'type_infrastructuur' || ', ' || v_cols;
                 v_vals := '''' || dim_el('type_infrastructuur_' || lower(csv_rec.type_infrastructuur)) || ''',' || v_vals;
             ELSE
                 p_csv_log(p_file_object_id, v_status, 'type_infrastructuur onbekend element ' || csv_rec.type_infrastructuur);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_kustpatrimonium') THEN
+            IF dim_el.EXISTS('type_kustpatrimonium_' || lower(csv_rec.type_kustpatrimonium)) THEN
+                v_cols := 'type_kustpatrimonium' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_kustpatrimonium_' || lower(csv_rec.type_kustpatrimonium)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_kustpatrimonium onbekend element ' || csv_rec.type_kustpatrimonium);
                 v_lineok := false;
             END IF;
         END IF;
@@ -2947,6 +3175,42 @@ BEGIN
                 v_lineok := false;
             END IF;
         END IF;
+        IF dim_incl.EXISTS('type_kustpatrimonium') THEN
+            IF dim_el.EXISTS('type_kustpatrimonium_' || lower(csv_rec.type_kustpatrimonium)) THEN
+                v_cols := 'type_kustpatrimonium' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_kustpatrimonium_' || lower(csv_rec.type_kustpatrimonium)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_kustpatrimonium onbekend element ' || csv_rec.type_kustpatrimonium);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_onderwijs') THEN
+            IF dim_el.EXISTS('type_onderwijs_' || lower(csv_rec.type_onderwijs)) THEN
+                v_cols := 'type_onderwijs' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_onderwijs_' || lower(csv_rec.type_onderwijs)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_onderwijs onbekend element ' || csv_rec.type_onderwijs);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_signalisatiesysteem') THEN
+            IF dim_el.EXISTS('type_signalisatiesysteem_' || lower(csv_rec.type_signalisatiesysteem)) THEN
+                v_cols := 'type_signalisatiesysteem' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_signalisatiesysteem_' || lower(csv_rec.type_signalisatiesysteem)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_signalisatiesysteem onbekend element ' || csv_rec.type_signalisatiesysteem);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('type_toelage') THEN
+            IF dim_el.EXISTS('type_toelage_' || lower(csv_rec.type_toelage)) THEN
+                v_cols := 'type_toelage' || ', ' || v_cols;
+                v_vals := '''' || dim_el('type_toelage_' || lower(csv_rec.type_toelage)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'type_toelage onbekend element ' || csv_rec.type_toelage);
+                v_lineok := false;
+            END IF;
+        END IF;
         IF dim_incl.EXISTS('type_verkeerssituatie') THEN
             IF dim_el.EXISTS('type_verkeerssituatie_' || lower(csv_rec.type_verkeerssituatie)) THEN
                 v_cols := 'type_verkeerssituatie' || ', ' || v_cols;
@@ -2971,6 +3235,15 @@ BEGIN
                 v_vals := '''' || dim_el('vervoersbewijs_' || lower(csv_rec.vervoersbewijs)) || ''',' || v_vals;
             ELSE
                 p_csv_log(p_file_object_id, v_status, 'vervoersbewijs onbekend element ' || csv_rec.vervoersbewijs);
+                v_lineok := false;
+            END IF;
+        END IF;
+        IF dim_incl.EXISTS('voertuigmodel') THEN
+            IF dim_el.EXISTS('voertuigmodel_' || lower(csv_rec.voertuigmodel)) THEN
+                v_cols := 'voertuigmodel' || ', ' || v_cols;
+                v_vals := '''' || dim_el('voertuigmodel_' || lower(csv_rec.voertuigmodel)) || ''',' || v_vals;
+            ELSE
+                p_csv_log(p_file_object_id, v_status, 'voertuigmodel onbekend element ' || csv_rec.voertuigmodel);
                 v_lineok := false;
             END IF;
         END IF;
@@ -3032,15 +3305,16 @@ BEGIN
         FETCH fiches_cursor into v_indicatorfiche_id;
         EXIT WHEN fiches_cursor%NOTFOUND;
         
-        IF v_indicatorfiche_id MEMBER OF valid_ids THEN
+        --IF v_indicatorfiche_id MEMBER OF valid_ids THEN
             p_csv_log(p_file_object_id, v_status, 'Indicatorfiche ID ' || v_indicatorfiche_id || ' gedelete uit commentaar tabel');
+            p_dump_commentaar(p_file_object_id);
             v_query := 'DELETE FROM commentaar WHERE indicatorfiche_id = ' || v_indicatorfiche_id;
             EXECUTE IMMEDIATE v_query;
-        ELSE
-            p_csv_log(p_file_object_id, v_status, 'Ongeldige indicatofiche_id: ' || v_indicatorfiche_id);
-            v_query := 'DELETE FROM comm_load WHERE indicatorfiche_id = ' || v_indicatorfiche_id;
-            EXECUTE IMMEDIATE v_query;
-        END IF;
+        --ELSE
+        --    p_csv_log(p_file_object_id, v_status, 'Ongeldige indicatofiche_id: ' || v_indicatorfiche_id);
+        --    v_query := 'DELETE FROM comm_load WHERE indicatorfiche_id = ' || v_indicatorfiche_id;
+        --    EXECUTE IMMEDIATE v_query;
+        --END IF;
     END LOOP;
     -- Then handle all remaining indicatorfiches
     OPEN fiches_freq_cursor;
@@ -3119,19 +3393,22 @@ BEGIN
     -- Get the columns
     utl_file.get_line(csv_file, v_line);
     v_linecnt := v_linecnt + 1;
-    v_col := string_fnc.split(v_line, v_delim);
+    v_col := string_fnc.split(lower(v_line) || ';', v_delim);
+p_log(proc_name, 'T', v_line);
     
     -- Then handle all lines
     LOOP
         BEGIN
             utl_file.get_line(csv_file, v_line);
             v_linecnt := v_linecnt + 1;
-            v_array := string_fnc.split(v_line, v_delim);
+            v_array := string_fnc.split(v_line  || ';', v_delim);
+    p_log(proc_name, 'T', v_line);
             v_col_str := 'linenumber';
             v_array_str := v_linecnt;
             v_lineok := true;
             FOR i IN 1..v_array.count LOOP
                 IF (length(v_array(i)) > 0) THEN 
+                p_log(proc_name, 'T', 'Working on ' || v_array(i) || ' for column ' || v_col(i)) ; 
                     v_value := if_verify_field(v_col(i), v_array(i), v_linecnt);
                     IF (length(v_value) > 0) THEN
                         v_col_str := v_col(i) || ',' || v_col_str;
@@ -3141,11 +3418,15 @@ BEGIN
             END LOOP;
             IF v_lineok THEN
                 v_query := 'INSERT into comm_load (' || v_col_str || ') VALUES (' || v_array_str || ')';
-                -- p_log(proc_name, 'T', 'Ready to execute query: ' || v_query);
+                p_log(proc_name, 'T', 'Ready to execute query: ' || v_query);
                 EXECUTE IMMEDIATE v_query;
+            ELSE
+                p_log(proc_name, 'E', 'Cannot write record for unknown reason');
             END IF;
         EXCEPTION
-            WHEN NO_DATA_FOUND THEN EXIT;
+            WHEN NO_DATA_FOUND THEN 
+            -- p_log(proc_name, 'E', 'End Of File reached');
+            EXIT;  -- EXIT from the loop
         END;
     END LOOP;
     
@@ -3235,7 +3516,7 @@ BEGIN
         -- Handle Commentaar veld
         IF (length(comm_rec.commentaar) > 0) THEN
             v_cols := 'beschrijving,' || v_cols;
-            v_vals := '''' || comm_rec.commentaar || ''',' || v_vals; 
+            v_vals := '''' || replace(comm_rec.commentaar,'CHR13CHR10', chr(13) || chr(10)) || ''',' || v_vals; 
         ELSE
             p_csv_log(p_file_object_id, v_status, 'Commentaar vereist, maar niet ingevuld', comm_rec.linenumber);
             v_lineok := false;

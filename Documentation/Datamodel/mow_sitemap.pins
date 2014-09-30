@@ -1,4 +1,4 @@
-; Fri Apr 11 14:20:56 CEST 2014
+; Wed Jun 04 09:32:53 CEST 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -126,6 +126,8 @@
 
 ([mow_sitemap_Class21] of  Pagina
 
+	(developer_documentatie "Make sure to configure field 'Beschrijving', set 'Security' , Restricted Characters to the selection as listed in the 'Gebruiker Documentatie'.")
+	(gebruiker_documentatie "Commentaar die bij een bepaalde periode hoort. De keuze van periode is zoals aangegeven bij indicatorfiche.\nHet commentaar veld mag volgende karakters niet bevatten: & < > \" / ; , * | = % -- 'newline'")
 	(naam "Commentaar Toevoegen / Aanpassen")
 	(nummer "58")
 	(opgeroepen_door [mow_sitemap_Class20])

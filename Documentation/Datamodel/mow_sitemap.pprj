@@ -1,4 +1,4 @@
-; Fri Apr 11 14:20:56 CEST 2014
+; Wed Jun 04 09:32:53 CEST 2014
 ; 
 ;+ (version "3.4.8")
 ;+ (build "Build 629")
@@ -20,12 +20,12 @@
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[mow_sitemap_ProjectKB_Class4]
-		[mow_sitemap_ProjectKB_Class5]
-		[mow_sitemap_ProjectKB_Class6]
-		[mow_sitemap_ProjectKB_Class7]
-		[mow_sitemap_ProjectKB_Class8]
-		[mow_sitemap_ProjectKB_Class9]))
+		[mow_sitemap_ProjectKB_Class10034]
+		[mow_sitemap_ProjectKB_Class10035]
+		[mow_sitemap_ProjectKB_Class10036]
+		[mow_sitemap_ProjectKB_Class10037]
+		[mow_sitemap_ProjectKB_Class10038]
+		[mow_sitemap_ProjectKB_Class10039]))
 
 ([CLSES_TAB] of  Widget
 
@@ -69,7 +69,7 @@
 	(is_hidden FALSE)
 	(widget_class_name "edu.stanford.smi.protege.widget.InstancesTab"))
 
-([KB_252370_Class3] of  Map
+([KB_681722_Class3] of  Map
 )
 
 ([KB_961727_Class0] of  String
@@ -80,9 +80,9 @@
 ([KB_961727_Class1] of  Map
 
 	(entries
-		[mow_sitemap_ProjectKB_Class10]
-		[mow_sitemap_ProjectKB_Class11]
-		[mow_sitemap_ProjectKB_Class12]))
+		[mow_sitemap_ProjectKB_Class10040]
+		[mow_sitemap_ProjectKB_Class10041]
+		[mow_sitemap_ProjectKB_Class10042]))
 
 ([KB_961727_Class10] of  Property_List
 )
@@ -577,16 +577,53 @@
 	(name "layout properties")
 	(properties [VERTICAL_STRETCHER]))
 
-([mow_sitemap_ProjectKB_Class10] of  Map_Entry
+([mow_sitemap_ProjectKB_Class10034] of  String
+
+	(name ":INSTANCE-ANNOTATION")
+	(string_value "%3AANNOTATION-TEXT"))
+
+([mow_sitemap_ProjectKB_Class10035] of  String
+
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
+
+([mow_sitemap_ProjectKB_Class10036] of  String
+
+	(name ":PAL-CONSTRAINT")
+	(string_value "%3APAL-NAME"))
+
+([mow_sitemap_ProjectKB_Class10037] of  String
+
+	(name "Lijst")
+	(string_value "naam"))
+
+([mow_sitemap_ProjectKB_Class10038] of  String
+
+	(name "Tab")
+	(string_value "naam"))
+
+([mow_sitemap_ProjectKB_Class10039] of  String
+
+	(name "Pagina")
+	(string_value "nummer{+-+}naam"))
+
+([mow_sitemap_ProjectKB_Class10040] of  Map_Entry
 
 	(key "add_name_on_instance_form")
 	(key_class "java.lang.String")
 	(value "false")
 	(value_class "java.lang.String"))
 
-([mow_sitemap_ProjectKB_Class11] of  Map_Entry
+([mow_sitemap_ProjectKB_Class10041] of  Map_Entry
 
 	(key "change_tracking_active")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([mow_sitemap_ProjectKB_Class10042] of  Map_Entry
+
+	(key "suppress_instance_counting")
 	(key_class "java.lang.String")
 	(value "false")
 	(value_class "java.lang.String"))
@@ -594,13 +631,6 @@
 ([mow_sitemap_ProjectKB_Class115] of  String
 
 	(name "SearchTab_Query"))
-
-([mow_sitemap_ProjectKB_Class12] of  Map_Entry
-
-	(key "suppress_instance_counting")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
 
 ([mow_sitemap_ProjectKB_Class140] of  Widget
 
@@ -689,21 +719,6 @@
 ([mow_sitemap_ProjectKB_Class152] of  Property_List
 )
 
-([mow_sitemap_ProjectKB_Class4] of  String
-
-	(name ":INSTANCE-ANNOTATION")
-	(string_value "%3AANNOTATION-TEXT"))
-
-([mow_sitemap_ProjectKB_Class5] of  String
-
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
-
-([mow_sitemap_ProjectKB_Class6] of  String
-
-	(name ":PAL-CONSTRAINT")
-	(string_value "%3APAL-NAME"))
-
 ([mow_sitemap_ProjectKB_Class64] of  Widget
 
 	(is_hidden FALSE)
@@ -751,11 +766,6 @@
 	(width 200)
 	(x 0)
 	(y 240))
-
-([mow_sitemap_ProjectKB_Class7] of  String
-
-	(name "Lijst")
-	(string_value "naam"))
 
 ([mow_sitemap_ProjectKB_Class70] of  Property_List
 )
@@ -823,11 +833,6 @@
 	(boolean_value FALSE)
 	(name "ButtonDisplayed-View References to Value"))
 
-([mow_sitemap_ProjectKB_Class8] of  String
-
-	(name "Tab")
-	(string_value "naam"))
-
 ([mow_sitemap_ProjectKB_Class80] of  Boolean
 
 	(boolean_value FALSE)
@@ -860,11 +865,6 @@
 
 ([mow_sitemap_ProjectKB_Class84] of  Property_List
 )
-
-([mow_sitemap_ProjectKB_Class9] of  String
-
-	(name "Pagina")
-	(string_value "nummer{+-+}naam"))
 
 ([option_instance] of  Options
 

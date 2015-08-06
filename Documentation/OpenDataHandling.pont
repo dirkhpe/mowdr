@@ -1,0 +1,63 @@
+; Wed Aug 05 16:28:00 CEST 2015
+; 
+;+ (version "3.5")
+;+ (build "Build 663")
+
+
+(defclass %3ACLIPS_TOP_LEVEL_SLOT_CLASS "Fake class to save top-level slot information"
+	(is-a USER)
+	(role abstract)
+	(multislot calls_false
+;+		(comment "Function that this function will call in case of FALSE test.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
+	(multislot calls
+;+		(comment "Function that this function will call unconditionally.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
+	(multislot calls_true
+;+		(comment "Function that is called by this function on TRUE condition.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
+	(single-slot name_
+;+		(comment "Name of the function.")
+		(type STRING)
+;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot description
+;+		(comment "Description of the function.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write)))
+
+(defclass Function "Function description with calls."
+	(is-a USER)
+	(role concrete)
+	(multislot calls_false
+;+		(comment "Function that this function will call in case of FALSE test.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
+	(multislot calls
+;+		(comment "Function that this function will call unconditionally.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
+	(single-slot name_
+;+		(comment "Name of the function.")
+		(type STRING)
+;+		(cardinality 1 1)
+		(create-accessor read-write))
+	(single-slot description
+;+		(comment "Description of the function.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(multislot calls_true
+;+		(comment "Function that is called by this function on TRUE condition.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write)))

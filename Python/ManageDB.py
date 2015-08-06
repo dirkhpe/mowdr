@@ -1,4 +1,4 @@
-__author__ = 'vermeyle'
+__author__ = 'Dirk Vermeylen'
 
 import sqlite3
 import sys
@@ -59,20 +59,39 @@ def remove_tables():
         print("Error during query execution %s" % e)
         return
 
+def populate_attribs():
+    attrib_od_fields = {
+        'AantalPercentage': 'Aantal of Percentage',
+        'Berekeningswijze': 'Berekeningswijze',
+        'CijfersBijgewerkt': 'Cijfers Bijgewerkt',
+        'Definitie': 'Definitie',
+        'Dimensies': 'Dimensies',
+        'DoelMeting': 'Doel Meting',
+        'Meeteenheid': 'Meeteenheid',
+        'Meetfrequentie': 'Meetfrequentie',
+        'Meettechniek': 'Meettechniek',
+        'Tijdsvenster': 'Tijdsvenster',
+        'TypeIndicator': 'Type Indicator',
+        'Title': 'Title',
+    }
+    conn = sqlite3.connect('dataroom_od.db')
+    cur = conn.cursor()
+    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
+            "VALUES (?, ?, 'Extra', 'Dataroom', 'Dataset', ?)"
+    for attribute, od_field in attrib_od_fields.items():
+        try:
+            conn.execute(query, (attribute,od_field, now,))
+        except:
+            e = sys.exc_info()[0]
+            print("Error during query execution %s" % e)
+            print(query)
+            return
+    conn.commit()
 
 def populate_attribute_action():
     conn = sqlite3.connect('dataroom_od.db')
     query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
             "VALUES ('AantalPercentage', 'Aantal of Percentage', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('Berekeningswijze', 'Berekeningswijze', 'Extra', 'Dataroom', 'Dataset', ?)"
     try:
         conn.execute(query, (now,))
     except:

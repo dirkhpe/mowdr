@@ -1,4 +1,4 @@
-; Wed Aug 05 16:28:00 CEST 2015
+; Mon Aug 10 17:51:17 CEST 2015
 ; 
 ;+ (version "3.5")
 ;+ (build "Build 663")
@@ -20,10 +20,10 @@
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[OpenDataHandling_ProjectKB_Class10016]
-		[OpenDataHandling_ProjectKB_Class10017]
-		[OpenDataHandling_ProjectKB_Class10018]
-		[OpenDataHandling_ProjectKB_Class10019]))
+		[OpenDataHandling_ProjectKB_Class20021]
+		[OpenDataHandling_ProjectKB_Class20022]
+		[OpenDataHandling_ProjectKB_Class20023]
+		[OpenDataHandling_ProjectKB_Class20024]))
 
 ([CLSES_TAB] of  Widget
 
@@ -75,9 +75,9 @@
 ([KB_143553_Class1] of  Map
 
 	(entries
-		[OpenDataHandling_ProjectKB_Class10020]
-		[OpenDataHandling_ProjectKB_Class10021]
-		[OpenDataHandling_ProjectKB_Class10022]))
+		[OpenDataHandling_ProjectKB_Class20025]
+		[OpenDataHandling_ProjectKB_Class20026]
+		[OpenDataHandling_ProjectKB_Class20027]))
 
 ([KB_143553_Class100] of  Property_List
 
@@ -87,65 +87,12 @@
 		[KB_143553_Class116]
 		[OpenDataHandling_ProjectKB_Class10004]
 		[OpenDataHandling_ProjectKB_Class10008]
-		[OpenDataHandling_ProjectKB_Class10012]))
+		[OpenDataHandling_ProjectKB_Class10012]
+		[OpenDataHandling_ProjectKB_Class20010]))
 
 ([KB_143553_Class101] of  Property_List
 
 	(name "layout properties"))
-
-([KB_143553_Class102] of  Widget
-
-	(height 60)
-	(is_hidden FALSE)
-	(name "calls_false")
-	(property_list [KB_143553_Class103])
-	(widget_class_name "edu.stanford.smi.protege.widget.InstanceFieldWidget")
-	(width 200)
-	(x 400)
-	(y 180))
-
-([KB_143553_Class103] of  Property_List
-
-	(properties
-		[KB_143553_Class104]
-		[KB_143553_Class105]))
-
-([KB_143553_Class104] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-View References to Value"))
-
-([KB_143553_Class105] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-Delete Instance"))
-
-([KB_143553_Class106] of  Widget
-
-	(height 60)
-	(is_hidden FALSE)
-	(name "calls")
-	(property_list [KB_143553_Class107])
-	(widget_class_name "edu.stanford.smi.protege.widget.InstanceFieldWidget")
-	(width 200)
-	(x 0)
-	(y 180))
-
-([KB_143553_Class107] of  Property_List
-
-	(properties
-		[KB_143553_Class108]
-		[KB_143553_Class109]))
-
-([KB_143553_Class108] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-View References to Value"))
-
-([KB_143553_Class109] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-Delete Instance"))
 
 ([KB_143553_Class110] of  Widget
 
@@ -160,33 +107,6 @@
 
 ([KB_143553_Class111] of  Property_List
 )
-
-([KB_143553_Class112] of  Widget
-
-	(height 60)
-	(is_hidden FALSE)
-	(name "calls_true")
-	(property_list [KB_143553_Class113])
-	(widget_class_name "edu.stanford.smi.protege.widget.InstanceFieldWidget")
-	(width 200)
-	(x 200)
-	(y 180))
-
-([KB_143553_Class113] of  Property_List
-
-	(properties
-		[KB_143553_Class114]
-		[KB_143553_Class115]))
-
-([KB_143553_Class114] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-View References to Value"))
-
-([KB_143553_Class115] of  Boolean
-
-	(boolean_value FALSE)
-	(name "ButtonDisplayed-Delete Instance"))
 
 ([KB_143553_Class116] of  Widget
 
@@ -301,7 +221,7 @@
 	(property_list [KB_143553_Class100])
 	(widget_class_name "edu.stanford.smi.protege.widget.FormWidget"))
 
-([KB_321936_Class3] of  Map
+([KB_946966_Class3] of  Map
 )
 
 ([LAYOUT_PROPERTIES] of  Property_List
@@ -325,7 +245,7 @@
 	(name "calls")
 	(property_list [OpenDataHandling_ProjectKB_Class10005])
 	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
-	(width 200)
+	(width 310)
 	(x 0)
 	(y 180))
 
@@ -352,9 +272,9 @@
 	(name "calls_false")
 	(property_list [OpenDataHandling_ProjectKB_Class10009])
 	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
-	(width 200)
-	(x 400)
-	(y 180))
+	(width 290)
+	(x 310)
+	(y 310))
 
 ([OpenDataHandling_ProjectKB_Class10009] of  Property_List
 
@@ -379,8 +299,8 @@
 	(name "calls_true")
 	(property_list [OpenDataHandling_ProjectKB_Class10013])
 	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
-	(width 200)
-	(x 200)
+	(width 290)
+	(x 310)
 	(y 180))
 
 ([OpenDataHandling_ProjectKB_Class10013] of  Property_List
@@ -398,47 +318,6 @@
 
 	(boolean_value FALSE)
 	(name "ButtonDisplayed-Delete Instance"))
-
-([OpenDataHandling_ProjectKB_Class10016] of  String
-
-	(name ":INSTANCE-ANNOTATION")
-	(string_value "%3AANNOTATION-TEXT"))
-
-([OpenDataHandling_ProjectKB_Class10017] of  String
-
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
-
-([OpenDataHandling_ProjectKB_Class10018] of  String
-
-	(name ":PAL-CONSTRAINT")
-	(string_value "%3APAL-NAME"))
-
-([OpenDataHandling_ProjectKB_Class10019] of  String
-
-	(name "Function")
-	(string_value "name"))
-
-([OpenDataHandling_ProjectKB_Class10020] of  Map_Entry
-
-	(key "add_name_on_instance_form")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
-
-([OpenDataHandling_ProjectKB_Class10021] of  Map_Entry
-
-	(key "change_tracking_active")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
-
-([OpenDataHandling_ProjectKB_Class10022] of  Map_Entry
-
-	(key "suppress_instance_counting")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
 
 ([OpenDataHandling_ProjectKB_Class11] of  Widget
 
@@ -491,6 +370,115 @@
 
 ([OpenDataHandling_ProjectKB_Class20] of  Property_List
 )
+
+([OpenDataHandling_ProjectKB_Class20004] of  Widget
+
+	(height 60)
+	(is_hidden FALSE)
+	(name "returns_to")
+	(property_list [OpenDataHandling_ProjectKB_Class20005])
+	(widget_class_name "edu.stanford.smi.protege.widget.TextFieldWidget")
+	(width 200)
+	(x 0)
+	(y 300))
+
+([OpenDataHandling_ProjectKB_Class20005] of  Property_List
+)
+
+([OpenDataHandling_ProjectKB_Class20006] of  Widget
+
+	(height 60)
+	(is_hidden FALSE)
+	(name "returns_to")
+	(property_list [OpenDataHandling_ProjectKB_Class20007])
+	(widget_class_name "edu.stanford.smi.protege.widget.InstanceFieldWidget")
+	(width 200)
+	(x 0)
+	(y 300))
+
+([OpenDataHandling_ProjectKB_Class20007] of  Property_List
+
+	(properties
+		[OpenDataHandling_ProjectKB_Class20008]
+		[OpenDataHandling_ProjectKB_Class20009]))
+
+([OpenDataHandling_ProjectKB_Class20008] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-View References to Value"))
+
+([OpenDataHandling_ProjectKB_Class20009] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-Delete Instance"))
+
+([OpenDataHandling_ProjectKB_Class20010] of  Widget
+
+	(height 120)
+	(is_hidden FALSE)
+	(name "returns_to")
+	(property_list [OpenDataHandling_ProjectKB_Class20011])
+	(widget_class_name "edu.stanford.smi.protege.widget.InstanceListWidget")
+	(width 310)
+	(x 0)
+	(y 310))
+
+([OpenDataHandling_ProjectKB_Class20011] of  Property_List
+
+	(properties
+		[OpenDataHandling_ProjectKB_Class20012]
+		[OpenDataHandling_ProjectKB_Class20013]))
+
+([OpenDataHandling_ProjectKB_Class20012] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-View References to Value"))
+
+([OpenDataHandling_ProjectKB_Class20013] of  Boolean
+
+	(boolean_value FALSE)
+	(name "ButtonDisplayed-Delete Instance"))
+
+([OpenDataHandling_ProjectKB_Class20021] of  String
+
+	(name ":INSTANCE-ANNOTATION")
+	(string_value "%3AANNOTATION-TEXT"))
+
+([OpenDataHandling_ProjectKB_Class20022] of  String
+
+	(name ":PAL-CONSTRAINT")
+	(string_value "%3APAL-NAME"))
+
+([OpenDataHandling_ProjectKB_Class20023] of  String
+
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
+
+([OpenDataHandling_ProjectKB_Class20024] of  String
+
+	(name "Function")
+	(string_value "name"))
+
+([OpenDataHandling_ProjectKB_Class20025] of  Map_Entry
+
+	(key "add_name_on_instance_form")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([OpenDataHandling_ProjectKB_Class20026] of  Map_Entry
+
+	(key "change_tracking_active")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([OpenDataHandling_ProjectKB_Class20027] of  Map_Entry
+
+	(key "suppress_instance_counting")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
 
 ([OpenDataHandling_ProjectKB_Class21] of  Widget
 
@@ -847,8 +835,8 @@
 	(browser_slot_names [BROWSER_SLOT_NAMES])
 	(customized_instance_widgets
 		[INSTANCE_ANNOTATION_FORM_WIDGET]
-		[STANDARD_FACET_FORM_WIDGET]
 		[STANDARD_SLOT_FORM_WIDGET]
+		[STANDARD_FACET_FORM_WIDGET]
 		[PAL_FORM_WIDGET]
 		[STANDARD_CLASS_FORM_WIDGET]
 		[KB_143553_Class99])

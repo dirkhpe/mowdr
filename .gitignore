@@ -8,3 +8,6 @@
 *.gif
 *html*
 *.mwb.bak
+Python/properties/*
+Python/__pychache__/*
+Python/.idea/*

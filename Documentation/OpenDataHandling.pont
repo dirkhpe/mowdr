@@ -1,4 +1,4 @@
-; Wed Aug 05 16:28:00 CEST 2015
+; Mon Aug 10 17:51:16 CEST 2015
 ; 
 ;+ (version "3.5")
 ;+ (build "Build 663")
@@ -27,6 +27,11 @@
 		(type STRING)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
+	(multislot returns_to
+;+		(comment "If a function is called from within another function, then return is used instead of 'call'.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
 	(single-slot description
 ;+		(comment "Description of the function.")
 		(type STRING)
@@ -38,6 +43,11 @@
 	(role concrete)
 	(multislot calls_false
 ;+		(comment "Function that this function will call in case of FALSE test.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
+	(multislot returns_to
+;+		(comment "If a function is called from within another function, then return is used instead of 'call'.")
 		(type INSTANCE)
 ;+		(allowed-classes Function)
 		(create-accessor read-write))

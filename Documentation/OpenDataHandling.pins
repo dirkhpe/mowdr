@@ -1,4 +1,4 @@
-; Wed Aug 05 16:28:00 CEST 2015
+; Mon Aug 10 17:51:16 CEST 2015
 ; 
 ;+ (version "3.5")
 ;+ (build "Build 663")
@@ -11,31 +11,23 @@
 
 ([KB_078077_Class11] of  Function
 
-	(calls [OpenDataHandling_Class0])
-	(calls_true [KB_078077_Class12])
-	(description "A new cijfers.xml file is available for this indicator. \nIf there is cijfers.xml already for this indicator, then remove it.\nPublish cijfers.xml.")
-	(name "handle_cijfers"))
-
-([KB_078077_Class12] of  Function
-
-	(calls_false [KB_078077_Class8])
-	(calls_true [KB_078077_Class11])
-	(description "For this indicator there is a cijfers.xml available that needs to be removed. Each indicator is limited to one cijfer file.\nIf remove OK, then return.\nIf remove did not succeed, then set status cijfers.xml to FALSE and exit. Error / exit procedure needs to be reviewed.")
-	(name "remove_cijfers"))
+	(description "A new set of commentaar or cijfers file is available. \nGet Commentaar/Cijfer info from mobielvlaanderen.be\nGet Commentaar/Cijfer info from database table indicators.\nHandle each file:\n1. Move file to another directory.\n2. If file not empty:\n2.1 Load file on mobielvlaanderen.be\n2.2 Remember URL in database.\n3. If file is empty\n3.1 Remove file from mobielvlaanderen.be\n3.2 Remove URL in database.")
+	(name "handle_cijfers_commentaar")
+	(returns_to [OpenDataHandling_Class10000]))
 
 ([KB_078077_Class6] of  Function
 
-	(calls [KB_078077_Class9])
+	(calls [KB_078077_Class10])
 	(calls_true [KB_078077_Class7])
-	(description "Read the metadata file and store the information in table indicators.\nIf this is information related to new indicator then call function to create new Open Data dataset.\nInput: FileName to be processed. This is a json formatted file.\nOutput: sqlite3 table indicators is up-to-date.")
+	(description "Read the metadata file and store the information in table indicators.\nIf this is information related to new indicator then call function to create new Open Data dataset.\nInput: FileName to be processed (indicator_XX.xml)\nOutput: sqlite3 table indicators is up-to-date.\nIn case this is indicator_xx.empty.xml, then remember ID for the dataset and set dataset to PRIVATE. (DELETED would be better, but not sure if I can 'undelete' a deleted dataset if required.")
 	(name "read_metadata"))
 
 ([KB_078077_Class7] of  Function
 
 	(calls_false [KB_078077_Class8])
-	(calls_true [KB_078077_Class6])
-	(description "Create a new Open Data dataset. \nIndicator name is prepended with 'dmow' and 'indXXX' XXX is the indicator number (not left-padded). \ndmow and indXXX are prepended in an effort to set-up URL name space for Dataroom application.\nAttempt to create private Open Data dataset with minimal parameters (name, title, organisation).\nIf successful then add ID for the dataset to database.\nIf not successful with 'Validation Errors' then add counter 1..10 to name. \nIf not successful after counting 1..10 then exit.")
-	(name "create_od_dataset"))
+	(description "Create a new Open Data dataset. \nIndicator name is prepended with 'dmow' and 'indXXX' XXX is the indicator number (left-padded). \ndmow and indXXX are prepended in an effort to set-up URL name space for Dataroom application.\nAttempt to create private Open Data dataset with minimal parameters (name, title, organisation).\nIf successful then add ID for the dataset to database.\nIf not successful with 'Validation Errors' then add counter 1..10 to name and try again (unique name).\nIf not successful (\"Validation Error'\") after counting 1..10 then exit.\nIf not successful (Other error) then exit.")
+	(name "create_od_dataset")
+	(returns_to [KB_078077_Class6]))
 
 ([KB_078077_Class8] of  Function
 
@@ -48,39 +40,10 @@
 	(description "Requirements for PUBLIC publication:\n1. Dataset must exist (ID is available).\n2. URL for cijfers must exist.")
 	(name "check_for_update"))
 
-([OpenDataHandling_Class0] of  Function
-
-	(calls_false [KB_078077_Class8])
-	(calls_true [KB_078077_Class9])
-	(description "Post Cijfers.xml, verify URL and store URL in the indicators table.\nCheck if we need to update Open Data dataset.")
-	(name "post_cijfers"))
-
 ([OpenDataHandling_Class10000] of  Function
 
 	(calls
-		[KB_078077_Class6]
 		[KB_078077_Class11]
-		[OpenDataHandling_Class10001])
-	(description "Start of Processng!\nScan for new files.\nRemember if a file is found.\nProcess file.")
+		[KB_078077_Class6])
+	(description "Start of Processng!\nScan for new files. For each indicator there are always 3 files sent, either with (_xx.xml) or without (_xx.empty.xml) data.\nindicator_xx.xml / indicator_xx.empty.xml (Not sure how APEX will find out if an indicator is removed, but this is a APEX issue...)\ncijfers_xx.xml / cijfers_xx.empty.xml\ncommentaar_xx.xml / commentaar_xx.empty.xml\nFirst all 'commentaar' files are handled, then all 'cijfers files anf finally the 'indicator' files.")
 	(name "start_process"))
-
-([OpenDataHandling_Class10001] of  Function
-
-	(calls [OpenDataHandling_Class10003])
-	(calls_true [OpenDataHandling_Class10002])
-	(description "A new commentaar.xml file is available for this indicator. \nIf there is a commentaar.xml already for this indicator, then remove it.\nPublish commentaar.xml.")
-	(name "handle_commentaar"))
-
-([OpenDataHandling_Class10002] of  Function
-
-	(calls_false [KB_078077_Class8])
-	(calls_true [OpenDataHandling_Class10001])
-	(description "For this indicator there is a commentaar.xml available that needs to be removed. Each indicator is limited to one commentaar file.\nIf remove OK, then return.\nIf remove did not succeed, then set status commentaar.xml to FALSE and exit. Error / exit procedure needs to be reviewed.")
-	(name "remove_commentaar"))
-
-([OpenDataHandling_Class10003] of  Function
-
-	(calls_false [KB_078077_Class8])
-	(calls_true [KB_078077_Class9])
-	(description "Post Commentaar.xml, verify URL and store URL in the indicators table.\nCheck if we need to update Open Data dataset.")
-	(name "post_commentaar"))

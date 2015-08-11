@@ -59,7 +59,36 @@ def remove_tables():
         print("Error during query execution %s" % e)
         return
 
-def populate_attribs():
+def populate_attribs_main():
+    """
+    This procedure will populate table attribute_action with the attributes that come from Dataroom
+    and need to go to Dataset Metadata screen, Main.
+    :return:
+    """
+    attrib_od_fields = {
+        'Title': 'Title',
+    }
+    conn = sqlite3.connect('dataroom_od.db')
+    # cur = conn.cursor()
+    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
+            "VALUES (?, ?, 'Main', 'Dataroom', 'Dataset', ?)"
+    for attribute, od_field in attrib_od_fields.items():
+        try:
+            conn.execute(query, (attribute,od_field, now,))
+        except:
+            e = sys.exc_info()[0]
+            print("Error during query execution %s" % e)
+            print(query)
+            return
+    conn.commit()
+
+
+def populate_attribs_extra():
+    """
+    This procedure will populate table attribute_action with the attributes that come from Dataroom
+    and need to go to Dataset Metadata screen, section 'Extra Informatie'.
+    :return:
+    """
     attrib_od_fields = {
         'AantalPercentage': 'Aantal of Percentage',
         'Berekeningswijze': 'Berekeningswijze',
@@ -72,10 +101,9 @@ def populate_attribs():
         'Meettechniek': 'Meettechniek',
         'Tijdsvenster': 'Tijdsvenster',
         'TypeIndicator': 'Type Indicator',
-        'Title': 'Title',
     }
     conn = sqlite3.connect('dataroom_od.db')
-    cur = conn.cursor()
+    # cur = conn.cursor()
     query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
             "VALUES (?, ?, 'Extra', 'Dataroom', 'Dataset', ?)"
     for attribute, od_field in attrib_od_fields.items():
@@ -88,121 +116,28 @@ def populate_attribs():
             return
     conn.commit()
 
-def populate_attribute_action():
+
+def populate_attribs_ckan():
+    """
+    This procedure will populate table attribute_action with the attributes that come from ckan Open Data
+    platform.
+    :return:
+    """
+    attrib_od_fields = {
+        'id': 'id',
+        'revision_id': 'revision_id',
+        'name': 'name',
+    }
     conn = sqlite3.connect('dataroom_od.db')
+    # cur = conn.cursor()
     query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('AantalPercentage', 'Aantal of Percentage', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('Berekeningswijze', 'Berekeningswijze', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('CijfersBijgewerkt', 'Cijfers Bijgewerkt', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('Definitie', 'Definitie', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('Dimensies', 'Dimensies', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('DoelMeting', 'Doel Meting', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('Meeteenheid', 'Meeteenheid', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('Meetfrequentie', 'Meetfrequentie', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('Meettechniek', 'Meettechniek', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('Tijdsvenster', 'Tijdsvenster', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('TypeIndicator', 'Type Indicator', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES ('Title', 'Title', 'Extra', 'Dataroom', 'Dataset', ?)"
-    try:
-        conn.execute(query, (now,))
-    except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
-        print(query)
-        return
-    try:
-        conn.commit()
-    except:
-        e = sys.exc_info()[0]
-        print("Error during commit %s" % e)
-        print(query)
-        return
-    conn.close()
+            "VALUES (?, ?, 'DatasetIdentification', 'Dataset', 'Dataset', ?)"
+    for attribute, od_field in attrib_od_fields.items():
+        try:
+            conn.execute(query, (attribute,od_field, now,))
+        except:
+            e = sys.exc_info()[0]
+            print("Error during query execution %s" % e)
+            print(query)
+            return
+    conn.commit()

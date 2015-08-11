@@ -27,8 +27,10 @@ def get_modulename():
     return modulename
 
 
-def get_inifile(modulename):
-    configfile = "properties/" + modulename + ".ini"
+def get_inifile():
+    # Use Project Name as ini file.
+    projectname = 'mowdr'
+    configfile = "properties/" + projectname + ".ini"
     config = configparser.ConfigParser()
     try:
         config.read_file(open(configfile))
@@ -105,15 +107,6 @@ def load_file(ftp, file=None):
     log_msg = "Looks like file %s is moved to FTP Server, close file now."
     logging.debug(log_msg, file)
     f.close()
-    log_msg = "... and some more verification, this can be removed."
-    logging.debug(log_msg)
-    dirlist = ftp.mlsd()
-    files = [f for (f, fd) in dirlist]
-    print("%s" % files)
-    if filename in files:
-        print("OK - Filename %s found on FTP Server" % filename)
-    else:
-        print("Not OK - Filename %s not found on FTP Server" % filename)
     return
 
 
@@ -137,19 +130,10 @@ def remove_file(ftp, file=None):
         e = sys.exc_info()[1]
         ec = sys.exc_info()[0]
         log_msg = "Error removing file: %s %s"
-        logging.error(log_msg, e)
+        logging.error(log_msg, e, ec)
         return
     log_msg = "Looks like file %s is removed from FTP Server."
     logging.debug(log_msg, file)
-    log_msg = "... and some more verification, this can be removed."
-    logging.debug(log_msg)
-    dirlist = ftp.mlsd()
-    files = [f for (f, fd) in dirlist]
-    print("%s" % files)
-    if filename in files:
-        print("Not OK - Filename %s found on FTP Server" % filename)
-    else:
-        print("OK - Filename %s not found on FTP Server" % filename)
     return
 
 
@@ -166,11 +150,28 @@ def move_file(file2move, sourcedir, targetdir):
     if file2move in [file for file in os.listdir(targetdir)]:
         log_msg = "File %s exists in targetdir %s, remove first"
         logging.debug(log_msg, file2move, targetdir)
-        os.remove(os.path.join(targetdir,file2move))
+        os.remove(os.path.join(targetdir, file2move))
     log_msg = "OK, File %s does not exists in targetdir %s now."
     logging.debug(log_msg, file2move, targetdir)
-    os.rename(os.path.join(sourcedir,file2move), os.path.join(targetdir,file2move))
+    os.rename(os.path.join(sourcedir, file2move), os.path.join(targetdir, file2move))
     return
+
+
+def indic_from_file(filename):
+    """
+    This procedure will extract the indicator ID from the filename.
+    The indicator number is between _ and first . (empty. can be there as second dot.)
+    :param filename:
+    :return: indic_id (numeric)
+    """
+    log_msg = "Getting indicator ID from %s"
+    logging.debug(log_msg, filename)
+    parts = filename.split('_')
+    indic_array = parts[1].split('.')
+    indic_id = int(indic_array[0])
+    log_msg = "Indicator ID: %s"
+    logging.debug(log_msg, indic_id)
+    return indic_id
 
 
 def scan_for_files(config):
@@ -194,7 +195,8 @@ def scan_for_files(config):
     # Extract filelist first.
     filelist = [file for file in os.listdir(scandir) if 'cijfers' or 'commentaar' in file]
     for file in filelist:
-        print("Filename: %s" % file)
+        indic_id = indic_from_file(file)
+        print("Filename: %s, Indicator ID: %s" % (file, indic_id))
         move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...
         if 'empty' in file:
             remove_file(ftp, file=os.path.join(handledir, file))
@@ -208,9 +210,9 @@ def scan_for_files(config):
 def main():
     # Get ini-file first.
     modulename = get_modulename()
-    config = get_inifile(modulename)
+    config = get_inifile()
     # Now configure logfile
-    logfilename = get_logfilename(modulename,config)
+    logfilename = get_logfilename(modulename, config)
     logging.basicConfig(format='%(asctime)s:%(module)s:%(funcName)s:%(lineno)d:%(levelname)s:%(message)s',
                         datefmt='%d/%m/%Y %H:%M:%S', filename=logfilename, level=logging.DEBUG)
     logging.info('Start Application')

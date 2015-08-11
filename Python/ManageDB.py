@@ -1,5 +1,6 @@
 __author__ = 'Dirk Vermeylen'
 
+import logging
 import sqlite3
 import sys
 from time import strftime
@@ -10,8 +11,10 @@ def connect2db(db=None):
     try:
         conn = sqlite3.connect(db)
     except:
-        e = sys.exc_info()[0]
-        print("Error during connect to database: %s" % e)
+        e = sys.exc_info()[1]
+        ec = sys.exc_info()[0]
+        log_msg = "Error during connect to database: %s %s"
+        logging.error(log_msg, e, ec)
         return
     else:
         return conn
@@ -26,8 +29,10 @@ def create_db():
     try:
         conn.execute(query)
     except:
-        e = sys.exc_info()[0]
-        print("Error during query execution - Attribute_action %s" % e)
+        e = sys.exc_info()[1]
+        ec = sys.exc_info()[0]
+        log_msg = "Error during query execution - Attribute_action: %s %s"
+        logging.error(log_msg, e, ec)
         return
     query = 'CREATE TABLE indicators ' \
             '(id integer primary key, indicator_id integer, attribute text, ' \
@@ -36,8 +41,10 @@ def create_db():
     try:
         conn.execute(query)
     except:
-        e = sys.exc_info()[0]
-        print("Error during query execution - Indicators %s" % e)
+        e = sys.exc_info()[1]
+        ec = sys.exc_info()[0]
+        log_msg = "Error during query execution - Indicators: %s %s"
+        logging.error(log_msg, e, ec)
         return
     return True
 
@@ -48,15 +55,19 @@ def remove_tables():
     try:
         conn.execute(query)
     except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
+        e = sys.exc_info()[1]
+        ec = sys.exc_info()[0]
+        log_msg = "Error during query execution: %s %s"
+        logging.error(log_msg, e, ec)
         return
     query = 'DROP TABLE IF EXISTS attribute_action'
     try:
         conn.execute(query)
     except:
-        e = sys.exc_info()[0]
-        print("Error during query execution %s" % e)
+        e = sys.exc_info()[1]
+        ec = sys.exc_info()[0]
+        log_msg = "Error during query execution: %s %s"
+        logging.error(log_msg, e, ec)
         return
 
 def populate_attribs_main():
@@ -76,9 +87,10 @@ def populate_attribs_main():
         try:
             conn.execute(query, (attribute,od_field, now,))
         except:
-            e = sys.exc_info()[0]
-            print("Error during query execution %s" % e)
-            print(query)
+            e = sys.exc_info()[1]
+            ec = sys.exc_info()[0]
+            log_msg = "Error during query execution: %s %s"
+            logging.error(log_msg, e, ec)
             return
     conn.commit()
 
@@ -110,9 +122,10 @@ def populate_attribs_extra():
         try:
             conn.execute(query, (attribute,od_field, now,))
         except:
-            e = sys.exc_info()[0]
-            print("Error during query execution %s" % e)
-            print(query)
+            e = sys.exc_info()[1]
+            ec = sys.exc_info()[0]
+            log_msg = "Error during query execution: %s %s"
+            logging.error(log_msg, e, ec)
             return
     conn.commit()
 
@@ -136,8 +149,35 @@ def populate_attribs_ckan():
         try:
             conn.execute(query, (attribute,od_field, now,))
         except:
-            e = sys.exc_info()[0]
-            print("Error during query execution %s" % e)
-            print(query)
+            e = sys.exc_info()[1]
+            ec = sys.exc_info()[0]
+            log_msg = "Error during query execution: %s %s"
+            logging.error(log_msg, e, ec)
+            return
+    conn.commit()
+
+
+def populate_attribs_mv():
+    """
+    This procedure will populate table attribute_action with the attributes that come from Mobiel Vlaanderen
+    platform.
+    :return:
+    """
+    attrib_od_fields = {
+        'url_cijfers': 'url_cijfers',
+        'url_commentaar': 'url_commentaar',
+    }
+    conn = sqlite3.connect('dataroom_od.db')
+    # cur = conn.cursor()
+    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
+            "VALUES (?, ?, 'Repository', 'Repository', 'Dataset', ?)"
+    for attribute, od_field in attrib_od_fields.items():
+        try:
+            conn.execute(query, (attribute,od_field, now,))
+        except:
+            e = sys.exc_info()[1]
+            ec = sys.exc_info()[0]
+            log_msg = "Error during query execution: %s %s"
+            logging.error(log_msg, e, ec)
             return
     conn.commit()

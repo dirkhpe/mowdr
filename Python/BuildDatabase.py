@@ -75,7 +75,7 @@ def connect2db():
 def create_db():
     # Create table
     query = 'CREATE TABLE attribute_action ' \
-            '(id integer primary key, attribute text, od_field text, ' \
+            '(id integer primary key, attribute text unique, od_field text, ' \
             'action text, source text, target text, created text)'
     try:
         conn.execute(query)
@@ -130,6 +130,10 @@ def populate_attribs_main():
     attrib_od_fields = {
         'Title': 'Title',
         'notes': 'notes',
+        'author': 'author',
+        'author_email': 'author_email',
+        'maintainer': 'maintainer_email',
+        'language': 'language',
     }
     # cur = conn.cursor()
     query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
@@ -151,12 +155,12 @@ def populate_attribs_extra():
     """
     This procedure will populate table attribute_action with the attributes that come from Dataroom
     and need to go to Dataset Metadata screen, section 'Extra Informatie'.
+    Note that it is mandatory that attribute name is unique.
     :return:
     """
     attrib_od_fields = {
         'AantalPercentage': 'Aantal of Percentage',
         'Berekeningswijze': 'Berekeningswijze',
-        'CijfersBijgewerkt': 'Cijfers Bijgewerkt',
         'Definitie': 'Definitie',
         'Dimensies': 'Dimensies',
         'DoelMeting': 'Doel Meting',
@@ -165,6 +169,7 @@ def populate_attribs_extra():
         'Meettechniek': 'Meettechniek',
         'Tijdsvenster': 'Tijdsvenster',
         'TypeIndicator': 'Type Indicator',
+        'FicheBijgewerkt': 'Gegevens Bijgewerkt',
     }
     # cur = conn.cursor()
     query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
@@ -191,6 +196,7 @@ def populate_attribs_ckan():
         'id': 'id',
         'revision_id': 'revision_id',
         'name': 'name',
+        'license_id': 'license_id'
     }
     # cur = conn.cursor()
     query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
@@ -198,6 +204,33 @@ def populate_attribs_ckan():
     for attribute, od_field in attrib_od_fields.items():
         try:
             conn.execute(query, (attribute, od_field, now,))
+        except:
+            e = sys.exc_info()[1]
+            ec = sys.exc_info()[0]
+            log_msg = "Error during query execution: %s %s"
+            logging.error(log_msg, e, ec)
+            return
+    conn.commit()
+
+
+def populate_attribs_od_res():
+    """
+    This procedure will populate table attribute_action with the attributes that come from Dataset to populate Resource.
+    :return:
+    """
+    attrib_od_fields = {
+        'id_cijfers': 'id',
+        'id_commentaar': 'id',
+    }
+    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
+            "VALUES (?, ?, 'Resource', 'Dataset', ?, ?)"
+    for attribute, od_field in attrib_od_fields.items():
+        if 'cijfers' in attribute:
+            target = 'CijfersResource'
+        else:
+            target = 'CommentaarResource'
+        try:
+            conn.execute(query, (attribute, od_field, target, now,))
         except:
             e = sys.exc_info()[1]
             ec = sys.exc_info()[0]
@@ -216,6 +249,8 @@ def populate_attribs_mv():
     attrib_od_fields = {
         'url_cijfers': 'url',
         'url_commentaar': 'url',
+        'size_cijfers': 'Aantal Bytes',
+        'size_commentaar': 'Aantal Bytes',
     }
     query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
             "VALUES (?, ?, 'Resource', 'Repository', ?, ?)"
@@ -245,16 +280,19 @@ def populate_attribs_resource():
         'format_cijfers': 'format',
         'name_cijfers': 'name',
         'description_cijfers': 'description',
-        'id_cijfers': 'id',
+        'tdt_cijfers': 'enable-tdt',
         'format_commentaar': 'format',
         'name_commentaar': 'name',
         'description_commentaar': 'description',
-        'id_commentaar': 'id',
+        'tdt_commentaar': 'enable_tdt',
+        'CijfersBijgewerkt': 'Cijfers Bijgewerkt',
+        'CommBijgewerkt': 'Commentaar Bijgewerkt',
+
     }
     query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
             "VALUES (?, ?, 'Resource', 'Dataroom', ?, ?)"
     for attribute, od_field in attrib_od_fields.items():
-        if 'cijfers' in attribute:
+        if 'cijfers' in attribute.lower():
             target = 'CijfersResource'
         else:
             target = 'CommentaarResource'
@@ -294,6 +332,8 @@ logging.info('Add FTP (mobiel vlaanderen) Attributes')
 populate_attribs_mv()
 logging.info('Add Cijfer/Commentaar Resource Attributes')
 populate_attribs_resource()
+logging.info('Add Cijfer/Commentaar Resource Attributes from dataset')
+populate_attribs_od_res()
 conn.close()
 logging.info('End Application')
 

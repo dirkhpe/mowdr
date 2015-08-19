@@ -1,0 +1,131 @@
+; Mon Aug 17 16:45:57 CEST 2015
+; 
+;+ (version "3.5")
+;+ (build "Build 663")
+
+([HandleFile_Class0] of  Function
+
+	(calls
+		[HandleFile_Class6]
+		[HandleFile_Class1]
+		[HandleFile_Class4]
+		[HandleFile_Class5]
+		[HandleFile_Class7])
+	(calls_false [HandleFile_Class3])
+	(calls_true [HandleFile_Class2])
+	(description "First FTP handling:\nScan input directory for files (cijfers, commentaar).\nMove file from scandir to handleddir.\nCheck if 'empty' in Filename, call remove_file else load_file.\nUpdate table indicators with URL information (delete / add) - end  of FTP processing.\nThen CKAN connection. Scan input directory for files (metadata).\nIn case '.empty' in metadata filename: not yet implemented!\nGet indicator number from file, then load_metadata file.")
+	(name "scan_for_files"))
+
+([HandleFile_Class1] of  Function
+
+	(description "Move file from scandir to handleddir")
+	(name "move_file")
+	(returns_to [HandleFile_Class0])
+	(runs_before
+		[HandleFile_Class2]
+		[HandleFile_Class3]))
+
+([HandleFile_Class10] of  Function
+
+	(description "Input is resource type (cijfers, commentaar, cognos).\nTrue if resource URL is defined (FTP Server or Cognos URL), False if resource URL is not defined.")
+	(name "check_resource")
+	(returns_to
+		[HandleFile_Class9]
+		[HandleFile_Class12]))
+
+([HandleFile_Class11] of  Function
+
+	(description "Cijfers URL does not exist, so UPDATE package to 'PRIVATE'. (Unique URL for package name is defined as early as possible).")
+	(name "set_pkg_private")
+	(returns_to [HandleFile_Class9]))
+
+([HandleFile_Class12] of  Function
+
+	(calls
+		[HandleFile_Class13]
+		[HandleFile_Class10])
+	(calls_true [HandleFile_Class13])
+	(description "Cijfers URL is available, so send all known information to Open Data platform.\nFirst collect 'EXTRA' fields and values.\nThen get 'MAIN' fields and values.\nPatch the package information with current information.\nThen handle Resource cijfers (at this point I'm sure there is a resource cijfers, otherwise I would have been in set_pkg_private.)\nThen check all other resource types.")
+	(name "set_pkg_public"))
+
+([HandleFile_Class13] of  Function
+
+	(calls_false [HandleFile_Class16])
+	(calls_true [HandleFile_Class15])
+	(description "Collect all information from Dataroom or from the (FTP) Repository for the Resource.\nAdd information to params.\nThen check if resource needs to be created on Open Data.\nIf so, create resource else update resource.")
+	(name "manage_resource"))
+
+([HandleFile_Class14] of  Function
+
+	(description "URL does not exist anymore in indicators table. \nIf Open Data ID still exists, remove resource from Open Data and remove ID from indicators table.\nElse no further action required.")
+	(name "remove_resource")
+	(returns_to [HandleFile_Class2]))
+
+([HandleFile_Class15] of  Function
+
+	(description "Create resource with collected parameters.\nRemember Resource ID in indicators table.")
+	(name "create_resource")
+	(returns_to [HandleFile_Class13]))
+
+([HandleFile_Class16] of  Function
+
+	(description "Update Resource with current parameters information.")
+	(name "update_resource")
+	(returns_to [HandleFile_Class13]))
+
+([HandleFile_Class2] of  Function
+
+	(calls [HandleFile_Class14])
+	(description "Update filename, get rid of '.empty' qualifier.\nRemove file from FTP Server mobielvlaanderen.be")
+	(name "remove_file")
+	(returns_to [HandleFile_Class0])
+	(runs_before [HandleFile_Class4]))
+
+([HandleFile_Class3] of  Function
+
+	(description "Load file on FTP Server mobielvlaanderen.be")
+	(name "load_file")
+	(returns_to [HandleFile_Class0])
+	(runs_before [HandleFile_Class4]))
+
+([HandleFile_Class4] of  Function
+
+	(description "Update indicators table with URL for cijfers or commentaar file.\nAlways delete entry for url. \nIf filename does not contain '.empty', then add url_cijfers/url_commentaar with up-to-date URL.")
+	(name "url_in_db")
+	(returns_to [HandleFile_Class0])
+	(runs_before [HandleFile_Class7]))
+
+([HandleFile_Class5] of  Function
+
+	(description "Set-up CKAN Connection.")
+	(name "get_ckan_conn")
+	(returns_to [HandleFile_Class0])
+	(runs_before [HandleFile_Class6]))
+
+([HandleFile_Class6] of  Function
+
+	(description "Set-up FTP Connection.")
+	(name "ftp_connection")
+	(returns_to [HandleFile_Class0])
+	(runs_before [HandleFile_Class1]))
+
+([HandleFile_Class7] of  Function
+
+	(calls [HandleFile_Class9])
+	(calls_true [HandleFile_Class8])
+	(description "Get all attributes that come from Dataroom, including attributes for 'cijfers', 'commentaar', .... \nRemove all information from Dataroom for this Indicator ID in indicators table. \nParse XML information in metadata. \nIf xml attribute is known, populate indicators table with it. If unknown, error message.\nPopulate static information in indicators table.\nResult: indicators table is up-to-date with current information from Dataroom.\nThen check if ckan package needs to be created. \nUpdate Package on Open Data.")
+	(name "load_metadata"))
+
+([HandleFile_Class8] of  Function
+
+	(description "Create package on Open Data platform with minimal information: name, title, URL.\nAssumption is that name is unique, fail otherwise.\nGet package ID, store ID in indicators table.")
+	(name "create_package")
+	(returns_to [HandleFile_Class7]))
+
+([HandleFile_Class9] of  Function
+
+	(calls [HandleFile_Class10])
+	(calls_false [HandleFile_Class11])
+	(calls_true [HandleFile_Class12])
+	(description "Check if cijfers information is available.\nIf yes set package public, else set package private.")
+	(name "update_package"))

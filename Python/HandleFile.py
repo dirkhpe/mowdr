@@ -98,8 +98,7 @@ def ftp_connection():
 
 def load_file(ftp, file=None):
     """
-    Load file on mobielvlaanderen.be. Remove the file first if it exists already (since it is an older version).
-    If remove_only is True, then only remove the file.
+    Load file on mobielvlaanderen.be. If file exists already, then overwrite.
     :param file: Filename of the file to be loaded.
     :return:
     """
@@ -129,7 +128,7 @@ def load_file(ftp, file=None):
     return
 
 
-def remove_file(ftp, file=None):
+def remove_file(ckan_conn, ftp, file=None):
     """
     Remove file on mobielvlaanderen.be.
     :param file: Filename of the file to be loaded.
@@ -150,9 +149,14 @@ def remove_file(ftp, file=None):
         ec = sys.exc_info()[0]
         log_msg = "Error removing file: %s %s"
         logging.error(log_msg, e, ec)
-        return
-    log_msg = "Looks like file %s is removed from FTP Server."
-    logging.debug(log_msg, file)
+    else:
+        log_msg = "Looks like file %s is removed from FTP Server"
+        logging.debug(log_msg, file)
+    log_msg = "Check Open Data Resource for %s"
+    logging.debug(log_msg, filename)
+    indic_id = indic_from_file(filename)
+    res_type = type_from_file(filename)
+    remove_resource(ckan_conn, indic_id, res_type)
     return
 
 
@@ -193,6 +197,22 @@ def indic_from_file(filename):
     return indic_id
 
 
+def type_from_file(filename):
+    """
+    This procedure will extract the Type from the filename.
+    The resource type is before first _ .
+    :param filename:
+    :return: resource type
+    """
+    log_msg = "Getting Resource type from %s"
+    logging.debug(log_msg, filename)
+    parts = filename.split('_')
+    res_type = parts[0]
+    log_msg = "Resource Type: %s"
+    logging.debug(log_msg, res_type)
+    return res_type
+
+
 def url_in_db(file):
     """
     Update table indicators with url information. If filename is empty, then remove entry from table.
@@ -220,10 +240,38 @@ def url_in_db(file):
     return
 
 
+def size_of_file(handledir, file):
+    """
+    If file does not contain empty, then calculate Size of the file.
+    :param file:
+    :return:
+    """
+    logging.debug('Add/Remove filesize %s to indicators table.', file)
+    indic_id = indic_from_file(file)
+    now = strftime("%H:%M:%S %d-%m-%Y")
+    if 'cijfers' in file:
+        attribute = 'size_cijfers'
+    else:
+        attribute = 'size_commentaar'
+    # Always prepare and run query for delete. Then no INSERT/UPDATE logic is required.
+    query = "DELETE FROM indicators WHERE indicator_id = ? AND attribute = ?"
+    conn.execute(query, (indic_id, attribute))
+    if 'empty' not in file:
+        filename = os.path.join(handledir, file)
+        size = os.path.getsize(filename)
+        query = "INSERT INTO indicators (indicator_id, attribute, value, created)" \
+                "VALUES (?, ?, ?, ?)"
+        conn.execute(query, (indic_id, attribute, size, now))
+    conn.commit()
+    return
+
+
 def load_metadata(metafile, indic_id, ckan_conn):
     """
-    Read the file with metadata and add or replace the information to table indicators.
+    Read the file with metadata and add or replace the information to table indicators. This procedure will populate
+    all fields that come from the 'Dataroom'.
     Call function to create dataset if this is a new dataset.
+    Cognos Add / Remove needs to be added here.
     :param metafile: pointer to the file with metadata.
     :return:
     """
@@ -242,8 +290,7 @@ def load_metadata(metafile, indic_id, ckan_conn):
     # metadata is available, get list of attributes from Dataroom Application
     # and required for Dataset Page.
     # First collect all attribute names
-    query = "SELECT attribute FROM attribute_action " \
-            "WHERE source = 'Dataroom' AND target = 'Dataset'"
+    query = "SELECT attribute FROM attribute_action WHERE source = 'Dataroom'"
     # cur = conn.cursor()
     cur.execute(query)
     attribs = cur.fetchall()
@@ -258,30 +305,66 @@ def load_metadata(metafile, indic_id, ckan_conn):
     query = "INSERT INTO indicators (indicator_id, attribute, value, created) VALUES (?, ?, ?, ?)"
     for child in root:
         if child.tag in attrib_names:
-            cur.execute(query, (indic_id, child.tag, child.text.strip(), now))
+            if child.text:
+                child_text = child.text.strip()
+            else:
+                child_text = '(niet ingevuld)'
+            cur.execute(query, (indic_id, child.tag, child_text, now))
             # Add 'notes' field (copy of definitie)
             if child.tag.lower() == 'definitie':
-                cur.execute(query, (indic_id, 'notes', child.text.strip(), now))
+                cur.execute(query, (indic_id, 'notes', child_text, now))
+            if child.tag.lower() == 'title':
+                # Set Title for cijfers, commentaar and Cognos report (to do).
+                name_cijfers = child_text + " - cijfers"
+                cur.execute(query, (indic_id, 'name_cijfers', name_cijfers, now))
+                name_commentaar = child_text + " - commentaar"
+                cur.execute(query, (indic_id, 'name_commentaar', name_commentaar, now))
         elif child.tag != 'id':
             log_msg = "Found Dataroom Attribute **" + child.tag + "** not required for Open Data Dataset"
             logging.warning(log_msg)
+    # Add cijfers / commentaar fields format, description
+    desc_cijfers = "Eventuele opmerkingen bij de cijferrecords voor een bepaalde periode (cfr. meetfrequentie)" \
+                   " zijn terug te vinden in de commentaar file."
+    cur.execute(query, (indic_id, 'description_cijfers', desc_cijfers, now))
+    desc_commentaar = "Opmerkingen horend bij de cijferrecords voor een bepaalde periode (cfr. meetfrequentie)."
+    cur.execute(query, (indic_id, 'description_commentaar', desc_commentaar, now))
+    format_cijfers = "XML"
+    cur.execute(query, (indic_id, 'format_cijfers', format_cijfers, now))
+    format_commentaar = "XML"
+    cur.execute(query, (indic_id, 'format_commentaar', format_commentaar, now))
+    tdt_cijfers = "on"
+    cur.execute(query, (indic_id, 'tdt_cijfers', tdt_cijfers, now))
+    tdt_commentaar = "on"
+    cur.execute(query, (indic_id, 'tdt_commentaar', tdt_commentaar, now))
+    # Also add author / author_email and beheerder / beheerder email
+    author_name = "Bart Van Herbruggen, Beleidsdomein Mobiliteit en Openbare Werken"
+    author_email = "bart.vanherbruggen@mow.vlaanderen.be"
+    cur.execute(query, (indic_id, 'author', author_name, now))
+    cur.execute(query, (indic_id, 'author_email', author_email, now))
+    cur.execute(query, (indic_id, 'maintainer', author_name, now))
+    cur.execute(query, (indic_id, 'maintainer_email', author_email, now))
+    # And add a field for the language
+    cur.execute(query, (indic_id, 'language', 'nl', now))
     conn.commit()
     # Now check if dataset exist already: is there an ID available in the indicators table for this indicator.
     query = "SELECT value FROM indicators WHERE attribute = 'id' and indicator_id = ?"
     cur.execute(query, (indic_id,))
     values_lst = cur.fetchall()
+    upd_pkg = "OK"
     # I want to have 0 or 1 rows in the list
     if len(values_lst) == 0:
         log_msg = "Open Data dataset is not registered for Indicator ID %s, call to register"
         logging.info(log_msg, indic_id)
-        create_package(indic_id, ckan_conn)
+        if not create_package(indic_id, ckan_conn):
+            upd_pkg = "NOK"
     elif len(values_lst) == 1:
         log_msg = "Open Data dataset exists for Indicator ID %s, no further action"
         logging.info(log_msg, indic_id)
     else:
         log_msg = "Multiple Open Data dataset links found for Indicator ID %s, please review"
         logging.warning(log_msg, indic_id)
-    update_package(indic_id, ckan_conn)
+    if upd_pkg == "OK":
+        update_package(indic_id, ckan_conn)
     return True
 
 
@@ -298,23 +381,25 @@ def create_package(indic_id, ckan_conn):
     if len(title_list) == 0:
         log_msg = "No Title defined for Indicator ID %s"
         logging.error(log_msg, indic_id)
-        return
+        return False
     elif len(title_list) == 1:
         title = title_list[0][0]
     else:
         log_msg = "Multiple titles (?) defined for Indicator ID %s"
         logging.error(log_msg, len(title_list), indic_id)
-        return
+        return False
     # OK, 1 title found. Convert it to a name
     name = 'dmow-ind' + str(indic_id).zfill(3) + '-' + title
+    # name = 'tstind' + str(indic_id).zfill(3) + '-' + title
+    name = name[0:100]
     name = re.sub('[^0-9a-zA-Z_\-]', '_', name).lower()
     logging.info("Name: %s", name)
     my_param = {
         'name': name,
         'title': title,
+        'owner_org': config['OpenData']['owner_org'],
+        'license_id': config['OpenData']['license_id'],
     }
-    my_param['owner_org'] = config['OpenData']['owner_org']
-    my_param['license_id'] = config['OpenData']['license_id']
     logging.debug("Parameters: %s", my_param)
     try:
         pkg = ckan_conn.action.package_create(**my_param)
@@ -323,6 +408,7 @@ def create_package(indic_id, ckan_conn):
         ec = sys.exc_info()[0]
         log_msg = "Package Create not successful %s %s"
         logging.error(log_msg, e, ec)
+        return False
     else:
         # Collect Package information and set it in the database.
         try:
@@ -330,7 +416,7 @@ def create_package(indic_id, ckan_conn):
         except:
             log_msg = "Create package with no errors, but no package ID found..."
             logging.error(log_msg)
-            return
+            return False
         else:
             # Store package ID in indicators table
             query = "INSERT INTO indicators (indicator_id, attribute, value, created) " \
@@ -340,12 +426,13 @@ def create_package(indic_id, ckan_conn):
             except:
                 log_msg = "Insert query failed **%s**, indic_id: %s, Value_id: %s"
                 logging.error(log_msg, query, indic_id, val_id)
-                return
+                return False
             conn.commit()
         log_msg = 'Looks like I have my package...'
         logging.info(log_msg)
     log_msg = "End of create_package processing for Indicator %s"
     logging.info(log_msg, indic_id)
+    return True
 
 
 def update_package(indic_id, ckan_conn):
@@ -354,15 +441,57 @@ def update_package(indic_id, ckan_conn):
     :param indic_id:
     :return:
     """
-    params = {}
     log_msg = "Update Package for Indicator %s"
     logging.info(log_msg, indic_id)
     # Get ID of the package
     query = "SELECT value FROM indicators WHERE attribute = 'id' AND indicator_id = ?"
     cur.execute(query, (indic_id,))
     res = cur.fetchone()
-    params['id'] = res[0]  # Remember ID of the package in params dictionary
-    # Now get extra fields that need to be populated
+    doc_id = res[0]  # Remember ID of the package in params dictionary
+    # First check if there is a 'Cijfers' URL available.
+    # If not, then set dataset to private.
+    if check_resource(indic_id, 'cijfers'):
+        set_pkg_public(indic_id, ckan_conn, doc_id)
+    else:
+        set_pkg_private(ckan_conn, doc_id)
+
+
+def set_pkg_private(ckan_conn, doc_id):
+    """
+    This indicator does not have a cijfers file associated, set it to 'private'.
+    :param ckan_conn:
+    :return:
+    """
+    params = {
+        'id': doc_id,
+        'private': True,
+    }
+    log_msg = "Trying to update package with params %s"
+    logging.debug(log_msg, params)
+    try:
+        pkg = ckan_conn.action.package_patch(**params)
+    except:
+        e = sys.exc_info()[1]
+        ec = sys.exc_info()[0]
+        log_msg = "Package Update not successful %s %s"
+        logging.error(log_msg, e, ec)
+    else:
+        log_msg = "Package Update successful %s"
+        logging.info(log_msg, pkg)
+    return
+
+
+def set_pkg_public(indic_id, ckan_conn, doc_id):
+    """
+    This Indicator has a cijfer file available, set this available on Open Data.
+    :param indic_id:
+    :param ckan_conn:
+    :return:
+    """
+    params = {
+        'id': doc_id,
+        'private': False,
+    }
     # First get attribute names for extra fields
     query = "SELECT attribute, od_field FROM attribute_action WHERE action = 'Extra'"
     cur.execute(query)
@@ -392,33 +521,230 @@ def update_package(indic_id, ckan_conn):
             "WHERE action = 'Main' AND source = 'Dataroom' AND target = 'Dataset'"
     cur.execute(query)
     res = cur.fetchall()
-    # Remember the attribute - od_field translation
+    # Remember the attribute - od_field translation for Main field
     od_field = {}
     for [k, v] in res:
         od_field[k] = v
-    # Then get values for the attribute names
+    # Then get values for the Main attribute names
     attribs = [res[i][0] for i in range(len(res))]
     # With attribute names, find corresponding values in indicators table
     query = "SELECT attribute, value FROM indicators WHERE indicator_id = ? AND attribute IN " + str(tuple(attribs))
     logging.debug("Query: %s", query)
     cur.execute(query, (indic_id,))
     res = cur.fetchall()
-    # Add extras dictionary to params dictionary
+    # Add the values to params dictionary
     for [k, v] in res:
         params[od_field[k]] = v
-    print("%s" % params)
-    log_msg = "Trying to update package"
-    logging.debug(log_msg)
+    log_msg = "Trying to update package with params %s"
+    logging.debug(log_msg, params)
     try:
-        pkg = ckan_conn.action.package_update(**params)
+        ckan_conn.action.package_patch(**params)
     except:
         e = sys.exc_info()[1]
         ec = sys.exc_info()[0]
         log_msg = "Package Update not successful %s %s"
         logging.error(log_msg, e, ec)
+        return
+    log_msg = "Package Update successful for indicator ID %s, now update cijfers."
+    logging.info(log_msg, indic_id)
+    # I know for sure that the cijfers.xml is on the FTP server, so create/update cijfers resource.
+    manage_resource(indic_id, ckan_conn, doc_id, 'cijfers')
+    # Check other resource types
+    for res_type in ['commentaar', 'cognos']:
+        if check_resource(indic_id, res_type):
+            manage_resource(indic_id, ckan_conn, doc_id, res_type)
+    return
+
+
+def check_resource(indic_id, res_type):
+    """
+    This procedure will check if the resource URL is available, so if the resource needs to be created/updated or
+    removed.
+    :param indic_id:
+    :param res_type:
+    :return:
+    """
+    attribute = "url_" + res_type
+    query = "SELECT value FROM indicators WHERE attribute = ? AND indicator_id = ?"
+    cur.execute(query, (attribute, indic_id,))
+    res = cur.fetchall()
+    log_msg = "Check for Resource %s, Result: %s"
+    logging.debug(log_msg, res_type, res)
+    if len(res) == 0:
+        return False
+    elif len(res) == 1:
+        return True
     else:
-        log_msg = "Package Update successful %s"
-        logging.info(log_msg, pkg)
+        log_msg = "Unexpected number of URLs found for Resource %s and indicator ID %s"
+        logging.error(log_msg, res_type, indic_id)
+        return False
+
+
+def manage_resource(indic_id, ckan_conn, doc_id, res_type):
+    """
+    This function will manage the resource patch. Check if cijfer resource or commentaar resource needs to be
+    created or updated.
+    A resource needs to have resource ID in table indicators - then it will be updated.
+    If there is no entry in the indicators table, then the resource will be created.
+    :param indic_id: Indicator ID that is currently being processed.
+    :param ckan_conn: Connector to the ckan Open Data website.
+    :param doc_id: Package ID of the package that is currently handled.
+    :return: nothing
+    """
+    params = {
+        'package_id': doc_id,
+    }
+    target_type = {
+        'cijfers': 'CijfersResource',
+        'commentaar': 'CommentaarResource',
+        'cognos': 'CognosResource'
+    }
+    # Collect data fields for resource
+    # First get attribute names for Resource from Dataroom
+    query = "SELECT attribute, od_field FROM attribute_action " \
+            "WHERE action = 'Resource' AND ((source = 'Dataroom') OR (source = 'Repository')) " \
+            "AND target = ?"
+    cur.execute(query, (target_type[res_type],))
+    res = cur.fetchall()
+    # Remember the attribute - od_field translation for Main field
+    od_field = {}
+    for [k, v] in res:
+        od_field[k] = v
+    # Then get values for these Resource attribute names
+    attribs = [res[i][0] for i in range(len(res))]
+    # With attribute names, find corresponding values in indicators table
+    query = "SELECT attribute, value FROM indicators WHERE indicator_id = ? AND attribute IN " + str(tuple(attribs))
+    logging.debug("Query: %s", query)
+    cur.execute(query, (indic_id,))
+    res = cur.fetchall()
+    # Add the values with Open Data Keys to params dictionary
+    for [k, v] in res:
+        params[od_field[k]] = v
+    # Now check if this is a new resource or an update for a resource
+    id_name = "id_" + res_type
+    query = "SELECT attribute, value FROM indicators WHERE indicator_id = ? AND attribute = ?"
+    cur.execute(query, (indic_id, id_name, ))
+    res = cur.fetchall()
+    log_msg = "Result for id_name %s: %s"
+    logging.debug(log_msg, id_name, res)
+    log_msg = "Length: %s"
+    logging.debug(log_msg, len(res))
+    if len(res) == 0:
+        # Resource_Create
+        create_resource(indic_id, ckan_conn, params, res_type)
+    elif len(res) == 1:
+        params['id'] = res[0][1]
+        update_resource(indic_id, ckan_conn, params)
+    else:
+        log_msg = "Unexpected number of Resource record IDs for indicator ID %s and resource %s"
+        logging.error(log_msg, indic_id, res_type)
+    return
+
+
+def create_resource(indic_id, ckan_conn, params, res_type):
+    """
+    This procedure will create a resource.
+    :param ckan_conn:
+    :param params:
+    :return:
+    """
+    logging.debug("Trying to create resource, parameters: %s (type: %s)", params, res_type)
+    now = strftime("%H:%M:%S %d-%m-%Y")
+    try:
+        pkg = ckan_conn.action.resource_create(**params)
+    except:
+        e = sys.exc_info()[1]
+        ec = sys.exc_info()[0]
+        log_msg = "Resource Create not successful %s %s"
+        logging.error(log_msg, e, ec)
+        return
+    log_msg = "Resource has been created: %s, Update info for Indicator: %s"
+    logging.debug(log_msg, pkg, indic_id)
+    # Collect Resource information and set it in the database.
+    try:
+        val_id = pkg['id']
+    except:
+        log_msg = "Create resource with no errors, but no package ID found..."
+        logging.error(log_msg)
+        return
+    else:
+        # Store resource ID in indicators table
+        attribute = "id_" + res_type
+        query = "INSERT INTO indicators (indicator_id, attribute, value, created) " \
+                "VALUES (?, ?, ?, ?)"
+        try:
+            cur.execute(query, (indic_id, attribute, val_id, now))
+        except:
+            log_msg = "Insert query failed **%s**, indic_id: %s, Value_id: %s"
+            logging.error(log_msg, query, indic_id, val_id)
+            return
+        conn.commit()
+    log_msg = 'Looks like I have my %s Resource...'
+    logging.info(log_msg, res_type)
+
+
+def update_resource(indic_id, ckan_conn, params):
+    """
+    This procedure will update an existing resource.
+    No need to specify cijfers / commentaar resource type.
+    :param ckan_conn:
+    :param params:
+    :return:
+    """
+    logging.debug("Trying to update resource, parameters: %s", params)
+    try:
+        pkg = ckan_conn.action.resource_patch(**params)
+    except:
+        e = sys.exc_info()[1]
+        ec = sys.exc_info()[0]
+        log_msg = "Resource Update not successful %s %s"
+        logging.error(log_msg, e, ec)
+        return
+    log_msg = "Resource has been updated: %s, Update info for Indicator: %s"
+    logging.debug(log_msg, pkg, indic_id)
+    # Test if resource_id from updated package is same as original resource_id.
+    if pkg['id'] == params['id']:
+        logging.debug("Resource ID returned same as ID sent.")
+    else:
+        logging.error("Resource ID returned differend from ID sent")
+
+
+def remove_resource(ckan_conn, indic_id, res_type):
+    """
+    This procedure knows that resource URL does not exist. If there is a resource on Open Data platform, then
+    remove this resource.
+    :param ckan_conn:
+    :return:
+    """
+    attribute = "id_" + res_type
+    query = "SELECT value FROM indicators WHERE attribute = ? AND indicator_id = ?"
+    cur.execute(query, (attribute, indic_id,))
+    res = cur.fetchall()
+    log_msg = "Check for Resource %s, Result: %s"
+    logging.debug(log_msg, res_type, res)
+    if len(res) == 0:
+        # OK, resource does not exist, no further action.
+        return
+    elif len(res) > 1:
+        log_msg = "Unexpected number of URLs found for Resource %s and indicator ID %s, I'll remove them all."
+        logging.error(log_msg, res_type, indic_id)
+    for row in res:
+        params = {
+            'id': row[0],
+        }
+        try:
+            pkg = ckan_conn.action.resource_delete(**params)
+        except:
+            e = sys.exc_info()[1]
+            ec = sys.exc_info()[0]
+            log_msg = "Resource Delete not successful %s %s"
+            logging.error(log_msg, e, ec)
+        else:
+            log_msg = "Resource has been deleted: %s for Indicator: %s"
+            logging.debug(log_msg, pkg, indic_id)
+        # Remove all id_resource entries
+        query = "DELETE FROM indicators WHERE attribute = ? AND indicator_id = ?"
+        cur.execute(query, (attribute, indic_id, ))
     return
 
 
@@ -447,11 +773,14 @@ def scan_for_files():
     If a file is found, call file handling procedure.
     :return:
     """
+    # Get ckan connection first
+    ckan_conn = get_ckan_conn()
+    # Then set-up for ftp connection.
     scandir = config['Main']['scandir']
     handledir = config['Main']['handledir']
     log_msg = "Scan %s for files commentaar*.xml"
     logging.debug(log_msg, scandir)
-    log_msg = "First get my FTP Connection"
+    log_msg = "Get my FTP Connection"
     logging.debug(log_msg)
     ftp = ftp_connection()
     # Don't use os.listdir in for loop since I'll move files. For loop will get confused.
@@ -462,15 +791,14 @@ def scan_for_files():
         logging.debug(log_msg, file)
         move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...
         if 'empty' in file:
-            remove_file(ftp, file=os.path.join(handledir, file))
+            remove_file(ckan_conn, ftp, file=os.path.join(handledir, file))
         else:
             load_file(ftp, file=os.path.join(handledir, file))
+        size_of_file(handledir, file)
         url_in_db(file)
     # Now close FTP Object
     ftp.close()
     # Now handle meta-data
-    # Get ckan connection first
-    ckan_conn = get_ckan_conn()
     filelist = [file for file in os.listdir(scandir) if 'metadata' in file]
     for file in filelist:
         log_msg = "Filename: %s"
@@ -480,6 +808,7 @@ def scan_for_files():
             # remove_metadata(file)
             pass
         else:
+            # Get indic_id before adding pathname to filename.
             indic_id = indic_from_file(file)
             filename = os.path.join(handledir, file)
             load_metadata(filename, indic_id, ckan_conn)
@@ -501,5 +830,3 @@ scan_for_files()
 # Close database connection
 conn.close()
 logging.info('End Application')
-
-

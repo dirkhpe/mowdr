@@ -11,6 +11,7 @@ import datetime
 from ftplib import FTP
 import logging
 import os
+import platform
 import re
 import sqlite3
 import sys
@@ -54,7 +55,7 @@ def get_logfilename():
     # Current Date for filename
     currdate = datetime.date.today().strftime("%Y%m%d")
     # Extract Computername
-    computername = os.environ.get("COMPUTERNAME")
+    computername = platform.node()
     # Define logfileName
     logfile = logdir + "/" + modulename + "_" + computername + \
         "_" + currdate + ".log"
@@ -804,13 +805,14 @@ def scan_for_files():
         log_msg = "Filename: %s"
         logging.debug(log_msg, file)
         move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...
+        # Get indic_id before adding pathname to filename.
+        indic_id = indic_from_file(file)
+        filename = os.path.join(handledir, file)
         if 'empty' in file:
             # remove_metadata(file)
-            pass
+            # cijfers url is removed, so update_package will set indicator to private.
+            update_package(indic_id, ckan_conn)
         else:
-            # Get indic_id before adding pathname to filename.
-            indic_id = indic_from_file(file)
-            filename = os.path.join(handledir, file)
             load_metadata(filename, indic_id, ckan_conn)
     return
 

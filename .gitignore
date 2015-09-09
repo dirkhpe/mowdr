@@ -9,6 +9,7 @@
 *html*
 *.mwb.bak
 Python/properties/*
-Python/__pychache__/*
+Python/__pycache__/*
 Python/.idea/*
 Python/Test.py
+Python/lib/__pycache__/*

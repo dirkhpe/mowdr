@@ -10,6 +10,7 @@ import configparser
 import datetime
 import logging
 import os
+import platform
 import sys
 
 
@@ -39,12 +40,12 @@ def init_logfile(config, modulename):
     # Current Date for filename
     currdate = datetime.date.today().strftime("%Y%m%d")
     # Extract Computername
-    computername = os.environ.get("COMPUTERNAME")
+    computername = platform.node()
     # Define logfileName
     logfile = logdir + "/" + modulename + "_" + computername + \
         "_" + currdate + ".log"
     logging.basicConfig(format='%(asctime)s:%(module)s:%(funcName)s:%(lineno)d:%(levelname)s:%(message)s',
-                    datefmt='%d/%m/%Y %H:%M:%S', filename=logfile, level=logging.DEBUG)
+                        datefmt='%d/%m/%Y %H:%M:%S', filename=logfile, level=logging.DEBUG)
     return logfile
 
 

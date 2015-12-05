@@ -1,4 +1,4 @@
-__author__ = 'Dirk Vermeylen'
+#!/opt/csw/bin/python3
 
 """
 This script will rebuild the database from scratch. It should run only once during production
@@ -6,26 +6,8 @@ and many times during development.
 """
 
 import logging
-import sqlite3
-import sys
+from Datastore import Datatstore
 from lib import my_env
-from time import strftime
-
-now = strftime("%H:%M:%S %d-%m-%Y")
-
-
-def connect2db():
-    try:
-        db_conn = sqlite3.connect(db)
-    except:
-        e = sys.exc_info()[1]
-        ec = sys.exc_info()[0]
-        log_msg = "Error during connect to database: %s %s"
-        logging.error(log_msg, e, ec)
-        return
-    else:
-        return db_conn
-
 
 def create_db():
     # Create table
@@ -76,33 +58,75 @@ def remove_tables():
         return
 
 
+def handle_attributes(source, target, action, attrib_dict):
+    """
+    This method gets a set of values for the attribute_action table.
+    The method will collect all attribute records for this source - target - action triple.
+    Then for each attribute in the attrib_dict the method will check if the record exists in attribute_action table.
+    If so, no further action.
+    If not then the record will be added.
+    When all attributes are handled then the source-target-action attributes that were not requested for load but are in
+    the table will be removed from the attribute_action table.
+    :param source:
+    :param target:
+    :param action:
+    :param attrib_dict: Dictionary with unique attribute name and Open Data name.
+    :return:
+    """
+    msg = "Source: " + source + " - Target: " + target + " - Action: " + action
+    print(msg)
+    logging.debug(msg)
+    # First get all pairs from attribute_action table for this source - target - action.
+    in_action_tbl = ds.get_attrib_od_pairs(source, target, action)
+    # Convert result in dictionary - Duplicate attributes will be hidden in dictionary, so check before on duplicates.
+    curr_attrib_dict = {}
+    for (attrib, od) in in_action_tbl:
+        curr_attrib_dict[attrib] = od
+    # Get attributes that are not in table now
+    new_attribs = [attrib for attrib in attrib_dict.keys() if attrib not in curr_attrib_dict.keys()]
+    msg = "New attributes: " + str(new_attribs)
+    logging.debug(msg)
+    print(msg)
+    for attrib in new_attribs:
+        ds.insert_attribute(attrib, attrib_dict[attrib], source, target, action)
+    # Get attributes that are no longer required in table
+    remove_attribs = [attrib for attrib in curr_attrib_dict.keys() if attrib not in attrib_dict.keys()]
+    msg = "Remove attributes: " + str(remove_attribs)
+    logging.debug(msg)
+    print(msg)
+    for attrib in remove_attribs:
+        ds.remove_attribute(attrib)
+    # Existing attributes, check Open Data field
+    existing_attribs = [attrib for attrib in attrib_dict.keys() if attrib in curr_attrib_dict.keys()]
+    od_field_update = [attrib for attrib in existing_attribs if attrib_dict[attrib] != curr_attrib_dict[attrib]]
+    msg = "Existing attributes but Open Data field needs an update: " + str(od_field_update)
+    logging.debug(msg)
+    print(msg)
+    for attrib in od_field_update:
+        ds.update_attribute(attrib, attrib_dict[attrib])
+    return
+
+
 def populate_attribs_main():
     """
     This procedure will populate table attribute_action with the attributes that come from Dataroom
     and need to go to Dataset Metadata screen, Main.
     :return:
     """
+    source = 'Dataroom'
+    target = 'Dataset'
+    action = 'Main'
     attrib_od_fields = {
-        'Title': 'Title',
+        'title': 'title',
         'notes': 'notes',
-        'author': 'author',
+        'author_name': 'author',
         'author_email': 'author_email',
-        'maintainer': 'maintainer_email',
+        'maintainer_name': 'maintainer',
+        'maintainer_email': 'maintainer_email',
         'language': 'language',
+        'bijsluiter': 'url',
     }
-    # cur = conn.cursor()
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES (?, ?, 'Main', 'Dataroom', 'Dataset', ?)"
-    for attribute, od_field in attrib_od_fields.items():
-        try:
-            conn.execute(query, (attribute, od_field, now,))
-        except:
-            e = sys.exc_info()[1]
-            ec = sys.exc_info()[0]
-            log_msg = "Error during query execution: %s %s"
-            logging.error(log_msg, e, ec)
-            return
-    conn.commit()
+    handle_attributes(source, target, action, attrib_od_fields)
     return
 
 
@@ -113,6 +137,9 @@ def populate_attribs_extra():
     Note that it is mandatory that attribute name is unique.
     :return:
     """
+    source = 'Dataroom'
+    target = 'Dataset'
+    action = 'Extra'
     attrib_od_fields = {
         'AantalPercentage': 'Aantal of Percentage',
         'Berekeningswijze': 'Berekeningswijze',
@@ -125,168 +152,142 @@ def populate_attribs_extra():
         'Tijdsvenster': 'Tijdsvenster',
         'TypeIndicator': 'Type Indicator',
         'FicheBijgewerkt': 'Gegevens Bijgewerkt',
+        'CijfersBijgewerkt': 'Cijfers Bijgewerkt',
+        'CommBijgewerkt': 'Commentaar Bijgewerkt',
     }
-    # cur = conn.cursor()
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES (?, ?, 'Extra', 'Dataroom', 'Dataset', ?)"
-    for attribute, od_field in attrib_od_fields.items():
-        try:
-            conn.execute(query, (attribute, od_field, now,))
-        except:
-            e = sys.exc_info()[1]
-            ec = sys.exc_info()[0]
-            log_msg = "Error during query execution: %s %s"
-            logging.error(log_msg, e, ec)
-            return
-    conn.commit()
+    handle_attributes(source, target, action, attrib_od_fields)
+    return
 
 
-def populate_attribs_ckan():
+def populate_attribs_main_ckan():
     """
     This procedure will populate table attribute_action with the attributes that come from ckan Open Data
-    platform.
+    platform. Attributes name and license_id are a bit dubious here.
     :return:
     """
+    source = 'Dataset'
+    target = 'Dataset'
+    action = 'Main'
     attrib_od_fields = {
         'id': 'id',
         'revision_id': 'revision_id',
         'name': 'name',
         'license_id': 'license_id'
     }
-    # cur = conn.cursor()
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES (?, ?, 'Main', 'Dataset', 'Dataset', ?)"
-    for attribute, od_field in attrib_od_fields.items():
-        try:
-            conn.execute(query, (attribute, od_field, now,))
-        except:
-            e = sys.exc_info()[1]
-            ec = sys.exc_info()[0]
-            log_msg = "Error during query execution: %s %s"
-            logging.error(log_msg, e, ec)
-            return
-    conn.commit()
+    handle_attributes(source, target, action, attrib_od_fields)
+    return
 
 
-def populate_attribs_od_res():
+def populate_attribs_resource(resource):
+    """
+    This procedure will populate table attribute_action with the attributes that come from Dataroom and need to go to
+    the resource.
+    Resources.
+    :return:
+    """
+    source = 'Dataroom'
+    target = my_env.get_target(resource)
+    action = 'Resource'
+    attrib_od_fields = {
+        'format': 'format',
+        'name': 'name',
+        'description': 'description',
+        'tdt': 'enable-tdt',
+    }
+    populate_attribs_from_resource(source, target, action, attrib_od_fields, resource)
+    return
+
+
+def populate_attribs_od_res(resource):
     """
     This procedure will populate table attribute_action with the attributes that come from Dataset to populate Resource.
     :return:
     """
+    source = 'Dataset'
+    target = my_env.get_target(resource)
+    action = 'Resource'
     attrib_od_fields = {
-        'id_cijfers': 'id',
-        'id_commentaar': 'id',
+        'id': 'id',
     }
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES (?, ?, 'Resource', 'Dataset', ?, ?)"
-    for attribute, od_field in attrib_od_fields.items():
-        if 'cijfers' in attribute:
-            target = 'CijfersResource'
-        else:
-            target = 'CommentaarResource'
-        try:
-            conn.execute(query, (attribute, od_field, target, now,))
-        except:
-            e = sys.exc_info()[1]
-            ec = sys.exc_info()[0]
-            log_msg = "Error during query execution: %s %s"
-            logging.error(log_msg, e, ec)
-            return
-    conn.commit()
+    populate_attribs_from_resource(source, target, action, attrib_od_fields, resource)
+    return
 
 
-def populate_attribs_mv():
+def populate_attribs_mv(resource):
     """
     This procedure will populate table attribute_action with the attributes that come from Mobiel Vlaanderen
     platform.
     :return:
     """
+    source = 'Repository'
+    target = my_env.get_target(resource)
+    action = 'Resource'
     attrib_od_fields = {
-        'url_cijfers': 'url',
-        'url_commentaar': 'url',
-        'size_cijfers': 'Aantal Bytes',
-        'size_commentaar': 'Aantal Bytes',
+        'url': 'url',
     }
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES (?, ?, 'Resource', 'Repository', ?, ?)"
-    for attribute, od_field in attrib_od_fields.items():
-        if 'cijfers' in attribute:
-            target = 'CijfersResource'
-        else:
-            target = 'CommentaarResource'
-        try:
-            conn.execute(query, (attribute, od_field, target, now,))
-        except:
-            e = sys.exc_info()[1]
-            ec = sys.exc_info()[0]
-            log_msg = "Error during query execution: %s %s"
-            logging.error(log_msg, e, ec)
-            return
-    conn.commit()
+    populate_attribs_from_resource(source, target, action, attrib_od_fields, resource)
+    return
 
 
-def populate_attribs_resource():
+def populate_attribs_mv_file(resource):
     """
-    This procedure will populate table attribute_action with the attributes that need to go to cijfers/commentaar
-    Resources.
+    This procedure will populate table attribute_action with the attributes that come from Mobiel Vlaanderen
+    platform and a file is available.
     :return:
     """
+    source = 'Repository'
+    target = my_env.get_target(resource)
+    action = 'FileResource'
     attrib_od_fields = {
-        'format_cijfers': 'format',
-        'name_cijfers': 'name',
-        'description_cijfers': 'description',
-        'tdt_cijfers': 'enable-tdt',
-        'format_commentaar': 'format',
-        'name_commentaar': 'name',
-        'description_commentaar': 'description',
-        'tdt_commentaar': 'enable_tdt',
-        'CijfersBijgewerkt': 'Cijfers Bijgewerkt',
-        'CommBijgewerkt': 'Commentaar Bijgewerkt',
-
+        'size': 'Aantal Bytes',
     }
-    query = "INSERT INTO attribute_action (attribute, od_field, action, source, target, created) " \
-            "VALUES (?, ?, 'Resource', 'Dataroom', ?, ?)"
-    for attribute, od_field in attrib_od_fields.items():
-        if 'cijfers' in attribute.lower():
-            target = 'CijfersResource'
-        else:
-            target = 'CommentaarResource'
-        try:
-            conn.execute(query, (attribute, od_field, target, now,))
-        except:
-            e = sys.exc_info()[1]
-            ec = sys.exc_info()[0]
-            log_msg = "Error during query execution: %s %s"
-            logging.error(log_msg, e, ec)
-            return
-    conn.commit()
+    populate_attribs_from_resource(source, target, action, attrib_od_fields, resource)
+    return
 
 
-# Get ini-file first.
-projectname = 'mowdr'
+def populate_attribs_from_resource(source, target, action, attrib_od_fields, resource):
+    """
+    This procedure will convert key values of dictionary attrib_od_fields to the key values for the resource, then load
+    the fields in the table as specified.
+    :param source:
+    :param target:
+    :param action:
+    :param attrib_od_fields: Dictionary with generic attribute name, resource name to be added, and Open Data name.
+    :return
+    """
+    # Create new array with attribute and resource fields
+    attrib_res_fields = {}
+    for key in attrib_od_fields.keys():
+        new_key = key + "_" + resource
+        attrib_res_fields[new_key] = attrib_od_fields[key]
+    handle_attributes(source, target, action, attrib_res_fields)
+    return
+
+
+# Initialize Environment
+projectname = "mowdr"
 modulename = my_env.get_modulename(__file__)
 config = my_env.get_inifile(projectname)
-# Now configure logfile
 my_env.init_logfile(config, modulename)
-logging.info('Start Application')
-logging.info('Get Database connection')
-db = config['Main']['db']
-conn = connect2db()
-logging.info('Remove existing tables')
-remove_tables()
-logging.info('Create the tables')
-create_db()
-logging.info('Add Main Attributes')
+ds = Datatstore(config)
+logging.info('\n\n\nStart Application')
+# all_attribs = ds.get_all_attribs()
+logging.info("Handle Main Attributes on Dataset")
 populate_attribs_main()
-logging.info('Add Extra Attributes')
+logging.info("Handle Extra Attributes on Dataset")
 populate_attribs_extra()
-logging.info('Add ckan Attributes')
-populate_attribs_ckan()
-logging.info('Add FTP (mobiel vlaanderen) Attributes')
-populate_attribs_mv()
-logging.info('Add Cijfer/Commentaar Resource Attributes')
-populate_attribs_resource()
-logging.info('Add Cijfer/Commentaar Resource Attributes from dataset')
-populate_attribs_od_res()
-conn.close()
+logging.info("Handle Main Attributes that are populated from ckan")
+populate_attribs_main_ckan()
+resources = my_env.get_resource_types()
+resource_files = my_env.get_resource_type_file()
+for resource_name in resources:
+    logging.info("Handle Resource Attributes for resource %s", resource_name)
+    populate_attribs_resource(resource_name)
+    logging.info("Handle Resource Attributes for resource %s from Open Data", resource_name)
+    populate_attribs_od_res(resource_name)
+    logging.info("Handle Resource Attributes for resource %s from Repository", resource_name)
+    populate_attribs_mv(resource_name)
+    if resource_name in resource_files:
+        logging.info("Handle Resource Attributes for resource %s from Repository (File)", resource_name)
+        populate_attribs_mv_file(resource_name)
 logging.info('End Application')

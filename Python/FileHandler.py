@@ -150,6 +150,7 @@ class FileHandler:
                 name_cijfersxml = child_text + " - cijfers (XML)"
                 name_cijferstable = child_text + " - cijfers (Tabel)"
                 name_commentaar = child_text + " - commentaar"
+                self.ds.insert_indicator(indic_id, 'title', indicatorname)
                 self.ds.insert_indicator(indic_id, 'name_cijfersxml', name_cijfersxml)
                 self.ds.insert_indicator(indic_id, 'name_commentaar', name_commentaar)
                 self.ds.insert_indicator(indic_id, 'name_cijferstable', name_cijferstable)

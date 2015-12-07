@@ -12,6 +12,18 @@ import ckanapi
 from lib import my_env
 
 
+def show_resource_view_list():
+    resource_name = input("Resource ID: ")
+    resource_view_list(resource_name)
+    return
+
+
+def show_resource_view():
+    resource_name = input("Resource View ID: ")
+    resource_view(resource_name)
+    return
+
+
 def show_resource():
     package_name = input("Resource ID: ")
     resource_show(package_name)
@@ -36,6 +48,66 @@ def show_pkg_indic():
     package_name = my_env.get_name_from_indic(config, indic_id)
     package_show(package_name)
     return
+
+
+def resource_view(resource_view_id):
+    """
+    Return the resource view metadata.
+    :param resource_view_id:
+    :return:
+    """
+    if resource_view_id is None:
+        print('Resource View ID needs to be defined!')
+    else:
+        try:
+            res = ckan_conn.action.resource_view_show(id=resource_view_id)
+        except ckanapi.NotFound:
+            msg = "Resource " + str(resource_view_id) + " not found."
+            print(msg)
+            logging.error(msg)
+        except:
+            e = sys.exc_info()[1]
+            ec = sys.exc_info()[0]
+            log_msg = "Resource View Metadata not successful %s %s"
+            logging.error(log_msg, e, ec)
+            return False
+        else:
+            # print("Name: " + res['name'])
+            # print("ID: " + res['id'])
+            f.write('Result of resource_show:\n')
+            f.write('-----------------------\n')
+            f.write(json.dumps(res, indent=4))
+            logging.info("Output written to " + outfile)
+
+
+def resource_view_list(resource_name):
+    """
+    Return the resource view list.
+    :param resource_name:
+    :return:
+    """
+    if resource_name is None:
+        print('Resource Name needs to be defined!')
+    else:
+        try:
+            res = ckan_conn.action.resource_view_list(id=resource_name)
+        except ckanapi.NotFound:
+            msg = "Resource " + str(resource_name) + " not found."
+            print(msg)
+            logging.error(msg)
+        except:
+            e = sys.exc_info()[1]
+            ec = sys.exc_info()[0]
+            log_msg = "Resource View List not successful %s %s"
+            logging.error(log_msg, e, ec)
+            return False
+        else:
+            # print("Name: " + res['name'])
+            # print("ID: " + res['id'])
+            f.write('Result of resource_show:\n')
+            f.write('-----------------------\n')
+            f.write(json.dumps(res, indent=4))
+            logging.info("Output written to " + outfile)
 
 
 def resource_show(resource_name):
@@ -164,11 +236,15 @@ def handle_selection(sel):
 utility_desc = ['Display package list',
                 'Show package based on name',
                 'Show package based on indicator ID',
-                'Show resource based on resource ID']
+                'Show resource based on resource ID',
+                'Show view list for resource ID',
+                'Show resource view metadata for resource view ID']
 utilities = [package_list,
              show_pkg_name,
              show_pkg_indic,
-             show_resource]
+             show_resource,
+             show_resource_view_list,
+             show_resource_view]
 
 # Get ini-file first.
 # Setup Proxy Server

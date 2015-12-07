@@ -13,7 +13,7 @@ logging.info('\n\n\nStart Application')
 # Get FileHandler Object
 fh = FileHandler(config)
 # Set up Proxy Server
-# os.environ['http_proxy'] = 'http://proxy.vlaanderen.be:8080'
+# os.environ['http_proxy'] = 'http://proxyservers.vlaanderen.be:8080'
 # Scan every file in the input directory and process it
 logging.info('Processing Input Dir')
 fh.process_input_directory()

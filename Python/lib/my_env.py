@@ -194,7 +194,8 @@ def known_resource_type(resource_type):
 
 def get_name_from_indic(config, indic_id):
     """
-    This method will calculate unique name for the dataset on Open Data platform.
+    This method will calculate unique name for the dataset on Open Data platform. The name exists of the url_prefix
+    that is defined in OpenData section in ini file and the indicator number.
     :param indic_id:
     :return: unique dataset name.
     """

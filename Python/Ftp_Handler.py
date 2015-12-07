@@ -6,6 +6,7 @@ import re
 import sys
 from ftplib import FTP
 
+
 class Ftp_Handler:
 
     """
@@ -18,11 +19,12 @@ class Ftp_Handler:
         self.ftp_hdl = self._ftp_connection(config_hdl)
         return
 
-
     def _ftp_connection(self, config_hdl):
         """
         This procedure establishes an FTP connection to the FTP Server. The FTP connection points to the directory
         specified in the config file.
+        On server uv162942 FTP login needs to be in two steps. First connect to the FTP Server, then login
+        to the FTP server.
         :return: ftp object.
         """
         # TODO proper error handling: if FTP connection fails, FTP is NoType at this moment and will fail at ftp.close()
@@ -31,14 +33,29 @@ class Ftp_Handler:
         host = config_hdl['FTPServer']['host']
         user = config_hdl['FTPServer']['user']
         passwd = config_hdl['FTPServer']['passwd']
+        ftp = FTP()
+        # First connect to the FTP Server
         try:
-            ftp = FTP(host=host, user=user, passwd=passwd)
+            log_msg = "Connect to FTP Server"
+            logging.debug(log_msg)
+            ftp.connect(host=host, timeout=10)
         except:
             ec = sys.exc_info()[0]
             e = sys.exc_info()[1]
             log_msg = "Error during connect to FTP Server: %s %s"
             logging.critical(log_msg, e, ec)
             sys.exit('ftp_connection failed')
+        # Then login to FTP Server
+        try:
+            log_msg = "Login at FTP Server"
+            logging.debug(log_msg)
+            ftp.login(user=user, passwd=passwd)
+        except:
+            ec = sys.exc_info()[0]
+            e = sys.exc_info()[1]
+            log_msg = "Error during FTP login: %s %s \n\n"
+            logging.critical(log_msg, e, ec)
+            sys.exit()
         # Connected to FTP Server, now change to directory
         ftpdir = config_hdl['FTPServer']['dir']
         try:
@@ -107,4 +124,3 @@ class Ftp_Handler:
             log_msg = "Looks like file %s is removed from FTP Server"
             logging.debug(log_msg, filename)
         return
-

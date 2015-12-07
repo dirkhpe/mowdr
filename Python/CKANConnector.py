@@ -42,18 +42,18 @@ class CKANConnector:
         log_msg = "In create_package for Indicator %s"
         logging.debug(log_msg, indic_id)
         # Get mandatory items for the package: Title,name and owner_org
-        title_list = self.ds.get_indicator_value(indic_id, 'Title')
+        title_list = self.ds.get_indicator_value(indic_id, 'title')
         # I need to have exact 1 title
         if len(title_list) == 0:
-            log_msg = "No Title defined for Indicator ID %s"
-            logging.error(log_msg, indic_id)
-            return False
+            log_msg = "No Title defined for Indicator ID %s, using 'Indicator %s' instead."
+            logging.error(log_msg, indic_id, indic_id)
+            title = "Indicator" + str(indic_id) + " (name still to be defined)."
         elif len(title_list) == 1:
             title = title_list[0][0]
         else:
             log_msg = "Multiple titles (?) defined for Indicator ID %s"
             logging.error(log_msg, len(title_list), indic_id)
-            return False
+            # return False
         # OK, 1 title found. Convert it to a name
         name = my_env.get_name_from_indic(self.config, indic_id)
         logging.info("Name: %s", name)

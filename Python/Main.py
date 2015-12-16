@@ -1,20 +1,24 @@
 #!/opt/csw/bin/python3
 
-import logging
+import os
 from FileHandler import FileHandler
 from lib import my_env
 
 # Initialize Environment
 projectname = "mowdr"
 modulename = my_env.get_modulename(__file__)
-config = my_env.get_inifile(projectname)
-my_env.init_logfile(config, modulename)
-logging.info('\n\n\nStart Application')
+config = my_env.get_inifile(projectname, __file__)
+my_log = my_env.init_loghandler(config, modulename)
+my_log.info('Start Application')
 # Get FileHandler Object
 fh = FileHandler(config)
-# Set up Proxy Server
-# os.environ['http_proxy'] = 'http://proxyservers.vlaanderen.be:8080'
-# Scan every file in the input directory and process it
-logging.info('Processing Input Dir')
+# Check for proxyserver
+try:
+    http_proxy = config['Main']['proxy']
+except KeyError:  # http_proxy not defined, continue
+    pass
+else:
+    os.environ['http_proxy'] = http_proxy
+    my_log.info("Set proxy to %s", http_proxy)
 fh.process_input_directory()
-logging.info('End Application')
+my_log.info("End Application")

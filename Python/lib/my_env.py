@@ -7,6 +7,7 @@ Also other utilities find their home here.
 import configparser
 import datetime
 import logging
+import logging.handlers
 import os
 import platform
 import re
@@ -30,12 +31,15 @@ def init_logfile(config, modulename):
     This function initializes the logfile. Logfilename consists of calling module name + computername + date.
     Logfile directory is read from the project .ini file.
     Format of the logmessage is specified in basicConfig function.
+    This is for basic logfile configuration. If a Log Handler is required, then function init_loghandler needs to be
+    used.
     :param config: Reference to the configuration ini file. Directory for logfile should be
     in section Main entry logdir.
     :param modulename: The name of the module. Each module will create it's own logfile.
     :return: Directory and name of the logfile includint computername.
     """
     logdir = config['Main']['logdir']
+    print("Logdir: " + logdir)
     # Current Date for filename
     currdate = datetime.date.today().strftime("%Y%m%d")
     # Extract Computername
@@ -48,15 +52,59 @@ def init_logfile(config, modulename):
     return logfile
 
 
-def get_inifile(projectname):
+def init_loghandler(config, modulename):
+    """
+    This function initializes the loghandler. Logfilename consists of calling module name + computername.
+    Logfile directory is read from the project .ini file.
+    Format of the logmessage is specified in basicConfig function.
+    This is for Log Handler configuration. If basic log file configuration is required, then use init_logfile.
+    :param config: Reference to the configuration ini file. Directory for logfile should be
+    in section Main entry logdir.
+    :param modulename: The name of the module. Each module will create it's own logfile.
+    :return: Log Handler
+    """
+    logdir = config['Main']['logdir']
+    # Extract Computername
+    computername = platform.node()
+    # Define logfileName
+    logfile = logdir + "/" + modulename + "_" + computername + ".log"
+    # Configure the root logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    # Create Console Handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    # Create Rotating File Handler
+    # Get logfiles of 1M
+    maxbytes = 1024 * 1024
+    rfh = logging.handlers.RotatingFileHandler(logfile, maxBytes=maxbytes, backupCount=5)
+    # Create Formatter for file
+    formatter_file = logging.Formatter(fmt='%(asctime)s|%(module)s|%(funcName)s|%(lineno)d|%(levelname)s|%(message)s',
+                                       datefmt='%d/%m/%Y|%H:%M:%S')
+    formatter_console = logging.Formatter(fmt='%(asctime)s - %(module)s - %(funcName)s - %(lineno)d - %(levelname)s -'
+                                              ' %(message)s',
+                                          datefmt='%H:%M:%S')
+    # Add Formatter to Console Handler
+    ch.setFormatter(formatter_console)
+    # Add Formatter to Rotating File Handler
+    rfh.setFormatter(formatter_file)
+    # Add Handler to the logger
+    logger.addHandler(ch)
+    logger.addHandler(rfh)
+    return logger
+
+
+def get_inifile(projectname, scriptname):
     """
     Read Project configuration ini file in subdirectory properties.
     :param projectname: Name of the project.
+    :param scriptname: Name of the calling application. This is used to calculate the config file path.
     :return: Object reference to the inifile.
     """
     # Use Project Name as ini file.
     # TODO: review procedure to get directory name instead of relative properties/ path.
-    configfile = "properties/" + projectname + ".ini"
+    (filepath, filename) = os.path.split(scriptname)
+    configfile = filepath + "/properties/" + projectname + ".ini"
     ini_config = configparser.ConfigParser()
     try:
         ini_config.read_file(open(configfile))
@@ -199,6 +247,7 @@ def get_name_from_indic(config, indic_id):
     :param indic_id:
     :return: unique dataset name.
     """
+    logging.info("In module get_name_from_indic")
     name = config['OpenData']['url_prefix'] + str(indic_id).zfill(3)
     name = name[0:100]
     name = re.sub('[^0-9a-zA-Z_\-]', '_', name).lower()

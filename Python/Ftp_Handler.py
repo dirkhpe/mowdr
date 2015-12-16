@@ -68,6 +68,23 @@ class Ftp_Handler:
             sys.exit('ftp_cwd failed')
         return ftp
 
+    def close_connection(self):
+        """
+        Close the FTP Connection.
+        :return:
+        """
+        try:
+            self.ftp_hdl.quit()
+        except:
+            ec = sys.exc_info()[0]
+            e = sys.exc_info()[1]
+            log_msg = "Error during close connection to FTP Server: %s %s"
+            logging.critical(log_msg, e, ec)
+            sys.exit('ftp_cwd failed')
+        else:
+            logging.debug("FTP Connection closed.")
+            return
+
     def load_file(self, file=None):
         """
         Load file on mobielvlaanderen.be. If file exists already, then overwrite.

@@ -268,6 +268,4 @@ class FileHandler:
             else:
                 # Dataset package does not yet exist or new valid resource file available and cijfersxml exist.
                 self.load_metadata(filename, indic_id)
-        # All files processed, close database connection.
-        self.ds.close_connection()
         return

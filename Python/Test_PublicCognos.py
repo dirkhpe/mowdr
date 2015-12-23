@@ -12,7 +12,7 @@ config = my_env.get_inifile(projectname, __file__)
 my_env.init_logfile(config, modulename)
 # Now go for it
 indics = [('filezwaarte op het hoofdwegennet', 3),
-#          ('filezwaarte op het zijwegennet', 15),
+          ('filezwaarte op het zijwegennet', 15),
 #          ('voertuigenpark (de lijn)', 112),
           ('verdeling van verplaatsingen volgens verplaatsingsmotief', 901901)]
 logging.info('Start Application')

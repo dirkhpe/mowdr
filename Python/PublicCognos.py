@@ -11,6 +11,7 @@ Therefore ckan will be provided the link to a (shorter, less complex) redirect p
 
 # import httplib2
 import logging
+# import urllib.request
 from urllib.request import urlopen
 from urllib.parse import quote
 
@@ -61,12 +62,13 @@ class PublicCognos:
         :return: True if Public Cognos URL exists. False otherwise.
         """
         logging.debug("Check Cognos for " + self.indicator_name)
-        # h = httplib2.Http()
-        # resp = h.request(self.cognos_url)
+        # req = urllib.request.Request(self.cognos_url, headers={'User-Agent': 'Mozilla/5.0'})
+        # resp = urlopen(req)
         resp = urlopen(self.cognos_url)
         logging.debug("Message: " + str(resp.msg) + " - Status: " + str(resp.status))
-        logging.debug(resp.read())
-        if 'getFormWarpRequest' in str(resp.read()):
+        respmsg = str(resp.read())
+        logging.debug(respmsg)
+        if 'getFormWarpRequest' in respmsg:
             logging.debug("Cognos URL for " + self.indicator_name + " exists.")
             return True
         else:

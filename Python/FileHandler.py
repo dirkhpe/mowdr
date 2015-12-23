@@ -29,25 +29,6 @@ class FileHandler:
         self.ckan = CKANConnector(self.config, self.ds)
         self.ftp = Ftp_Handler(self.config)
 
-    def move_file(self, file2move, sourcedir, targetdir):
-        """
-        This function will move a file from source dir to target dir.
-        It will check if the file exists on target dir. If so, remove file from target dir.
-        Then move file from source dir. Assumption: file must exist on sourcedir.
-        :param file2move: Filename of the file that needs to be moved
-        :param sourcedir: Source Directory where the file is now.
-        :param targetdir: Target Directory where the file needs to go to.
-        :return:
-        """
-        if file2move in [file for file in os.listdir(targetdir)]:
-            log_msg = "File %s exists in targetdir %s, removing from targetdir."
-            logging.debug(log_msg, file2move, targetdir)
-            os.remove(os.path.join(targetdir, file2move))
-        log_msg = "OK, File %s does not exists in targetdir %s now."
-        logging.debug(log_msg, file2move, targetdir)
-        os.rename(os.path.join(sourcedir, file2move), os.path.join(targetdir, file2move))
-        return
-
     def url_in_db(self, file):
         """
         Remove the url attribute for this resource.
@@ -150,10 +131,12 @@ class FileHandler:
                 name_cijfersxml = child_text + " - cijfers (XML)"
                 name_cijferstable = child_text + " - cijfers (Tabel)"
                 name_commentaar = child_text + " - commentaar"
+                name_cognos = indicatorname + " - cognos"
                 self.ds.insert_indicator(indic_id, 'title', indicatorname)
                 self.ds.insert_indicator(indic_id, 'name_cijfersxml', name_cijfersxml)
                 self.ds.insert_indicator(indic_id, 'name_commentaar', name_commentaar)
                 self.ds.insert_indicator(indic_id, 'name_cijferstable', name_cijferstable)
+                self.ds.insert_indicator(indic_id, 'name_cognos', name_cognos)
             elif child.tag != 'id':
                 log_msg = "Found Dataroom Attribute **" + child.tag + "** not required for Open Data Dataset"
                 logging.warning(log_msg)
@@ -172,18 +155,7 @@ class FileHandler:
         # Handle Cognos data
         # Remove url_cognos attribute from indicator table for this indicator.
         self.ds.remove_indicator_attribute(indic_id, 'url_cognos')
-        pc_url = PublicCognos(indicatorname)  # Get my PublicCognos URL Object
-        # Check if Cognos Public URL exists (disabled for now)
-        # if pc_url.check_if_cognos_report_exists():
-        logging.debug("Adding Cognos fields into DB for " + indicatorname)
-        name_cognos = indicatorname + " - cognos"
-        # get redirect_file and redirect_page
-        redirect_file, redirect_url = pc_url.redirect2cognos_page(indic_id, self.config)
-        self.ftp.load_file(redirect_file)
-        self.ds.insert_indicator(indic_id, 'name_cognos', name_cognos)
-        # self.ds.insert_indicator(indic_id, 'format_cognos', format_cognos)
-        self.ds.insert_indicator(indic_id, 'url_cognos', redirect_url)
-
+        self.verify_cognos(indic_id, indicatorname)
         # Now check if dataset exist already: is there an ID available in the indicators table for this indicator.
         values_lst = self.ds.get_indicator_value(indic_id, 'id')
         upd_pkg = "NOK"
@@ -201,6 +173,27 @@ class FileHandler:
         if upd_pkg == "OK":
             self.ckan.update_package(indic_id)
         return True
+
+    def verify_cognos(self, indic_id, indicatorname):
+        """
+        This procedure will check if Cognos URL is availability. If so, then procedure will create the Cognos
+        redirect page, load it on FTP repository and add URL to the database.
+        :param indic_id: Indicator ID
+        :param indicatorname: Name of the indicator
+        :return: True if Cognos URL has been loaded, False otherwise.
+        """
+        # Todo - Remove this procedure since it is in Evaluate_Cognos.py now.
+        logging.debug("Adding Cognos url into DB for " + indicatorname)
+        pc_url = PublicCognos(indicatorname)  # Get my PublicCognos URL Object
+        # Check if Cognos Public URL exists
+        if pc_url.check_if_cognos_report_exists():
+            # get redirect_file and redirect_page
+            redirect_file, redirect_url = pc_url.redirect2cognos_page(indic_id, self.config)
+            self.ftp.load_file(redirect_file)
+            self.ds.insert_indicator(indic_id, 'url_cognos', redirect_url)
+            return True
+        else:
+            return False
 
     def process_input_directory(self):
         """
@@ -233,7 +226,7 @@ class FileHandler:
         for file in filelist:
             log_msg = "Filename: %s"
             logging.debug(log_msg, file)
-            self.move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...
+            my_env.move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...
             if 'empty' in file:
                 # remove_file handles paths, empty in filename, ...
                 self.ftp.remove_file(file=file)
@@ -251,7 +244,7 @@ class FileHandler:
         for file in filelist:
             log_msg = "Filename: %s"
             logging.debug(log_msg, file)
-            self.move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...
+            my_env.move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...
             # Get indic_id before adding pathname to filename.
             indic_id = my_env.indic_from_file(file)
             filename = os.path.join(handledir, file)
@@ -269,3 +262,16 @@ class FileHandler:
                 # Dataset package does not yet exist or new valid resource file available and cijfersxml exist.
                 self.load_metadata(filename, indic_id)
         return
+
+    def add_cognos_resources(self):
+        """
+        This procedure will find all indicators for which Cognos report is available but resource is not published on
+        Open Dataset.
+        The Resource will be published on the Open Dataset.
+        :return:
+        """
+        logging.debug("In add_cognos_resources")
+        for indic_id in self.ds.get_indicator_cognos_urls():
+            if not self.ds.check_resource_published(indic_id, "cognos"):
+                logging.info("Cognos URL available, but not yet on Open Dataset for ID {0}".format(str(indic_id)))
+                self.ckan.update_package(indic_id)

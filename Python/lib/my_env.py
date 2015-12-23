@@ -117,6 +117,26 @@ def get_inifile(projectname, scriptname):
     return ini_config
 
 
+def move_file(file2move, sourcedir, targetdir):
+    """
+    This function will move a file from source dir to target dir.
+    It will check if the file exists on target dir. If so, remove file from target dir.
+    Then move file from source dir. Assumption: file must exist on sourcedir.
+    :param file2move: Filename of the file that needs to be moved
+    :param sourcedir: Source Directory where the file is now.
+    :param targetdir: Target Directory where the file needs to go to.
+    :return:
+    """
+    if file2move in [file for file in os.listdir(targetdir)]:
+        log_msg = "File %s exists in targetdir %s, removing from targetdir."
+        logging.debug(log_msg, file2move, targetdir)
+        os.remove(os.path.join(targetdir, file2move))
+    log_msg = "OK, File %s does not exists in targetdir %s now."
+    logging.debug(log_msg, file2move, targetdir)
+    os.rename(os.path.join(sourcedir, file2move), os.path.join(targetdir, file2move))
+    return
+
+
 def get_array(inp_obj):
     """
     The purpose of the method is to convert input string or input array into a string that can be used in SELECT ...

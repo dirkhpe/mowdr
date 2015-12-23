@@ -27,20 +27,20 @@ class Datatstore:
         :return: Object to handle datastore commands.
         """
         logging.debug("Initializing Datastore object")
-        self.dbConn, self.cur = self._connect2db(config)
+        self.config = config
+        self.dbConn, self.cur = self._connect2db()
         return
 
-    def _connect2db(self, config):
+    def _connect2db(self):
         """
         Internal method to create a database connection and a cursor. This method is called during object
         initialization.
         Note that sqlite connection object does not test the Database connection. If database does not exist, this
         method will not fail. This is expected behaviour, since it will be called to create databases as well.
-        :param config: Object of the project configuration *ini file.
         :return: Database handle and cursor for the database.
         """
         logging.debug("Creating Datastore object and cursor")
-        db = config['Main']['db']
+        db = self.config['Main']['db']
         try:
             db_conn = sqlite3.connect(db)
         except:
@@ -132,6 +132,78 @@ class Datatstore:
         res = self.cur.fetchall()
         return res
 
+    def get_indicator_ids(self):
+        """
+        This method will get all indicator IDs for indicators that are published for public on the Open Data Set. This
+        is done by checking all distinct indicatorIDs for which an url_cijfersxml entry exists in the indicators table.
+        :return: List of indicator IDs.
+        """
+        query = "SELECT distinct indicator_id FROM indicators WHERE attribute = 'url_cijfersxml'"
+        logging.debug("Query: %s", query)
+        self.cur.execute(query)
+        res = self.cur.fetchall()
+        indic_array = [indic_id[0] for indic_id in res]
+        return indic_array
+
+    def get_indicator_cognos_urls(self):
+        """
+        This method will get all indicator IDs for indicators that have a Cognos URL available (url_cognos exist).
+        :return: List of indicator IDs with Cognos URL.
+        """
+        query = "SELECT distinct indicator_id FROM indicators WHERE attribute = 'url_cognos'"
+        logging.debug("Query: %s", query)
+        self.cur.execute(query)
+        res = self.cur.fetchall()
+        indic_array = [indic_id[0] for indic_id in res]
+        return indic_array
+
+    def check_resource(self, indic_id, res_type):
+        """
+        This procedure will check if the resource URL is available. If URL is available then resource can be
+        created/updated.
+        This procedure will be called with resource type 'cijfersxml' to decide if package is public or private.
+        (This used to be a method of CKANConnector.py, but moved to Datastore.py since it will be called from
+        Evaluate_Cognos.py and this script wants to avoid loading of the ckanapi.)
+        Compare with check_resource_id, that will verify if a resource is published on Open Dataset.
+        :param indic_id: Indicator ID.
+        :param res_type: Resource Type for which URL is searched.
+        :return: True if the URL for the resource on Repository server is available in indicator table. False otherwise.
+        """
+        attribute = "url_" + res_type
+        res = self.get_indicator_value(indic_id, attribute)
+        log_msg = "Check for Resource %s, Result: %s"
+        logging.debug(log_msg, res_type, res)
+        if len(res) == 0:
+            return False
+        elif len(res) == 1:
+            return True
+        else:
+            log_msg = "Unexpected number of URLs found for Resource %s and indicator ID %s"
+            logging.error(log_msg, res_type, indic_id)
+            return False
+
+    def check_resource_published(self, indic_id, res_type):
+        """
+        This procedure will check if the resource is published on Open Dataset. A resource is published on Open Dataset
+        if the resource id (id_cognos, id_cijfersxml, ...) exists in the indicators table.
+        Compare with check_resource, that will verify if the resource exists.
+        :param indic_id: Indicator ID.
+        :param res_type: Resource Type for which ID is searched.
+        :return: True if the ID for the resource on Repository server is available in indicator table. False otherwise.
+        """
+        attribute = "id_" + res_type
+        res = self.get_indicator_value(indic_id, attribute)
+        log_msg = "Check for Resource %s, Result: %s"
+        logging.debug(log_msg, res_type, res)
+        if len(res) == 0:
+            return False
+        elif len(res) == 1:
+            return True
+        else:
+            log_msg = "Unexpected number of URLs found for Resource %s and indicator ID %s"
+            logging.error(log_msg, res_type, indic_id)
+            return False
+
     def get_attribs_source(self, source):
         """
         Tbis method collects all attributes for a specific source.
@@ -186,7 +258,8 @@ class Datatstore:
         :param action:
         :return:
         """
-        logging.debug("Remove attribute, then add to attribute_action table attribute: %s, od_field: %s", attribute, od_field)
+        logging.debug("Remove attribute, then add to attribute_action table attribute: %s, od_field: %s", attribute,
+                      od_field)
         self.remove_attribute(attribute)
         now = strftime("%H:%M:%S %d-%m-%Y")
         query = "INSERT INTO attribute_action (attribute, od_field, source, target, action, created)" \

@@ -237,6 +237,7 @@ class CKANConnector:
         :param res_type: Resource Type for which URL is searched.
         :return: True if the URL for the resource on Repository server is available in indicator table. False otherwise.
         """
+        # TODO: This method is now available on Datastore.py. Remove from class CKANConnector.py.
         attribute = "url_" + res_type
         res = self.ds.get_indicator_value(indic_id, attribute)
         log_msg = "Check for Resource %s, Result: %s"
@@ -309,7 +310,7 @@ class CKANConnector:
         """
         This procedure will create a resource.
         :param indic_id: indicator ID.
-        :param params: Array of attribute / values or dictionaries to load.
+        :param params: Array of attribute / values or dictionaries to load in the resource.
         :return:
         """
         logging.debug("Trying to create resource, parameters: %s (type: %s)", params, res_type)

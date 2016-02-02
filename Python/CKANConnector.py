@@ -53,6 +53,7 @@ class CKANConnector:
         else:
             log_msg = "Multiple titles (?) defined for Indicator ID %s"
             logging.error(log_msg, len(title_list), indic_id)
+            title = title_list[0][0]
             # return False
         # OK, 1 title found. Convert it to a name
         name = my_env.get_name_from_indic(self.config, indic_id)
@@ -226,7 +227,6 @@ class CKANConnector:
             logging.warning(msg)
             return True
 
-
     def check_resource(self, indic_id, res_type):
         """
         This procedure will check if the resource URL is available.
@@ -311,6 +311,7 @@ class CKANConnector:
         This procedure will create a resource.
         :param indic_id: indicator ID.
         :param params: Array of attribute / values or dictionaries to load in the resource.
+        :param res_type: Resource Type to handle
         :return:
         """
         logging.debug("Trying to create resource, parameters: %s (type: %s)", params, res_type)

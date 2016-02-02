@@ -19,7 +19,6 @@ from CKANConnector import CKANConnector
 from Datastore import Datatstore
 from Ftp_Handler import Ftp_Handler
 from lib import my_env
-from PublicCognos import PublicCognos
 
 
 class FileHandler:
@@ -84,6 +83,7 @@ class FileHandler:
         Pre-requisite for this call is that dataset exists already.
         Cognos Add / Remove needs to be added here.
         :param metafile: pointer to the file with metadata.
+        :param indic_id: Indicator ID
         :return:
         """
         # TODO: Add URL for 'bijsluiter' to database
@@ -152,10 +152,6 @@ class FileHandler:
         for add_attrib in additional_attribs:
             self.ds.insert_indicator(indic_id, add_attrib, self.config['OpenData'][add_attrib])
 
-        # Handle Cognos data
-        # Remove url_cognos attribute from indicator table for this indicator.
-        self.ds.remove_indicator_attribute(indic_id, 'url_cognos')
-        self.verify_cognos(indic_id, indicatorname)
         # Now check if dataset exist already: is there an ID available in the indicators table for this indicator.
         values_lst = self.ds.get_indicator_value(indic_id, 'id')
         upd_pkg = "NOK"
@@ -173,27 +169,6 @@ class FileHandler:
         if upd_pkg == "OK":
             self.ckan.update_package(indic_id)
         return True
-
-    def verify_cognos(self, indic_id, indicatorname):
-        """
-        This procedure will check if Cognos URL is availability. If so, then procedure will create the Cognos
-        redirect page, load it on FTP repository and add URL to the database.
-        :param indic_id: Indicator ID
-        :param indicatorname: Name of the indicator
-        :return: True if Cognos URL has been loaded, False otherwise.
-        """
-        # Todo - Remove this procedure since it is in Evaluate_Cognos.py now.
-        logging.debug("Adding Cognos url into DB for " + indicatorname)
-        pc_url = PublicCognos(indicatorname)  # Get my PublicCognos URL Object
-        # Check if Cognos Public URL exists
-        if pc_url.check_if_cognos_report_exists():
-            # get redirect_file and redirect_page
-            redirect_file, redirect_url = pc_url.redirect2cognos_page(indic_id, self.config)
-            self.ftp.load_file(redirect_file)
-            self.ds.insert_indicator(indic_id, 'url_cognos', redirect_url)
-            return True
-        else:
-            return False
 
     def process_input_directory(self):
         """

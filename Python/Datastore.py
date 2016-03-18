@@ -18,7 +18,7 @@ from lib import my_env
 from time import strftime
 
 
-class Datatstore:
+class Datastore:
 
     def __init__(self, config):
         """
@@ -104,7 +104,8 @@ class Datatstore:
 
     def get_indicator_value(self, indicator_id, attribute):
         """
-        This method will get the value for attribute name and indicator ID.
+        This method will get the value for attribute name and indicator ID. Check with method 'get_indicator_val',
+        which will return result string, or 'niet gevonden' in case that result is not found.
         :param indicator_id:
         :param attribute: Name for which value is required.
         :return: Array of result lists. Each result list has one element, the required value. Empty list is returned if
@@ -116,6 +117,21 @@ class Datatstore:
         self.cur.execute(query, (indicator_id, attribute))
         values_lst = self.cur.fetchall()
         return values_lst
+
+    def get_indicator_val(self, indicator_id, attribute):
+        """
+        This method will get the value for attribute name and indicator ID. Check with method 'get_indicator_value',
+        which will return result array.
+        :param indicator_id:
+        :param attribute: Name for which value is required.
+        :return: result string or 'niet gevonden'.
+        """
+        values_lst = self.get_indicator_value(indicator_id, attribute)
+        if values_lst:
+            res_str = values_lst[0][0]
+        else:
+            res_str = 'niet gevonden'
+        return res_str
 
     def get_indicator_attrib_values(self, indicator_id, attribs):
         """

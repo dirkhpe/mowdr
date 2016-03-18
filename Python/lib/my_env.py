@@ -48,7 +48,7 @@ def init_logfile(config, modulename):
     logfile = logdir + "/" + modulename + "_" + computername + \
         "_" + currdate + ".log"
     logging.basicConfig(format='%(asctime)s|%(module)s|%(funcName)s|%(lineno)d|%(levelname)s|%(message)s',
-                        datefmt='%d/%m/%Y|%H:%M:%S', filename=logfile, level=logging.DEBUG)
+                        datefmt='%d/%m/%Y|%H:%M:%S', filename=logfile, level=logging.INFO)
     return logfile
 
 
@@ -73,7 +73,7 @@ def init_loghandler(config, modulename):
     logger.setLevel(logging.DEBUG)
     # Create Console Handler
     ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
+    ch.setLevel(logging.INFO)
     # Create Rotating File Handler
     # Get logfiles of 1M
     maxbytes = 1024 * 1024
@@ -272,3 +272,13 @@ def get_name_from_indic(config, indic_id):
     name = name[0:100]
     name = re.sub('[^0-9a-zA-Z_\-]', '_', name).lower()
     return name
+
+
+def get_dataset_id(indic_id):
+    """
+    This method will calculate the dataset indicator (indXXX) for usage in dcat_ap profiles.
+    :param indic_id:
+    :return: dataset_id.
+    """
+    dataset_id = '_ind' + str(indic_id).zfill(3)
+    return dataset_id

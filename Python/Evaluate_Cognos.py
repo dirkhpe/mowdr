@@ -12,7 +12,7 @@ worked fine, only combination seems to fail.
 PROBLEM SOLVED - The error occurs when the Proxy server is set. Check on Public Cognos needs to be done on internal
 network. So execute this script before setting the proxy server.
 """
-from Datastore import Datatstore
+from Datastore import Datastore
 from Ftp_Handler import Ftp_Handler
 from PublicCognos import PublicCognos
 from lib import my_env
@@ -23,7 +23,7 @@ modulename = my_env.get_modulename(__file__)
 config = my_env.get_inifile(projectname, __file__)
 my_log = my_env.init_loghandler(config, modulename)
 my_log.info('Start Application')
-ds = Datatstore(config)
+ds = Datastore(config)
 ftp = Ftp_Handler(config)
 for indic_id in ds.get_indicator_ids():
     if not ds.check_resource(indic_id, "cognos"):

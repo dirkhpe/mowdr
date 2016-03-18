@@ -1,0 +1,6 @@
+{
+	"@context": "http://www.w3.org/ns/csvw',
+	"url": "cijferscsv_003.csv",
+	"tableSchema": {
+		"columns": [{
+}

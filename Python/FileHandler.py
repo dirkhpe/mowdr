@@ -16,7 +16,7 @@ import re
 import sys
 import xml.etree.ElementTree as Et
 from CKANConnector import CKANConnector
-from Datastore import Datatstore
+from Datastore import Datastore
 from Ftp_Handler import Ftp_Handler
 from lib import my_env
 
@@ -24,7 +24,7 @@ from lib import my_env
 class FileHandler:
     def __init__(self, config):
         self.config = config
-        self.ds = Datatstore(config)
+        self.ds = Datastore(config)
         self.ckan = CKANConnector(self.config, self.ds)
         self.ftp = Ftp_Handler(self.config)
 

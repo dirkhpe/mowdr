@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dcat="http://www.w3.org/ns/dcat#" 
+         xmlns:dct="http://purl.org/dc/terms/" 
+         xmlns:foaf="http://xmlns.com/foaf/0.1/" 
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns:sense="http://rdfdata.eionet.europa.eu/sense/ontology/" 
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:noNamespaceSchemaLocation="http://dd.eionet.europa.eu/schemas/Sense3-webtool.workingCopy/rdf.xsd">
+    <dcat:Catalog rdf:about="#item-ecceb4d2-2bf8-404f-a2e6-d785c75e54da">
+        <dct:title>Example title</dct:title>
+        <dct:description>Example catalogue description</dct:description>
+        <dct:publisher rdf:resource="#item-68039ba5-01ac-418e-9eba-9f65079b7c75"></dct:publisher>
+        <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Catalog"></rdf:type>
+        <dcat:dataset rdf:resource="#item-d277fa36-beb2-48fc-afdc-e9d887d8329f"></dcat:dataset>
+        <dcat:dataset rdf:resource="#item-0ce19e3c-80e5-4e77-a369-ff1a93e37281"></dcat:dataset>
+        <dcat:dataset rdf:resource="#item-1fa2d812-2985-4c9b-a20a-f259239fea9a"></dcat:dataset>
+    </dcat:Catalog>
+    <foaf:Organization rdf:about="#item-68039ba5-01ac-418e-9eba-9f65079b7c75">
+        <foaf:name>Example publisher EPA</foaf:name>
+        <foaf:homepage rdf:resource="http://www.exampleepa.org"></foaf:homepage>
+    </foaf:Organization>
+    <dcat:Dataset rdf:about="#item-d277fa36-beb2-48fc-afdc-e9d887d8329f">
+        <dct:title>Example dataset #1</dct:title>
+        <dct:description>Example description</dct:description>
+        <dcat:theme rdf:resource="http://eurovoc.europa.eu/123456789"></dcat:theme>
+        <dct:issued>2014-01-01</dct:issued>
+        <dct:spatial rdf:resource="http://publications.europa.eu/mdr/authority/country/DNK"></dct:spatial>
+        <dct:temporal>2014</dct:temporal>
+        <dct:source rdf:resource="#item-0ce19e3c-80e5-4e77-a369-ff1a93e37281"></dct:source>
+        <dcat:distribution rdf:resource="#item-19832665-75c8-4706-abcf-2f5f2009446a"></dcat:distribution>
+        <dcat:distribution rdf:resource="#item-e53d8eac-fca5-4207-9c23-f9f7365cef8a"></dcat:distribution>
+    </dcat:Dataset>
+    <dcat:Dataset rdf:about="#item-0ce19e3c-80e5-4e77-a369-ff1a93e37281">
+        <dct:title>Example dataset #2</dct:title>
+        <dct:description>Example description</dct:description>
+        <dcat:theme rdf:resource="http://eurovoc.europa.eu/123456789"></dcat:theme>
+        <dct:issued>2013-01-01</dct:issued>
+        <dct:spatial rdf:resource="http://publications.europa.eu/mdr/authority/country/SWE"></dct:spatial>
+        <dct:temporal>2013</dct:temporal>
+        <dct:temporal>2014</dct:temporal>
+        <dct:source rdf:resource=""></dct:source>
+        <dcat:distribution rdf:resource="#item-e53d8eac-fca5-4207-9c23-f9f7365cef8a"></dcat:distribution>
+    </dcat:Dataset>
+    <dcat:Distribution rdf:about="#item-19832665-75c8-4706-abcf-2f5f2009446a">
+        <dct:description>Exampel distribution for dataset #1 - csv</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/CSV"></dct:format>
+        <dct:license rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/"></dct:license>
+        <dcat:accessURL rdf:resource="http://www.exampleepa.org/files/1.csv"></dcat:accessURL>
+    </dcat:Distribution>
+    <dcat:Distribution rdf:about="#item-5d2fbad0-ff70-4c1d-999d-21327fbaa95f">
+        <dct:description>Exampel distribution for dataset #1 - csv</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/XLS"></dct:format>
+        <dct:license rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/"></dct:license>
+        <dcat:accessURL rdf:resource="http://www.exampleepa.org/files/1.xls"></dcat:accessURL>
+    </dcat:Distribution>
+    <dcat:Distribution rdf:about="#item-e53d8eac-fca5-4207-9c23-f9f7365cef8a">
+        <dct:description>Exampel distribution for dataset #2 - pdf</dct:description>
+        <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/PDF"></dct:format>
+        <dct:license rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/"></dct:license>
+        <dcat:accessURL rdf:resource="http://www.exampleepa.org/files/2.pdf"></dcat:accessURL>
+    </dcat:Distribution>
+    <sense:IndicatorAssessment rdf:about="#item-1fa2d812-2985-4c9b-a20a-f259239fea9a">
+        <dct:title>Example indicator assessment #1</dct:title>
+        <dcat:theme rdf:resource="http://eurovoc.europa.eu/123456789"></dcat:theme>
+        <dct:issued>2014-01-01</dct:issued>
+        <dct:spatial rdf:resource="http://publications.europa.eu/mdr/authority/country/DNK"></dct:spatial>
+        <dct:temporal>2014</dct:temporal>
+        <dct:conformsTo rdf:resource="http://www.exampleepa.org/indicatorspecifications/1.htm"></dct:conformsTo>
+        <foaf:isPrimaryTopicOf rdf:resource="http://www.exampleepa.org/assessments/1.htm"></foaf:isPrimaryTopicOf>
+        <skos:closeMatch rdf:resource="http://www.otherorganisation.org/indicatorspecifications/a/index.htm"></skos:closeMatch>
+        <skos:closeMatch rdf:resource="http://www.otherorganisation.org/indicatorspecifications/a2/index.htm"></skos:closeMatch>
+        <skos:relatedMatch rdf:resource=""></skos:relatedMatch>
+        <dct:source rdf:resource="#item-d277fa36-beb2-48fc-afdc-e9d887d8329f"></dct:source>
+    </sense:IndicatorAssessment>
+</rdf:RDF>

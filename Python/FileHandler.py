@@ -107,7 +107,7 @@ class FileHandler:
         # Then remove information from Dataroom for Dataset for this indicator ID.
         for attrib_name in attrib_names:
             self.ds.remove_indicator_attribute(indic_id, attrib_name)
-        indicatorname = ""
+        # indicatorname = ""
         # Add variable data from indicator metadata xml to indicator table.
         for child in root:
             # First get child text
@@ -217,6 +217,9 @@ class FileHandler:
         # Now handle meta-data
         filelist = [file for file in os.listdir(scandir) if 'metadata' in file]
         for file in filelist:
+            # At least one update, so set flag for dcat_ap create. If any change then new metafile is required,
+            # so no need to have create in block above.
+            open(os.path.join(scandir, "dcat_ap_create"),'w').close()
             log_msg = "Filename: %s"
             logging.debug(log_msg, file)
             my_env.move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...

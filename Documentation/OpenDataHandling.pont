@@ -1,22 +1,12 @@
-; Mon Aug 10 17:51:16 CEST 2015
+; Wed Jun 01 14:44:17 CEST 2016
 ; 
 ;+ (version "3.5")
-;+ (build "Build 663")
+;+ (build "Build 660")
 
 
 (defclass %3ACLIPS_TOP_LEVEL_SLOT_CLASS "Fake class to save top-level slot information"
 	(is-a USER)
 	(role abstract)
-	(multislot calls_false
-;+		(comment "Function that this function will call in case of FALSE test.")
-		(type INSTANCE)
-;+		(allowed-classes Function)
-		(create-accessor read-write))
-	(multislot calls
-;+		(comment "Function that this function will call unconditionally.")
-		(type INSTANCE)
-;+		(allowed-classes Function)
-		(create-accessor read-write))
 	(multislot calls_true
 ;+		(comment "Function that is called by this function on TRUE condition.")
 		(type INSTANCE)
@@ -27,32 +17,47 @@
 		(type STRING)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
-	(multislot returns_to
-;+		(comment "If a function is called from within another function, then return is used instead of 'call'.")
-		(type INSTANCE)
-;+		(allowed-classes Function)
-		(create-accessor read-write))
 	(single-slot description
 ;+		(comment "Description of the function.")
 		(type STRING)
 ;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(multislot calls_false
+;+		(comment "Function that this function will call in case of FALSE test.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
+	(multislot calls
+;+		(comment "Function that this function will call unconditionally.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
+	(multislot returns_to
+;+		(comment "If a function is called from within another function, then return is used instead of 'call'.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
 		(create-accessor read-write)))
 
 (defclass Function "Function description with calls."
 	(is-a USER)
 	(role concrete)
-	(multislot calls_false
-;+		(comment "Function that this function will call in case of FALSE test.")
-		(type INSTANCE)
-;+		(allowed-classes Function)
-		(create-accessor read-write))
 	(multislot returns_to
 ;+		(comment "If a function is called from within another function, then return is used instead of 'call'.")
 		(type INSTANCE)
 ;+		(allowed-classes Function)
 		(create-accessor read-write))
-	(multislot calls
-;+		(comment "Function that this function will call unconditionally.")
+	(multislot calls_true
+;+		(comment "Function that is called by this function on TRUE condition.")
+		(type INSTANCE)
+;+		(allowed-classes Function)
+		(create-accessor read-write))
+	(single-slot description
+;+		(comment "Description of the function.")
+		(type STRING)
+;+		(cardinality 0 1)
+		(create-accessor read-write))
+	(multislot calls_false
+;+		(comment "Function that this function will call in case of FALSE test.")
 		(type INSTANCE)
 ;+		(allowed-classes Function)
 		(create-accessor read-write))
@@ -61,13 +66,8 @@
 		(type STRING)
 ;+		(cardinality 1 1)
 		(create-accessor read-write))
-	(single-slot description
-;+		(comment "Description of the function.")
-		(type STRING)
-;+		(cardinality 0 1)
-		(create-accessor read-write))
-	(multislot calls_true
-;+		(comment "Function that is called by this function on TRUE condition.")
+	(multislot calls
+;+		(comment "Function that this function will call unconditionally.")
 		(type INSTANCE)
 ;+		(allowed-classes Function)
 		(create-accessor read-write)))

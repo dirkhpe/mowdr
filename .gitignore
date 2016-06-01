@@ -8,6 +8,7 @@
 *.gif
 *html*
 *.mwb.bak
+*.pyc
 Python/properties/*
 Python/__pycache__/*
 Python/.idea

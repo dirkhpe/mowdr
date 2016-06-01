@@ -1,3 +1,5 @@
+#!/opt/csw/bin/python3
+
 """
 This script will create a dcat_ap catalog file for the MOW Dataroom Open Data.
 """

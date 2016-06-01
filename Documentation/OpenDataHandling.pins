@@ -1,7 +1,7 @@
-; Mon Aug 10 17:51:16 CEST 2015
+; Wed Jun 01 14:44:17 CEST 2016
 ; 
 ;+ (version "3.5")
-;+ (build "Build 663")
+;+ (build "Build 660")
 
 ([KB_078077_Class10] of  Function
 
@@ -17,7 +17,7 @@
 
 ([KB_078077_Class6] of  Function
 
-	(calls [KB_078077_Class10])
+	(calls [KB_078077_Class9])
 	(calls_true [KB_078077_Class7])
 	(description "Read the metadata file and store the information in table indicators.\nIf this is information related to new indicator then call function to create new Open Data dataset.\nInput: FileName to be processed (indicator_XX.xml)\nOutput: sqlite3 table indicators is up-to-date.\nIn case this is indicator_xx.empty.xml, then remember ID for the dataset and set dataset to PRIVATE. (DELETED would be better, but not sure if I can 'undelete' a deleted dataset if required.")
 	(name "read_metadata"))
@@ -45,5 +45,5 @@
 	(calls
 		[KB_078077_Class11]
 		[KB_078077_Class6])
-	(description "Start of Processng!\nScan for new files. For each indicator there are always 3 files sent, either with (_xx.xml) or without (_xx.empty.xml) data.\nindicator_xx.xml / indicator_xx.empty.xml (Not sure how APEX will find out if an indicator is removed, but this is a APEX issue...)\ncijfers_xx.xml / cijfers_xx.empty.xml\ncommentaar_xx.xml / commentaar_xx.empty.xml\nFirst all 'commentaar' files are handled, then all 'cijfers files anf finally the 'indicator' files.")
+	(description "Start of Processing!\nScan for new files. For each indicator there are always 3 files sent, either with (_xx.xml) or without (_xx.empty.xml) data.\nindicator_xx.xml / indicator_xx.empty.xml (Not sure how APEX will find out if an indicator is removed, but this is a APEX issue...)\ncijfers_xx.xml / cijfers_xx.empty.xml\ncommentaar_xx.xml / commentaar_xx.empty.xml\nFirst all 'commentaar' files are handled, then all 'cijfers files anf finally the 'indicator' files.")
 	(name "start_process"))

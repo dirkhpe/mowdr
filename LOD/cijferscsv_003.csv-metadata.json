@@ -1,6 +1,51 @@
 {
 	"@context": "http://www.w3.org/ns/csvw',
 	"url": "cijferscsv_003.csv",
+	"dialect": {
+		"delimiter": ";"
+	}
+	"dcterms:title": {
+		"@value": "filezwaarte op het hoofdwegennet",
+		"@lang": "nl"
+	}
+	"dcterms:description": {
+		"@value": "product van filelengte en fileduur, cumulatief over de beschouwde periode, cumulatief over wegvakken van het hoofdwegennet",
+		"@lang": "nl"
+	}
+	"dcterms:creator": {
+		"foaf:name": "Departement Mobiliteit en Openbare Werken",
+		"dcterms:type": "schema:GovernmentOrganization"
+	}
 	"tableSchema": {
 		"columns": [{
+			"titles": "kilometer-uur",
+			"dcterms:description": "kilometer-uur",
+			"datatype": "number",
+			"required": true
+		},{
+			"titles": "jaar",
+			"datatype": "gYear",
+			"required": true
+		},{
+			"titles": "maand",
+			"datatype": "gMonth",
+			"required": true
+		},{
+			"titles": "dagdeel",
+			"datatype": {
+				"base": "string",
+				"format": "am|pm",
+				"dcterms:description": {
+					"@value": "Waardes worden opgesplitst in voormiddag (am) en namiddag (pm)",
+					"@lang": "nl"
+				}
+			},
+			"required": true
+		},{
+			"titles": "gemeente",
+			"datatype": "string",
+			"required": true
+		}],
+		"primaryKey": ["jaar", "maand", "dagdeel", "gemeente"]
+	}
 }

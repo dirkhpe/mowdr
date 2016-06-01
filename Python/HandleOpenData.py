@@ -31,8 +31,12 @@ else:
     os.environ['http_proxy'] = http_proxy
     my_log.info("Set proxy to %s", http_proxy)
 fh.process_input_directory()
-# Load dcat_ap profile for Open Data
-scriptname = 'Dcat_ap_Create.py'
-cmdline = scriptdir + scriptname
-subprocess.call(cmdline)
+# Load dcat_ap profile for Open Data if flag is set to create dcat_ap
+scandir = config['Main']['scandir']
+dcat_ap_flag = os.path.join(scandir, "dcat_ap_create")
+if os.path.isfile(dcat_ap_flag):
+    os.remove(dcat_ap_flag)
+    scriptname = 'Dcat_ap_Create.py'
+    cmdline = scriptdir + scriptname
+    subprocess.call(cmdline)
 my_log.info("End Application")

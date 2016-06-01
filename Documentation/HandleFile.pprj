@@ -1,7 +1,7 @@
-; Mon Aug 17 16:45:57 CEST 2015
+; Wed Jun 01 14:43:00 CEST 2016
 ; 
 ;+ (version "3.5")
-;+ (build "Build 663")
+;+ (build "Build 660")
 
 ([ANNOTATED_INSTANCE_WIDGET] of  Widget
 
@@ -20,10 +20,10 @@
 ([BROWSER_SLOT_NAMES] of  Property_List
 
 	(properties
-		[HandleFile_ProjectKB_Class40]
-		[HandleFile_ProjectKB_Class41]
-		[HandleFile_ProjectKB_Class42]
-		[HandleFile_ProjectKB_Class43]))
+		[HandleFile_ProjectKB_Class4]
+		[HandleFile_ProjectKB_Class5]
+		[HandleFile_ProjectKB_Class6]
+		[HandleFile_ProjectKB_Class7]))
 
 ([CLSES_TAB] of  Widget
 
@@ -43,33 +43,12 @@
 	(is_hidden FALSE)
 	(widget_class_name "edu.stanford.smi.protege.widget.FormsTab"))
 
-([HandleFile_ProjectKB_Class11] of  Widget
+([HandleFile_ProjectKB_Class10] of  Map_Entry
 
-	(height 60)
-	(is_hidden FALSE)
-	(name "runs_after")
-	(property_list [HandleFile_ProjectKB_Class12])
-	(widget_class_name "edu.stanford.smi.protege.widget.TextFieldWidget")
-	(width 200)
-	(x 0)
-	(y 430))
-
-([HandleFile_ProjectKB_Class12] of  Property_List
-)
-
-([HandleFile_ProjectKB_Class13] of  Widget
-
-	(height 120)
-	(is_hidden FALSE)
-	(name "runs_after")
-	(property_list [HandleFile_ProjectKB_Class14])
-	(widget_class_name "edu.stanford.smi.protege.widget.StringListWidget")
-	(width 200)
-	(x 0)
-	(y 430))
-
-([HandleFile_ProjectKB_Class14] of  Property_List
-)
+	(key "change_tracking_active")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
 
 ([HandleFile_ProjectKB_Class15] of  Widget
 
@@ -98,43 +77,36 @@
 	(boolean_value FALSE)
 	(name "ButtonDisplayed-Delete Instance"))
 
-([HandleFile_ProjectKB_Class40] of  String
+([HandleFile_ProjectKB_Class4] of  String
 
 	(name ":INSTANCE-ANNOTATION")
 	(string_value "%3AANNOTATION-TEXT"))
 
-([HandleFile_ProjectKB_Class41] of  String
-
-	(name ":META-CLASS")
-	(string_value "%3ANAME"))
-
-([HandleFile_ProjectKB_Class42] of  String
+([HandleFile_ProjectKB_Class5] of  String
 
 	(name ":PAL-CONSTRAINT")
 	(string_value "%3APAL-NAME"))
 
-([HandleFile_ProjectKB_Class43] of  String
+([HandleFile_ProjectKB_Class6] of  String
+
+	(name ":META-CLASS")
+	(string_value "%3ANAME"))
+
+([HandleFile_ProjectKB_Class7] of  String
 
 	(name "Function")
 	(string_value "name"))
 
-([HandleFile_ProjectKB_Class44] of  Map_Entry
-
-	(key "add_name_on_instance_form")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
-
-([HandleFile_ProjectKB_Class45] of  Map_Entry
-
-	(key "change_tracking_active")
-	(key_class "java.lang.String")
-	(value "false")
-	(value_class "java.lang.String"))
-
-([HandleFile_ProjectKB_Class46] of  Map_Entry
+([HandleFile_ProjectKB_Class8] of  Map_Entry
 
 	(key "suppress_instance_counting")
+	(key_class "java.lang.String")
+	(value "false")
+	(value_class "java.lang.String"))
+
+([HandleFile_ProjectKB_Class9] of  Map_Entry
+
+	(key "add_name_on_instance_form")
 	(key_class "java.lang.String")
 	(value "false")
 	(value_class "java.lang.String"))
@@ -171,9 +143,9 @@
 ([KB_143553_Class1] of  Map
 
 	(entries
-		[HandleFile_ProjectKB_Class44]
-		[HandleFile_ProjectKB_Class45]
-		[HandleFile_ProjectKB_Class46]))
+		[HandleFile_ProjectKB_Class8]
+		[HandleFile_ProjectKB_Class9]
+		[HandleFile_ProjectKB_Class10]))
 
 ([KB_143553_Class100] of  Property_List
 
@@ -318,7 +290,7 @@
 	(property_list [KB_143553_Class100])
 	(widget_class_name "edu.stanford.smi.protege.widget.FormWidget"))
 
-([KB_266308_Class3] of  Map
+([KB_547207_Class3] of  Map
 )
 
 ([LAYOUT_PROPERTIES] of  Property_List
@@ -850,10 +822,10 @@
 	(browser_slot_names [BROWSER_SLOT_NAMES])
 	(customized_instance_widgets
 		[INSTANCE_ANNOTATION_FORM_WIDGET]
-		[STANDARD_FACET_FORM_WIDGET]
-		[STANDARD_SLOT_FORM_WIDGET]
-		[PAL_FORM_WIDGET]
 		[STANDARD_CLASS_FORM_WIDGET]
+		[STANDARD_SLOT_FORM_WIDGET]
+		[STANDARD_FACET_FORM_WIDGET]
+		[PAL_FORM_WIDGET]
 		[KB_143553_Class99])
 	(default_cls_metaclass ":STANDARD-CLASS")
 	(default_facet_metaclass ":STANDARD-FACET")

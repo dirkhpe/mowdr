@@ -146,7 +146,7 @@ class FileHandler:
                               'description_cijferstable', 'format_cijferstable', 'tdt_cijferstable',
                               'description_commentaar', 'format_commentaar', 'tdt_commentaar',
                               'description_cognos', 'format_cognos', 'tdt_cognos',
-                              'bijsluiter',
+                              'bijsluiter', 'dcat_ap_profile', 'license_id',
                               'author_name', 'author_email', 'maintainer_name', 'maintainer_email',
                               'language']
         for add_attrib in additional_attribs:

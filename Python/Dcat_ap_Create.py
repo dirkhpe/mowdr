@@ -73,6 +73,18 @@ def get_language(el):
     return lang_res
 
 
+def get_homepage(el):
+    """
+    This method will add the homepage resource to the specified element
+    :param el: element to which the language resource need to be added
+    :return lang_res: Language Resource object
+    """
+    home_uri = config['dcat_ap']['homepage_uri']
+    home_dict = {'rdf:resource': home_uri}
+    home_res = SubElement(el, 'foaf:homepage', **home_dict)
+    return home_res
+
+
 # Get xmlns Name Space variables from the config file.
 xmlns_config = config['xmlns']
 xmlns_hash = {}
@@ -95,6 +107,7 @@ catalog_modified = SubElement(catalog_obj, 'dcterms:modified', attrib={'dcterms:
 catalog_lic = get_license(catalog_obj)
 catalog_publ = get_publisher(catalog_obj)
 catalog_lang = get_language(catalog_obj)
+catalog_home = get_homepage(catalog_obj)
 
 # Create Publisher object in the profile
 publ_obj = SubElement(root, 'foaf:Agent', attrib={'rdf:about': publ_uri})
@@ -133,7 +146,7 @@ for indic_id in ds.get_indicator_ids():
     dataset_theme_datathank = SubElement(dataset_obj, 'dcat:theme',
                                          attrib={'rdf:resource': config['dcat_ap']['datathank_theme']})
     dataset_theme_fedgov = SubElement(dataset_obj, 'dcat:theme',
-                                         attrib={'rdf:resource': config['dcat_ap']['fedgov_theme']})
+                                      attrib={'rdf:resource': config['dcat_ap']['fedgov_theme']})
 
     # Now handle all distributions
     for distr in my_env.get_resource_types():

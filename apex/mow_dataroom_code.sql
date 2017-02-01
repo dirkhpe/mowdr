@@ -12,7 +12,7 @@ prompt  APPLICATION 193 - MOW DR 1.2 (Geo Indicatoren)
 -- Application Export:
 --   Application:     193
 --   Name:            MOW DR 1.2 (Geo Indicatoren)
---   Date and Time:   09:40 Wednesday December 16, 2015
+--   Date and Time:   10:21 Wednesday February 1, 2017
 --   Exported By:     VERMEYDI
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -159,7 +159,7 @@ wwv_flow_api.create_flow(
   p_alias => nvl(wwv_flow_application_install.get_application_alias,'MOW_DATAROOM213214'),
   p_page_view_logging => 'YES',
   p_page_protection_enabled_y_n=> 'Y',
-  p_checksum_salt_last_reset => '20151216094020',
+  p_checksum_salt_last_reset => '20170201102150',
   p_max_session_length_sec=> null,
   p_compatibility_mode=> '4.2',
   p_html_escaping_mode=> 'E',
@@ -197,7 +197,7 @@ wwv_flow_api.create_flow(
   p_include_legacy_javascript=> 'Y',
   p_default_error_display_loc=> 'INLINE_WITH_FIELD_AND_NOTIFICATION',
   p_last_updated_by => 'VERMEYDI',
-  p_last_upd_yyyymmddhh24miss=> '20151216094020',
+  p_last_upd_yyyymmddhh24miss=> '20170201102150',
   p_ui_type_name => null,
   p_required_roles=> wwv_flow_utilities.string_to_table2(''));
  
@@ -1790,6 +1790,9 @@ null;
 end;
 /
 
+--application/comments
+prompt  ...comments: requires application express 2.2 or higher
+--
  
 --application/pages/page_00002
 prompt  ...PAGE 2: Cijferrecords Toevoegen / Aanpassen
@@ -3292,7 +3295,7 @@ wwv_flow_api.create_report_columns (
   p_form_element_id=> null,
   p_column_alias=> 'GERESERVEERD_1',
   p_column_display_sequence=> 38,
-  p_column_heading=> 'Gereserveerd 1',
+  p_column_heading=> 'Type probleem aan infrastructuur',
   p_use_as_row_header=> 'N',
   p_column_alignment=>'LEFT',
   p_heading_alignment=>'LEFT',
@@ -15315,7 +15318,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'VERMEYDI'
- ,p_last_upd_yyyymmddhh24miss => '20150330124901'
+ ,p_last_upd_yyyymmddhh24miss => '20170123113548'
   );
 null;
  
@@ -15441,7 +15444,7 @@ wwv_flow_api.create_report_region (
   p_query_break_cols=> '0',
   p_query_no_data_found=> 'No data found.',
   p_query_num_rows_type=> 'ROW_RANGES_IN_SELECT_LIST',
-  p_query_row_count_max=> '500',
+  p_query_row_count_max=> '50000',
   p_pagination_display_position=> 'BOTTOM_RIGHT',
   p_break_type_flag=> 'DEFAULT_BREAK_FORMATTING',
   p_csv_output=> 'Y',
@@ -16533,7 +16536,7 @@ wwv_flow_api.create_report_columns (
   p_form_element_id=> null,
   p_column_alias=> 'GERESERVEERD_1',
   p_column_display_sequence=> 30,
-  p_column_heading=> 'Gereserveerd 1',
+  p_column_heading=> 'Type probleem aan infrastructuur',
   p_use_as_row_header=> 'N',
   p_column_alignment=>'RIGHT',
   p_heading_alignment=>'CENTER',
@@ -16549,7 +16552,6 @@ wwv_flow_api.create_report_columns (
   p_pk_col_source=> s,
   p_lov_display_extra=> 'YES',
   p_include_in_export=> 'Y',
-  p_ref_schema=> 'MOW_DATAROOM',
   p_ref_table_name=> 'INDICATORLIJN',
   p_ref_column_name=> 'GERESERVEERD_1',
   p_column_comment=>'');
@@ -30951,7 +30953,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'VERMEYDI'
- ,p_last_upd_yyyymmddhh24miss => '20151116164958'
+ ,p_last_upd_yyyymmddhh24miss => '20170201100308'
   );
 null;
  
@@ -31285,10 +31287,8 @@ wwv_flow_api.create_page_item(
   p_source_type=> 'DB_COLUMN',
   p_display_as=> 'NATIVE_SELECT_LIST',
   p_lov=> 'STATIC2:(Nog) niet vrijgeven;N,Publiceren;J',
-  p_lov_display_null=> 'YES',
+  p_lov_display_null=> 'NO',
   p_lov_translated=> 'N',
-  p_lov_null_text=>'',
-  p_lov_null_value=> '',
   p_cSize=> 30,
   p_cMaxlength=> 4000,
   p_cHeight=> 1,

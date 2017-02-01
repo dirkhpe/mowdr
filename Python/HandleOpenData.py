@@ -39,4 +39,7 @@ if os.path.isfile(dcat_ap_flag):
     scriptname = 'Dcat_ap_Create.py'
     cmdline = scriptdir + scriptname
     subprocess.call(cmdline)
+scriptname = 'Move_Cognos_Redirect.py'
+cmdline = scriptdir + scriptname
+subprocess.call(cmdline)
 my_log.info("End Application")

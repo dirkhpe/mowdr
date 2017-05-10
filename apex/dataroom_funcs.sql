@@ -285,6 +285,74 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE FUNCTION  "F_URL_OD_PORTAL" (f_indic_id IN indicatorfiche.indicatorfiche_id%TYPE)
+RETURN varchar2
+IS
+    -- This script sets the URL for Indicator Entry on Open Data Portaal.
+    proc_name logtbl.evt_proc%TYPE := 'f_url_od_portal';
+    v_url_prefix varchar2(255) := 'http://opendata.vlaanderen.be/dataset/drmow-ind';   
+    v_url varchar2(4000);
+    err_msg varchar2(255);
+BEGIN
+    
+    v_url := v_url_prefix || lpad(f_indic_id, 3, '0');
+    RETURN v_url;
+ 
+EXCEPTION
+    
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN '(geen URL - zie log)';
+END;
+/
+
+CREATE OR REPLACE FUNCTION  "F_URL_OD_CIJFERS_XML" (f_indic_id IN indicatorfiche.indicatorfiche_id%TYPE)
+RETURN varchar2
+IS
+    -- This script sets the URL for Indicator Cijfers XML on Open Data Portaal repository mobielvlaanderen.be.
+    proc_name logtbl.evt_proc%TYPE := 'f_url_od_cijfers_xml';
+    v_url_prefix varchar2(255) := 'http://www.mobielvlaanderen.be/store-x/apc/cijfersxml_';
+    v_url_suffix varchar2(255) := '.xml';
+    v_url varchar2(4000);
+    err_msg varchar2(255);
+BEGIN
+    
+    v_url := v_url_prefix || lpad(f_indic_id, 3, '0') || v_url_suffix;
+    RETURN v_url;
+ 
+EXCEPTION
+    
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN '(geen URL - zie log)';
+END;
+/
+
+CREATE OR REPLACE FUNCTION  "F_URL_OD_CIJFERS_TBL" (f_indic_id IN indicatorfiche.indicatorfiche_id%TYPE)
+RETURN varchar2
+IS
+    -- This script sets the URL for Indicator Cijfers Table on Open Data Portaal repository mobielvlaanderen.be.
+    proc_name logtbl.evt_proc%TYPE := 'f_url_od_cijfers_tbl';
+    v_url_prefix varchar2(255) := 'http://www.mobielvlaanderen.be/store-x/apc/cijfersTable_';
+    v_url_suffix varchar2(255) := '.html';
+    v_url varchar2(4000);
+    err_msg varchar2(255);
+BEGIN
+    
+    v_url := v_url_prefix || lpad(f_indic_id, 2, '0') || v_url_suffix;
+    RETURN v_url;
+ 
+EXCEPTION
+    
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+        RETURN '(geen URL - zie log)';
+END;
+/
+
 CREATE OR REPLACE FUNCTION  "F_URL_INVOER_HTML" (f_indic_id IN indicatorfiche.indicatorfiche_id%TYPE,
                                               f_geografische_info IN indicatorfiche.geografische_info%TYPE)
 RETURN varchar2
@@ -614,12 +682,13 @@ CREATE OR REPLACE FUNCTION  "F_REP_DIMENSIONS" (f_indicator_report_id IN indicat
     v_wstr varchar2(1024) := '';
 BEGIN
     -- First get the columns that are required for the SELECT
+    -- p_log(proc_name, 'I', 'f_indicator_report_id: ' || f_indicator_report_id);
     OPEN dimensie_cursor;
     LOOP
         FETCH dimensie_cursor INTO v_waarde;
         EXIT WHEN dimensie_cursor%NOTFOUND;
         SELECT replace(v_waarde, ' ', '_') INTO v_waarde FROM dual;
-        v_wstr := v_wstr || 'f_el(' || v_waarde || ') || '';'' || ';
+        v_wstr := v_wstr || 'f_el_uri(' || v_waarde || ') || '';'' || ';
     END LOOP;
     IF (length(v_wstr) > 0) THEN
         -- Remove last ; from string
@@ -1340,6 +1409,36 @@ is
 begin
    return to_date('1904-01-01', 'YYYY-MM-DD') + p_epoch; 
 end;
+/
+
+CREATE OR REPLACE FUNCTION  "F_EL_URI" (el_id IN dim_element.dim_element_id%TYPE)
+RETURN varchar2
+IS
+    -- This function will find the element name. It will try to find the element URI.
+    -- If an URI is available, it will be appended to element name with 'uri=' as delimiter. 
+    proc_name logtbl.evt_proc%TYPE := 'f_el_uri';
+    err_msg varchar2(255);
+    el_naam dim_element.waarde%TYPE;
+    el_uri dim_element.uri%TYPE;
+    res_naam varchar2(4096);
+BEGIN
+    select waarde, uri into el_naam, el_uri
+    from dim_element
+    where dim_element_id = el_id;
+    IF el_uri IS NULL THEN
+        res_naam := el_naam;
+    ELSE
+        res_naam := el_naam || 'uri=' || el_uri;
+    END IF;
+    RETURN res_naam;
+EXCEPTION
+    
+    WHEN NO_DATA_FOUND THEN
+        RETURN '';
+    WHEN OTHERS THEN
+        err_msg:= SUBSTR(SQLERRM, 1, 100);
+        p_log(proc_name, 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace);
+END;
 /
 
 CREATE OR REPLACE FUNCTION  "F_EL" (el_id IN dim_element.dim_element_id%TYPE)
@@ -2821,9 +2920,9 @@ EXCEPTION
 END;
 /
 
-CREATE OR REPLACE PROCEDURE  "P_FICHE2XML_old" 
+CREATE OR REPLACE PROCEDURE  "P_FICHE2XML_170411" 
 IS
-    proc_name logtbl.evt_proc%TYPE := 'p_fiche2xml_old';
+    proc_name logtbl.evt_proc%TYPE := 'p_fiche2xml';
     cursor fiche_cursor is
     select indicatorfiche_id,
         indicator_naam,
@@ -2964,14 +3063,18 @@ IS
             err_msg:= SUBSTR(SQLERRM, 1, 100);
             p_log(proc_name || ' in ip_beleidsdocumenten', 'E', 'Onverwachte fout: ' || err_msg || ' backtrack: ' || DBMS_UTILITY.format_error_backtrace); 
     end;
-    procedure ip_organisatie(w_org_id IN indicatorfiche.aanspreekorganisatie_id%TYPE)
+    procedure ip_organisatie(v_indicatorfiche_id IN indicatorfiche.indicatorfiche_id%TYPE)
     is
         cursor org_cursor is 
-        select a.waarde entiteit, b.waarde afdeling
-        from organisatie,
+        select distinct a.waarde entiteit, b.waarde afdeling
+        from organisatie o,
         referentie a,
-        referentie b
-        where organisatie_id = w_org_id
+        referentie b,
+        rol r,
+        persoon p
+        where r.indicatorfiche_id = v_indicatorfiche_id
+        and r.persoon_id = p.persoon_id
+        and p.organisatie_id = o.organisatie_id
         and a.referentie_id = entiteit
         and b.referentie_id = afdeling;
         
@@ -2983,9 +3086,10 @@ IS
         loop 
             fetch org_cursor into v_entiteit, v_afdeling;
             exit when org_cursor%NOTFOUND;
+            utl_file.put_line(f,'<organisatie>');
             utl_file.put_line(f,'<entiteit><![CDATA[' || v_entiteit || ']]></entiteit>');
             utl_file.put_line(f,'<afdeling><![CDATA[' || v_afdeling || ']]></afdeling>');
-            
+            utl_file.put_line(f,'</organisatie>');
         end loop;
     EXCEPTION
     
@@ -3033,11 +3137,11 @@ BEGIN
         utl_file.put_line(f,'<geografische_info><![CDATA[' || fiche.r_geografische_info || ']]></geografische_info>');
         utl_file.put_line(f,'<open_data_flag><![CDATA[' || fiche.r_open_data_flag || ']]></open_data_flag>');
         utl_file.put_line(f,'<bron><![CDATA[' || fiche.r_bron || ']]></bron>');
-        utl_file.put_line(f,'<organisatie>');
+        utl_file.put_line(f,'<organisaties>');
         if (fiche.r_aanspreekorganisatie_id > 0) then
-            ip_organisatie(fiche.r_aanspreekorganisatie_id);
+            ip_organisatie(fiche.r_indicatorfiche_id);
         end if;
-        utl_file.put_line(f,'</organisatie>');
+        utl_file.put_line(f,'</organisaties>');
         utl_file.put_line(f,'<url_rapport><![CDATA[' || fiche.r_url_rapport || ']]></url_rapport>');
         utl_file.put_line(f,'<url_rapport_map><![CDATA[' || fiche.r_url_rapport_map || ']]></url_rapport_map>');
         utl_file.put_line(f,'<url_invoer><![CDATA[' || fiche.r_url_invoer || ']]></url_invoer>');
@@ -3285,6 +3389,11 @@ BEGIN
         utl_file.put_line(f,'<url_rapport_map><![CDATA[' || fiche.r_url_rapport_map || ']]></url_rapport_map>');
         utl_file.put_line(f,'<url_invoer><![CDATA[' || fiche.r_url_invoer || ']]></url_invoer>');
         utl_file.put_line(f,'<url_toelichting><![CDATA[' || fiche.r_url_toelichting || ']]></url_toelichting>');
+        if (fiche.r_open_data_flag = 'Ja') then
+            utl_file.put_line(f, '<url_od_portal><![CDATA[' || f_url_od_portal(fiche.r_indicatorfiche_id) || ']]></url_od_portal>');
+            utl_file.put_line(f, '<url_od_cijfers_tbl><![CDATA[' || f_url_od_cijfers_tbl(fiche.r_indicatorfiche_id) || ']]></url_od_cijfers_tbl>');
+            utl_file.put_line(f, '<url_od_cijfers_xml><![CDATA[' || f_url_od_cijfers_xml(fiche.r_indicatorfiche_id) || ']]></url_od_cijfers_xml>');
+        end if;
     
         utl_file.put_line(f,'</indicatorfiche>');
          
@@ -4455,6 +4564,9 @@ IS
     v_fields string_fnc.t_array;
     ind number := 1;
     v_query varchar2(1024);
+    v_uri varchar2(1024);
+    v_dimnaam varchar2(1024);
+    v_pos_uri number;
     
     PROCEDURE p_freqrow(p_meetfrequentie IN indicatorfiche.meetfrequentie%TYPE) 
     IS
@@ -4523,6 +4635,7 @@ BEGIN
     v_filename := 'cijfersxml_' || lpad(p_indic_id, 3, '0') || '.xml';
     f := utl_file.fopen('DATAROOM_LOG', v_filename, 'w');
     utl_file.put_line(f, '<?xml version="1.0"?>');
+    utl_file.put_line(f, '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">');
     utl_file.put_line(f, '<cijferrecords>');
     v_cols := t_res(NULL);
     v_cols.extend;
@@ -4545,14 +4658,23 @@ BEGIN
             -- utl_file.put_line(f,v_res(i));
             utl_file.put_line(f,'<record>');
             for j in 1..ind-1 loop
-                utl_file.put_line(f,'<dimensie name="' || v_cols(j) || '">');
-                utl_file.put_line(f,v_fields(j+1));    -- shifted by one?
+                v_pos_uri := INSTR(v_fields(j+1), 'uri=');
+                IF  v_pos_uri > 0 THEN
+                    v_uri := ' rdf:about="' || SUBSTR(v_fields(j+1), v_pos_uri+4) || '"';
+                    v_dimnaam := SUBSTR(v_fields(j+1), 0, v_pos_uri - 1);
+                ELSE
+                    v_uri := '';
+                    v_dimnaam := v_fields(j+1);
+                END IF;
+                utl_file.put_line(f,'<dimensie name="' || v_cols(j) || '"' || v_uri || '>');
+                utl_file.put_line(f,v_dimnaam);
                 utl_file.put_line(f,'</dimensie>');
             end loop;
             utl_file.put_line(f,'</record>');
         end loop;
     END IF;
     utl_file.put_line(f, '</cijferrecords>');
+    utl_file.put_line(f, '</rdf:RDF>');
     utl_file.fclose(f);
     p_log(proc_name, 'I', 'End Application');
 EXCEPTION

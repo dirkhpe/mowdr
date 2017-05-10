@@ -97,8 +97,11 @@ def init_loghandler(config, modulename):
 def get_inifile(projectname, scriptname):
     """
     Read Project configuration ini file in subdirectory properties.
+
     :param projectname: Name of the project.
+
     :param scriptname: Name of the calling application. This is used to calculate the config file path.
+
     :return: Object reference to the inifile.
     """
     # Use Project Name as ini file.

@@ -173,8 +173,10 @@ def package_list():
     """
     URL: http://ckan-001.corve.openminds.be/api/3/action/package_list
     Return the metadata of a dataset (package) and its resources.
+
     :return:
     """
+    logging.info("In Function package_list")
     try:
         # res = ckan_conn.action.package_list(limit=20)
         res = ckan_conn.action.package_list()
@@ -212,7 +214,9 @@ def get_ckan_conn():
 def handle_selection(sel):
     """
     This method validates the selection. Selection needs to be numeric and between 1 and number of options.
+
     :param sel: Selection entered by the user.
+
     :return: if validation successful, then sel - 1 (index for utility), else False and sys.exit
     """
     # Check on integer
@@ -251,7 +255,7 @@ utilities = [package_list,
 # os.environ['http_proxy'] = 'http://proxyservers.vlaanderen.be:8080'
 projectname = 'mowdr'
 modulename = my_env.get_modulename(__file__)
-config = my_env.get_inifile(projectname)
+config = my_env.get_inifile(projectname, __file__)
 # Now configure logfile
 my_env.init_logfile(config, modulename)
 logging.info('Start Application')

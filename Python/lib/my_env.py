@@ -162,7 +162,10 @@ def indic_from_file(filename):
     """
     This method will extract the indicator ID from the filename.
     The indicator number is between _ and first . (empty. can be there before a potential second dot.)
+    The filename format is resource_indicid.ext or resource_indicid.empty.ext
+
     :param filename:
+
     :return: indic_id (numeric)
     """
     # log_msg = "Getting indicator ID from %s"
@@ -180,7 +183,9 @@ def type_from_file(filename):
     """
     This procedure will extract the Type from the filename.
     The resource type is before first _ . Resource types are returned in lowercase.
+
     :param filename:
+
     :return: resource type
     """
     file = os.path.basename(filename)
@@ -197,8 +202,11 @@ def type_from_file(filename):
 def attr_from_file(attribute, file):
     """
     This method will provide attribute name from file name. Underscore is added between attribute and file.
+
     :param attribute: name to create attribute with, such as url or id. Don't add underscore.
+
     :param file: Filename for which type is searched.
+
     :return: attribute and filename, example: url_cijfersxml or id_commentaar
     """
     # logging.debug("Attribute: %s, File: %s", attribute, file)
@@ -212,6 +220,7 @@ def get_resource_types():
     """
     This method will return all known resource types in an array.
     To do: convert all resource type handling in a class, create an iterator here.
+
     :return: array with known resource types.
     """
     resource_types = ['cijfersxml',
@@ -224,6 +233,7 @@ def get_resource_types():
 def get_resource_type_file():
     """
     This method will return all known resource types in an array. The resource types need to have a file associated.
+
     :return: array with known resource types.
     """
     resource_types = ['cijfersxml',
@@ -251,7 +261,9 @@ def get_target(resource_type):
 def known_resource_type(resource_type):
     """
     This method will return True for a known / valid resource type and false for an invalid resource type.
+
     :param resource_type:
+
     :return: True / False
     """
     resource_types = get_resource_types()
@@ -267,10 +279,13 @@ def get_name_from_indic(config, indic_id):
     """
     This method will calculate unique name for the dataset on Open Data platform. The name exists of the url_prefix
     that is defined in OpenData section in ini file and the indicator number.
+
+    :param config:
+
     :param indic_id:
+
     :return: unique dataset name.
     """
-    logging.info("In module get_name_from_indic")
     name = config['OpenData']['url_prefix'] + str(indic_id).zfill(3)
     name = name[0:100]
     name = re.sub('[^0-9a-zA-Z_\-]', '_', name).lower()
@@ -280,7 +295,9 @@ def get_name_from_indic(config, indic_id):
 def get_dataset_id(indic_id):
     """
     This method will calculate the dataset indicator (indXXX) for usage in dcat_ap profiles.
+
     :param indic_id:
+
     :return: dataset_id.
     """
     dataset_id = '_ind' + str(indic_id).zfill(3)

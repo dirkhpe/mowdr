@@ -91,8 +91,11 @@ class Datastore:
     def remove_indicator_attribute(self, indicator_id, attribute):
         """
         This method will remove the record for the indicator / attribute combination.
+
         :param indicator_id: ID of the indicator to be removed.
+
         :param attribute: Attribute related to the indicator.
+
         :return:
         """
         # TODO - Count number of records deleted.
@@ -102,12 +105,39 @@ class Datastore:
         self.dbConn.commit()
         return
 
+    def get_extra_values(self, indic_id):
+        """
+        This method will collect all attributes with action 'Extra'. This information needs to go on the bijsluiter.
+
+        :param indic_id:
+
+        :return: dictionary with key attribute name and values.
+        """
+        query = """
+            SELECT a.od_field, i.value
+            FROM indicators AS i
+            INNER JOIN attribute_action AS a
+            ON a.attribute = i.attribute
+            WHERE i.indicator_id = ?
+            AND a.action = 'Extra'
+            ORDER BY a.od_field
+        """
+        self.cur.execute(query, (indic_id, ))
+        res = self.cur.fetchall()
+        extra = {}
+        for rec in res:
+            extra[rec[0]] = rec[1]
+        return extra
+
     def get_indicator_value(self, indicator_id, attribute):
         """
-        This method will get the value for attribute name and indicator ID. Check with method 'get_indicator_val',
-        which will return result string, or 'niet gevonden' in case that result is not found.
+        This method will get all values for attribute name and indicator ID in a list. Check with method
+        'get_indicator_val' which will return result string, or 'niet gevonden' in case that result is not found.
+
         :param indicator_id:
+
         :param attribute: Name for which value is required.
+
         :return: Array of result lists. Each result list has one element, the required value. Empty list is returned if
         no values are found.
         """
@@ -122,8 +152,11 @@ class Datastore:
         """
         This method will get the value for attribute name and indicator ID. Check with method 'get_indicator_value',
         which will return result array.
+
         :param indicator_id:
+
         :param attribute: Name for which value is required.
+
         :return: result string or 'niet gevonden'.
         """
         values_lst = self.get_indicator_value(indicator_id, attribute)
@@ -137,8 +170,11 @@ class Datastore:
         """
         This method gets an indicator ID and a list of attribute names. It will collect all values for available in
         indicator table for each of the attributes.
+
         :param indicator_id:
+
         :param attribs:
+
         :return: Array of (attribute, value) lists.
         """
         logging.debug("Get attribute/value pairs for indicator %s", indicator_id)
@@ -222,7 +258,7 @@ class Datastore:
 
     def get_attribs_source(self, source):
         """
-        Tbis method collects all attributes for a specific source.
+        This method collects all attributes for a specific source.
         :param source: Value of the source parameter
         :return: Array of result lists. Each result list has one element: the attribute name.
         """
@@ -237,9 +273,13 @@ class Datastore:
         """
         This method returns the pairs (attribute_name, Open Data name) for all attributes from a specific action.
         Input parameters can be string or arrays. The query will check for all values in the array.
+
         :param source: Source for the attribute / Open data pairs
+
         :param target: Target for the attribute / Open data pairs
+
         :param action: The action field.
+
         :return: Array of (unique attribute name, Open Data name) lists.
         """
         source = my_env.get_array(source)
@@ -254,7 +294,8 @@ class Datastore:
 
     def get_all_attribs(self):
         """
-        Tbis method collects all attributes.
+        This method collects all attributes.
+
         :return: Array of attributes.
         """
         query = "SELECT attribute FROM attribute_action"
@@ -264,23 +305,22 @@ class Datastore:
         attrib_array = [attrib[0] for attrib in attribs]
         return attrib_array
 
-    def insert_attribute(self, attribute, od_field, source, target, action):
+    def insert_attribute(self, **params):
         """
         This method will insert a record in the attribute_action table. Date / Time of insert is calculated.
-        :param attribute:
-        :param od_field:
-        :param source:
-        :param target:
-        :param action:
+
+        :param params: Dictionary with keys attribute, od_field, action, source, target
+
         :return:
         """
-        logging.debug("Remove attribute, then add to attribute_action table attribute: %s, od_field: %s", attribute,
-                      od_field)
-        self.remove_attribute(attribute)
+        logging.debug("Remove attribute, then add to attribute_action table attribute: {a}, od_field: {o}"
+                      .format(a=params["attribute"], o=params["od_field"]))
+        self.remove_attribute(params["attribute"])
         now = strftime("%H:%M:%S %d-%m-%Y")
         query = "INSERT INTO attribute_action (attribute, od_field, source, target, action, created)" \
                 "VALUES (?, ?, ?, ?, ?, ?)"
-        self.dbConn.execute(query, (attribute, od_field, source, target, action, now))
+        self.dbConn.execute(query, (params["attribute"], params["od_field"], params["source"],
+                                    params["target"], params["action"], now))
         self.dbConn.commit()
         return
 

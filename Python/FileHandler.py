@@ -15,7 +15,6 @@ import os
 import re
 import sys
 import xml.etree.ElementTree as Et
-from CKANConnector import CKANConnector
 from Datastore import Datastore
 from Ftp_Handler import Ftp_Handler
 from lib import my_env
@@ -25,14 +24,91 @@ class FileHandler:
     def __init__(self, config):
         self.config = config
         self.ds = Datastore(config)
-        self.ckan = CKANConnector(self.config, self.ds)
         self.ftp = Ftp_Handler(self.config)
+
+    def bijsluiter(self, indic_id):
+        """
+        This method will handle a bijsluiter file for this indicator. The bijsluiter file will be created, then
+        copied to the ftp server. The url will be added to the indicators table so that the dcat_ap profile
+        generator will pick up the bijsluiter.
+
+        :param indic_id:
+
+        :return:
+        """
+        bs_file = self.create_bijsluiter_file(indic_id)
+        self.ftp.load_file(bs_file)
+        # Calculate URL
+        url = self.calculate_url(os.path.basename(bs_file))
+        # Add URL to indicators table
+        self.ds.insert_indicator(indic_id, "bijsluiter", url)
+        return
+
+    def create_bijsluiter_file(self, indic_id):
+        """
+        This method will create a bijsluiter file for the indicator.
+
+        :param indic_id:
+
+        :return: Filename of the bijsluiter file. Filename is in standard format for resources: resource_indicid.html
+        Resource is 'bijsluiter', indicid is indicator ID, 3 characters or longer.
+        """
+        handledir = self.config['Main']['handledir']
+        title = self.ds.get_indicator_val(indic_id, 'title')
+        bs_head = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Bijsluiter {title}</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <!-- Bootstrap -->
+                <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+                    rel="stylesheet">
+                <link rel="stylesheet" href="/static/style.css">
+            </head>
+            <body>
+            <div class="container"><div class="row">
+        """.format(title=title)
+        bs_h1 = "<h1>Bijsluiter {title}</h1>".format(title=title)
+        bs_intro = "{inleiding}".format(inleiding=self.config["bijsluiter"]["inleiding"])
+        bs_slot = "{bijkomende_info}".format(bijkomende_info=self.config["bijsluiter"]["bijkomende_info"])
+        bs_close = "</div></div></body></html>"
+        bs_table = '<h2>Informatie</h2><table class="table table-striped table-bordered table-condensed">'
+        bs_table += '<thead><tr><th scope="col">Veld</th><th scope="col">Waarde</th></tr></thead><tbody>'
+        attribs = self.ds.get_extra_values(indic_id)
+        for k in attribs:
+            bs_table += "<tr><td>{k}</td><td>{v}</td></tr>".format(k=k, v=attribs[k])
+        bs_table += '</tbody></table>'
+        bs = bs_head + bs_h1 + bs_intro + bs_table + bs_slot + bs_close
+        bs_filename = "bijsluiter_{indic}.html".format(indic=str(indic_id).zfill(3))
+        bs_file = os.path.join(handledir, bs_filename)
+        bsh = open(bs_file, mode='w')
+        bsh.write(bs)
+        bsh.close()
+        return bs_file
+
+    def calculate_url(self, file):
+        """
+        This method will calculate URL for a file.
+
+        :param file: Filename (not including path).
+
+        :return: URL for the file, including FTP directory.
+        """
+        # Calculate URL
+        ftp_home = self.config['FTPServer']['ftp_home']
+        # Add FTP Subdirectory (if any)
+        ftpdir = self.config['FTPServer']['dir']
+        url = "{home}/{dir}/{file}".format(home=ftp_home, dir=ftpdir, file=file)
+        return url
 
     def url_in_db(self, file):
         """
         Remove the url attribute for this resource.
         If file does not contain 'empty', then calculate URL the file and set result in indicators table.
-        :param file:
+
+        :param file: Filename of the resource (not including path!)
+
         :return:
         """
         logging.debug('Add/Remove file %s to indicators table.', file)
@@ -41,15 +117,7 @@ class FileHandler:
         # Always remove attribute for this indicator. Then no insert / update logic is required.
         self.ds.remove_indicator_attribute(indic_id, attribute)
         if 'empty' not in file:
-            # Calculate URL
-            ftp_home = self.config['FTPServer']['ftp_home']
-            # Add FTP Subdirectory (if any)
-            ftpdir = self.config['FTPServer']['dir']
-            if len(ftpdir) > 0:
-                dirname = ftpdir + '/'
-            else:
-                dirname = ''
-            url = ftp_home + '/' + dirname + file
+            url = self.calculate_url(file)
             # Add URL to indicator table.
             self.ds.insert_indicator(indic_id, attribute, url)
         return
@@ -58,8 +126,11 @@ class FileHandler:
         """
         Remove the size attribute for this resource.
         If file does not contain 'empty', then calculate Size of the file and set result in indicators table.
+
         :param handledir: Current directory of the file.
+
         :param file:
+
         :return:
         """
         logging.debug('Add/Remove filesize %s to indicators table.', file)
@@ -77,13 +148,17 @@ class FileHandler:
 
     def load_metadata(self, metafile, indic_id):
         """
-        Read the file with metadata and add or replace the information to table indicators. This procedure will populate
-        all fields that come from the 'Dataroom'.
+        For this indicator the metadata and/or resource files have been created or updated.
+        Read the file with metadata and add or replace the information in table 'indicators'. This procedure will
+        populate all fields that come from the 'Dataroom'.
         Call function to populate the dataset if this is a new dataset or an update of the dataset.
         Pre-requisite for this call is that dataset exists already.
         Cognos Add / Remove needs to be added here.
+
         :param metafile: pointer to the file with metadata.
+
         :param indic_id: Indicator ID
+
         :return:
         """
         # TODO: Add URL for 'bijsluiter' to database
@@ -124,7 +199,7 @@ class FileHandler:
                 # The 'notes' field is a copy of 'definitie'.
                 if child.tag.lower() == 'definitie':
                     self.ds.insert_indicator(indic_id, 'notes', child_text)
-            # The 'title' field will be used for all Dataset and all resources and gets special threatment.
+            # The 'title' field will be used for all Dataset and all resources and gets special treatment.
             elif child.tag.lower() == 'title':
                 # Set Title for cijfers, commentaar and Cognos report (to do).
                 indicatorname = child_text
@@ -145,29 +220,13 @@ class FileHandler:
         additional_attribs = ['description_cijfersxml', 'format_cijfersxml', 'tdt_cijfersxml',
                               'description_cijferstable', 'format_cijferstable', 'tdt_cijferstable',
                               'description_commentaar', 'format_commentaar', 'tdt_commentaar',
-                              'description_cognos', 'format_cognos', 'tdt_cognos',
-                              'bijsluiter', 'dcat_ap_profile', 'license_id',
+                              'description_cognos', 'format_cognos', 'tdt_cognos', 'dcat_ap_profile', 'license_id',
                               'author_name', 'author_email', 'maintainer_name', 'maintainer_email',
                               'language']
         for add_attrib in additional_attribs:
             self.ds.insert_indicator(indic_id, add_attrib, self.config['OpenData'][add_attrib])
-
-        # Now check if dataset exist already: is there an ID available in the indicators table for this indicator.
-        values_lst = self.ds.get_indicator_value(indic_id, 'id')
-        upd_pkg = "NOK"
-        # I want to have 0 or 1 rows in the list
-        if len(values_lst) == 0:
-            log_msg = "Open Data dataset is not registered for Indicator ID %s, this should have been done"
-            logging.error(log_msg, indic_id)
-        elif len(values_lst) == 1:
-            log_msg = "Open Data dataset exists for Indicator ID %s, no need to create nor to complain about too many"
-            logging.info(log_msg, indic_id)
-            upd_pkg = "OK"
-        else:
-            log_msg = "Multiple Open Data dataset links found for Indicator ID %s, please review"
-            logging.warning(log_msg, indic_id)
-        if upd_pkg == "OK":
-            self.ckan.update_package(indic_id)
+        # Create Bijsluiter file based on new metadata file and publish this on the FTP site
+        self.bijsluiter(indic_id)
         return True
 
     def process_input_directory(self):
@@ -181,11 +240,12 @@ class FileHandler:
         If the file is valid information (does not contain string 'empty') then the file is loaded on the FTP site.
         In both cases the size of the file and the url are calculated and handled: added to the database or removed
         from the database if filename contains 'empty'.
-        Then the second group of files is handled: the metadata. The file is moved to first. Then if the dataset exists
+        Then the second group of files is handled: the metadata. The file is moved first. Then if the dataset exists
         on the Open Data platform and the string contains 'empty' or cijfersxml does not exist, then the update_package
         method is called to display the package as private on Open Data.
-        Else (the dataset does not yet exist or cijfersxml does exist so a dataset package mmust be created) the
+        Else (the dataset does not yet exist or cijfersxml does exist so a dataset package must be created) the
         load_metadata method is called.
+
         :return:
         """
         # Get ckan connection first
@@ -201,7 +261,7 @@ class FileHandler:
         for file in filelist:
             log_msg = "Filename: %s"
             logging.debug(log_msg, file)
-            my_env.move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...
+            my_env.move_file(file, scandir, handledir)  # Move file is done in separate function.
             if 'empty' in file:
                 # remove_file handles paths, empty in filename, ...
                 self.ftp.remove_file(file=file)
@@ -209,7 +269,8 @@ class FileHandler:
                 filename = re.sub('empty\.', '', file)
                 indic_id = my_env.indic_from_file(filename)
                 res_type = my_env.type_from_file(filename)
-                self.ckan.remove_resource(indic_id, res_type)
+                attribute = "id_" + res_type
+                self.ds.remove_indicator_attribute(indic_id, attribute)
             else:
                 self.ftp.load_file(file=os.path.join(handledir, file))
             self.size_of_file(handledir, file)
@@ -219,37 +280,21 @@ class FileHandler:
         for file in filelist:
             # At least one update, so set flag for dcat_ap create. If any change then new metafile is required,
             # so no need to have create in block above.
-            open(os.path.join(scandir, "dcat_ap_create"),'w').close()
+            open(os.path.join(scandir, "dcat_ap_create"), 'w').close()
             log_msg = "Filename: %s"
             logging.debug(log_msg, file)
-            my_env.move_file(file, scandir, handledir)  # Move file done in own function, such a hassle...
+            my_env.move_file(file, scandir, handledir)  # Move file done in separate function.
             # Get indic_id before adding pathname to filename.
             indic_id = my_env.indic_from_file(file)
             filename = os.path.join(handledir, file)
             # Rework logic.
-            # If dataset does not exist, then it needs to be created here (not in load_metadata)
-            if not self.ckan.check_dataset(indic_id):
-                self.ckan.create_package(indic_id)
+            # Remove bijsluiter from indicators table. It will be added if required.
+            self.ds.remove_indicator_attribute(indic_id, "bijsluiter")
             # If cijfersxml does not exist or metadata file has empty string, then set package to private.
-            if 'empty' in file or not self.ckan.check_resource(indic_id, 'cijfersxml'):
+            if ('empty' in file) or (self.ds.get_indicator_value(indic_id, 'cijfersxml') == 'niet gevonden'):
                 # Required and sufficient reason to set package to private.
-                # I'm sure that package ID exist.
-                values_lst = self.ds.get_indicator_value(indic_id, 'id')
-                self.ckan.set_pkg_private(values_lst[0][0])
+                pass
             else:
                 # Dataset package does not yet exist or new valid resource file available and cijfersxml exist.
                 self.load_metadata(filename, indic_id)
         return
-
-    def add_cognos_resources(self):
-        """
-        This procedure will find all indicators for which Cognos report is available but resource is not published on
-        Open Dataset.
-        The Resource will be published on the Open Dataset.
-        :return:
-        """
-        logging.debug("In add_cognos_resources")
-        for indic_id in self.ds.get_indicator_cognos_urls():
-            if not self.ds.check_resource_published(indic_id, "cognos"):
-                logging.info("Cognos URL available, but not yet on Open Dataset for ID {0}".format(str(indic_id)))
-                self.ckan.update_package(indic_id)

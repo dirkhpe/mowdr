@@ -36,7 +36,9 @@ class CKANConnector:
         This method will create a brand new Dataset on Open Data platform. The package is created with minimal
         parameters: only the name, title, license ID and owner organization are provided. These are the mandatory
         parameters to create a package. The ID of the created package is stored in the indicator table.
+
         :param indic_id:
+
         :return:
         """
         log_msg = "In create_package for Indicator %s"
@@ -98,7 +100,9 @@ class CKANConnector:
     def update_package(self, indic_id):
         """
         This procedure will update Package information for the indicator ID.
+
         :param indic_id:
+
         :return:
         """
         log_msg = "Update Package for Indicator %s"
@@ -117,7 +121,9 @@ class CKANConnector:
     def set_pkg_private(self, dataset_id):
         """
         This indicator does not have a cijfersxml file associated or metadata filename has empty, set it to 'private'.
+
         :param dataset_id: ID of the dataset on Open Data platform.
+
         :return:
         """
         params = {
@@ -141,8 +147,11 @@ class CKANConnector:
     def set_pkg_public(self, indic_id, dataset_id):
         """
         This Indicator has a cijfer file available, so dataset can be published as Public on Open Data Platform.
+
         :param indic_id: Indicator ID
+
         :param dataset_id: ID of dataset on Open Data platform.
+
         :return:
         """
         logging.debug("Setting package for indicator " + str(indic_id) + " public.")
@@ -209,10 +218,12 @@ class CKANConnector:
 
     def check_dataset(self, indic_id):
         """
-        This method will check if the dataset exists. A dataset exists if an ID is found in the indicator table and if
-        the package exists on Open Data for this ID. Checking of Open Data is not yet implemented.
+        This method will check if the dataset exists. A dataset exists if attribute 'id' is found in the indicator
+        table for this indicator ID.
+
         :param indic_id:
-        :return:
+
+        :return: True if the attribute ID is defined for this indicator, False otherwise.
         """
         values_lst = self.ds.get_indicator_value(indic_id, 'id')
         # I want to have 0 or 1 rows in the list
@@ -370,8 +381,11 @@ class CKANConnector:
         This procedure knows that resource URL does not exist. If there is a resource on Open Data platform, then
         remove this resource. A resource on Open Data Platform exists if the resource ID (e.g. id_cijfersxml) exists
         in the indicator table.
+
         :param indic_id: Indicator ID.
+
         :param res_type: Resource Type of the resource that needs to be removed.
+
         :return:
         """
         attribute = "id_" + res_type

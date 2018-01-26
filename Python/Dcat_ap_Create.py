@@ -20,12 +20,8 @@ my_log.info('Start Application')
 ds = Datastore(config)
 store = config['xmlns']['store']
 lang = {'xml:lang': 'nl'}
-
-
 # Define URI's for resources
 catalog_uri = store + 'dr_catalog'
-publ_uri = store + 'organisatie'    # Publisher
-contact_uri = store + 'contact'     # ContactPoint
 
 
 def get_license(el):
@@ -45,8 +41,14 @@ def get_publisher(el):
     :param el: element to which the publisher resource need to be added
     :return publ_res: Publisher Resource object
     """
-    publ_dict = {'rdf:resource': publ_uri}
-    publ_res = SubElement(el, 'dcterms:publisher', **publ_dict)
+    oslo_uri = config['dcat_ap']['publ_uri']
+    publ_res = SubElement(el, 'dcterms:publisher')
+    # Create Publisher object in the profile
+    publ_obj = SubElement(publ_res, 'foaf:Agent', attrib={'rdf:about': oslo_uri})
+    publ_name = SubElement(publ_obj, 'foaf:name')
+    publ_name.text = config['dcat_ap']['publ_name']
+    publ_type = SubElement(publ_obj, 'dcterms:type')
+    publ_type.text = 'organization'
     return publ_res
 
 
@@ -56,8 +58,13 @@ def get_contactpoint(el):
     :param el: element to which the contactPoint resource need to be added
     :return contact_res: ContactPoint Resource object
     """
-    contact_dict = {'rdf:resource': contact_uri}
-    contact_res = SubElement(el, 'dcat:contactPoint', **contact_dict)
+    contact_uri = config['dcat_ap']['contact_uri']
+    contact_res = SubElement(el, 'dcat:contactPoint')
+    # Create the ContactPoint object in the profile
+    contact_obj = SubElement(contact_res, 'vcard:Kind', attrib={'rdf:about': contact_uri})
+    contact_name = SubElement(contact_obj, 'vcard:fn')
+    contact_name.text = config['dcat_ap']['contact_name']
+    SubElement(contact_obj, 'vcard:hasEmail', attrib={'rdf:resource': config['OpenData']['author_email']})
     return contact_res
 
 
@@ -109,19 +116,6 @@ catalog_publ = get_publisher(catalog_obj)
 catalog_lang = get_language(catalog_obj)
 catalog_home = get_homepage(catalog_obj)
 
-# Create Publisher object in the profile
-publ_obj = SubElement(root, 'foaf:Agent', attrib={'rdf:about': publ_uri})
-publ_name = SubElement(publ_obj, 'foaf:name')
-publ_name.text = config['dcat_ap']['publ_name']
-publ_type = SubElement(publ_obj, 'dcterms:type')
-publ_type.text = 'organization'
-
-# Create the ContactPoint object in the profile
-contact_obj = SubElement(root, 'vcard:Kind', attrib={'rdf:about': contact_uri})
-contact_name = SubElement(contact_obj, 'vcard:fn')
-contact_name.text = config['dcat_ap']['contact_name']
-contact_email = SubElement(contact_obj, 'vcard:hasEmail', attrib={'rdf:resource': config['OpenData']['author_email']})
-
 # Find and create the Dataset objects in the profile.
 for indic_id in ds.get_indicator_ids():
     dataset_uri = store + 'dataset' + my_env.get_dataset_id(indic_id)
@@ -141,7 +135,8 @@ for indic_id in ds.get_indicator_ids():
     dataset_publ = get_publisher(dataset_obj)
     dataset_contact = get_contactpoint(dataset_obj)
     dataset_lang = get_language(dataset_obj)
-    landing_page = config['dcat_ap']['landing_url'] + my_env.get_name_from_indic(config, indic_id)
+    # landing_page = config['dcat_ap']['landing_url'] + my_env.get_name_from_indic(config, indic_id)
+    landing_page = ds.get_indicator_val(indic_id, "bijsluiter")
     dataset_lp = SubElement(dataset_obj, 'dcat:landingPage', attrib={'rdf:resource': landing_page})
     dataset_theme_datathank = SubElement(dataset_obj, 'dcat:theme',
                                          attrib={'rdf:resource': config['dcat_ap']['datathank_theme']})
@@ -156,6 +151,8 @@ for indic_id in ds.get_indicator_ids():
             distr_uri = store + distr + my_env.get_dataset_id(indic_id)
             distr_obj = SubElement(root, 'dcat:Distribution', attrib={'rdf:about': distr_uri})
             dataset_distr = SubElement(dataset_obj, 'dcat:distribution', attrib={'rdf:resource': distr_uri})
+            distr_title = SubElement(distr_obj, 'dcterms:title', **lang)
+            distr_title.text = ds.get_indicator_val(indic_id, 'title')
             distr_loc = ds.get_indicator_val(indic_id, distr_url_attr)
             distr_url = SubElement(distr_obj, 'dcat:accessURL', attrib={'rdf:resource': distr_loc})
             distr_lic = get_license(distr_obj)

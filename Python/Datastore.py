@@ -188,6 +188,7 @@ class Datastore:
         """
         This method will get all indicator IDs for indicators that are published for public on the Open Data Set. This
         is done by checking all distinct indicatorIDs for which an url_cijfersxml entry exists in the indicators table.
+
         :return: List of indicator IDs.
         """
         query = "SELECT distinct indicator_id FROM indicators WHERE attribute = 'url_cijfersxml'"
@@ -346,6 +347,19 @@ class Datastore:
         logging.debug("Delete attribute %s from attribute_action table.", attribute)
         query = "DELETE FROM attribute_action WHERE attribute = ?"
         self.dbConn.execute(query, (attribute, ))
+        self.dbConn.commit()
+        return
+
+    def remove_indicator(self, indic_id):
+        """
+        This method will remove all information from an indicator in the indicator table.
+
+        :param indic_id: Indicator ID that needs to be removed
+
+        :return:
+        """
+        query = "DELETE FROM indicators WHERE indicator_id = ?"
+        self.dbConn.execute(query, (indic_id, ))
         self.dbConn.commit()
         return
 

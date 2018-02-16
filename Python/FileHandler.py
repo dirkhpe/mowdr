@@ -56,18 +56,20 @@ class FileHandler:
         handledir = self.config['Main']['handledir']
         title = self.ds.get_indicator_val(indic_id, 'title')
         bs_head = """
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Bijsluiter {title}</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <!-- Bootstrap -->
-                <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
-                    rel="stylesheet">
-                <link rel="stylesheet" href="/static/style.css">
-            </head>
-            <body>
-            <div class="container"><div class="row">
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="//widgets.vlaanderen.be/widget/live/e0cadc1291264b35b7000002f59a0704">
+    </script>
+    <title>Bijsluiter {title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container"><div class="row">
         """.format(title=title)
         bs_h1 = "<h1>Bijsluiter {title}</h1>".format(title=title)
         bs_intro = "{inleiding}".format(inleiding=self.config["bijsluiter"]["inleiding"])
@@ -220,7 +222,7 @@ class FileHandler:
         additional_attribs = ['description_cijfersxml', 'format_cijfersxml', 'tdt_cijfersxml',
                               'description_cijferstable', 'format_cijferstable', 'tdt_cijferstable',
                               'description_commentaar', 'format_commentaar', 'tdt_commentaar',
-                              'description_cognos', 'format_cognos', 'tdt_cognos', 'dcat_ap_profile', 'license_id',
+                              'description_cognos', 'format_cognos', 'tdt_cognos', 'license_id',
                               'author_name', 'author_email', 'maintainer_name', 'maintainer_email',
                               'language']
         for add_attrib in additional_attribs:
@@ -293,7 +295,8 @@ class FileHandler:
             # If cijfersxml does not exist or metadata file has empty string, then set package to private.
             if ('empty' in file) or (self.ds.get_indicator_value(indic_id, 'cijfersxml') == 'niet gevonden'):
                 # Required and sufficient reason to set package to private.
-                pass
+                # For Harvester I can forget all about the package.
+                self.ds.remove_indicator(indic_id)
             else:
                 # Dataset package does not yet exist or new valid resource file available and cijfersxml exist.
                 self.load_metadata(filename, indic_id)

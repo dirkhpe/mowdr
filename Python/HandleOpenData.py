@@ -16,9 +16,6 @@ scriptdir = config['Main']['scriptdir']
 scriptname = 'Evaluate_Cognos.py'
 cmdline = scriptdir + scriptname
 subprocess.call(cmdline)
-scriptname = 'Add_Cognos_Resource.py'
-cmdline = scriptdir + scriptname
-subprocess.call(cmdline)
 # Get FileHandler Object
 fh = FileHandler(config)
 # Check for proxyserver

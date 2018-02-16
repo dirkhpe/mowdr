@@ -221,12 +221,12 @@ def get_resource_types():
     This method will return all known resource types in an array.
     To do: convert all resource type handling in a class, create an iterator here.
 
-    :return: array with known resource types.
+    :return: dictionary with known resource types and resource label.
     """
-    resource_types = ['cijfersxml',
-                      'cijferstable',
-                      'commentaar',
-                      'cognos']
+    resource_types = {'cijfersxml': 'Cijfers (XML)',
+                      'cijferstable': 'Cijfers (Tabel)',
+                      'commentaar': 'Commentaar',
+                      'cognos': 'Rapport (Cognos)'}
     return resource_types
 
 

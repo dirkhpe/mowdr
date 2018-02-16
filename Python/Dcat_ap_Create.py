@@ -108,9 +108,13 @@ catalog_title = SubElement(catalog_obj, 'dcterms:title', **lang)
 catalog_title.text = config['dcat_ap']['catalog_title']
 catalog_desc = SubElement(catalog_obj, 'dcterms:description', **lang)
 catalog_desc.text = config['dcat_ap']['catalog_desc']
-catalog_issued = SubElement(catalog_obj, 'dcterms:issued', attrib={'dcterms:date': config['dcat_ap']['catalog_issued']})
+catalog_issued = SubElement(catalog_obj, 'dcterms:issued',
+                            attrib={'rdf:datatype': 'http://www.w3.org/2001/XMLSchema#date'})
+catalog_issued.text = config['dcat_ap']['catalog_issued']
 curr_date = datetime.now().strftime("%Y-%m-%d")
-catalog_modified = SubElement(catalog_obj, 'dcterms:modified', attrib={'dcterms:date': curr_date})
+catalog_modified = SubElement(catalog_obj, 'dcterms:modified',
+                              attrib={'rdf:datatype': 'http://www.w3.org/2001/XMLSchema#date'})
+catalog_modified.text = curr_date
 catalog_lic = get_license(catalog_obj)
 catalog_publ = get_publisher(catalog_obj)
 catalog_lang = get_language(catalog_obj)
@@ -124,10 +128,13 @@ for indic_id in ds.get_indicator_ids():
     # Add dataset to Catalog object
     dcat_dataset = SubElement(catalog_obj, 'dcat:dataset', attrib={'rdf:resource': dataset_uri})
     # Add dataset attributes
-    ind_modified = ds.get_indicator_val(indic_id, 'FicheBijgewerkt')[0:10]
-    dataset_mod = SubElement(dataset_obj, 'dcterms:modified', attrib={'dcterms:date': ind_modified})
+    dataset_mod = SubElement(dataset_obj, 'dcterms:modified',
+                             attrib={'rdf:datatype': 'http://www.w3.org/2001/XMLSchema#date'})
+    dataset_mod.text = ds.get_indicator_val(indic_id, 'FicheBijgewerkt')[0:10]
     # Todo - Add created time to indicators table
-    dataset_issued = SubElement(dataset_obj, 'dcterms:issued', attrib={'dcterms:date': ind_modified})
+    dataset_issued = SubElement(dataset_obj, 'dcterms:issued',
+                                attrib={'rdf:datatype': 'http://www.w3.org/2001/XMLSchema#date'})
+    dataset_issued.text = ds.get_indicator_val(indic_id, 'FicheBijgewerkt')[0:10]
     dataset_title = SubElement(dataset_obj, 'dcterms:title', **lang)
     dataset_title.text = ds.get_indicator_val(indic_id, 'title')
     dataset_desc = SubElement(dataset_obj, 'dcterms:description', **lang)
@@ -144,7 +151,8 @@ for indic_id in ds.get_indicator_ids():
                                       attrib={'rdf:resource': config['dcat_ap']['fedgov_theme']})
 
     # Now handle all distributions
-    for distr in my_env.get_resource_types():
+    distr_dict = my_env.get_resource_types()
+    for distr in distr_dict:
         distr_url_attr = 'url_' + distr
         if ds.get_indicator_value(indic_id, distr_url_attr):
             # Distribution exist for this resource type
@@ -152,7 +160,7 @@ for indic_id in ds.get_indicator_ids():
             distr_obj = SubElement(root, 'dcat:Distribution', attrib={'rdf:about': distr_uri})
             dataset_distr = SubElement(dataset_obj, 'dcat:distribution', attrib={'rdf:resource': distr_uri})
             distr_title = SubElement(distr_obj, 'dcterms:title', **lang)
-            distr_title.text = ds.get_indicator_val(indic_id, 'title')
+            distr_title.text = ds.get_indicator_val(indic_id, 'title') + " - " + distr_dict[distr]
             distr_loc = ds.get_indicator_val(indic_id, distr_url_attr)
             distr_url = SubElement(distr_obj, 'dcat:accessURL', attrib={'rdf:resource': distr_loc})
             distr_lic = get_license(distr_obj)

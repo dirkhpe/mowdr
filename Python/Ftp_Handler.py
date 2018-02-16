@@ -34,6 +34,7 @@ class Ftp_Handler:
         user = config_hdl['FTPServer']['user']
         passwd = config_hdl['FTPServer']['passwd']
         ftp = FTP()
+        ftp.set_pasv(False)
         # First connect to the FTP Server
         try:
             log_msg = "Connect to FTP Server"
@@ -67,23 +68,6 @@ class Ftp_Handler:
             logging.critical(log_msg, e, ec)
             sys.exit('ftp_cwd failed')
         return ftp
-
-    def close_connection(self):
-        """
-        Close the FTP Connection.
-        :return:
-        """
-        try:
-            self.ftp_hdl.quit()
-        except:
-            ec = sys.exc_info()[0]
-            e = sys.exc_info()[1]
-            log_msg = "Error during close connection to FTP Server: %s %s"
-            logging.critical(log_msg, e, ec)
-            sys.exit('ftp_cwd failed')
-        else:
-            logging.debug("FTP Connection closed.")
-            return
 
     def load_file(self, file=None):
         """

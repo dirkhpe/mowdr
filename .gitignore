@@ -15,3 +15,4 @@ Python/.idea
 Python/Test.py
 Python/lib/__pycache__/*
 Python/sqlite3.exe
+Python/*.db

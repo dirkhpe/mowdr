@@ -58,19 +58,17 @@ class FileHandler:
         bs_head = """
 <!DOCTYPE html>
 <html>
-<head>
-    <script type="text/javascript" src="//widgets.vlaanderen.be/widget/live/e0cadc1291264b35b7000002f59a0704">
-    </script>
     <title>Bijsluiter {title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
         rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
-</head>
 <body>
 <div class="container"><div class="row">
         """.format(title=title)
+        gh = my_env.get_global_header(self.config)
+        gf = my_env.get_global_footer(self.config)
         bs_h1 = "<h1>Bijsluiter {title}</h1>".format(title=title)
         bs_intro = "{inleiding}".format(inleiding=self.config["bijsluiter"]["inleiding"])
         bs_slot = "{bijkomende_info}".format(bijkomende_info=self.config["bijsluiter"]["bijkomende_info"])
@@ -81,7 +79,7 @@ class FileHandler:
         for k in attribs:
             bs_table += "<tr><td>{k}</td><td>{v}</td></tr>".format(k=k, v=attribs[k])
         bs_table += '</tbody></table>'
-        bs = bs_head + bs_h1 + bs_intro + bs_table + bs_slot + bs_close
+        bs = bs_head + gh + bs_h1 + bs_intro + bs_table + bs_slot + gf + bs_close
         bs_filename = "bijsluiter_{indic}.html".format(indic=str(indic_id).zfill(3))
         bs_file = os.path.join(handledir, bs_filename)
         bsh = open(bs_file, mode='w')

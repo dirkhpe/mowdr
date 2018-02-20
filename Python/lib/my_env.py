@@ -302,3 +302,37 @@ def get_dataset_id(indic_id):
     """
     dataset_id = '_ind' + str(indic_id).zfill(3)
     return dataset_id
+
+def get_global_header(cfg):
+    """
+    This method will return the Global header to include in html pages, such as the 'Bijsluiter'.
+
+    :param cfg: Config object
+
+    :return: Global header string
+    """
+    gh_id = cfg['OpenData']['global_header']
+    header_str = """
+<header>
+    <script type="text/javascript" src="//widgets.vlaanderen.be/widget/live/{gh_id}">
+    </script>
+</header>
+    """.format(gh_id=gh_id)
+    return header_str
+
+def get_global_footer(cfg):
+    """
+    This method will return the Global footer to include in html pages, such as the 'Bijsluiter'.
+
+    :param cfg: Config object
+
+    :return: Global footer string
+    """
+    gf_id = cfg['OpenData']['global_footer']
+    footer_str = """
+<header>
+    <script type="text/javascript" src="//widgets.vlaanderen.be/widget/live/{gf_id}">
+    </script>
+</header>
+    """.format(gf_id=gf_id)
+    return footer_str

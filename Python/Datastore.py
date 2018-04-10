@@ -120,14 +120,12 @@ class Datastore:
             ON a.attribute = i.attribute
             WHERE i.indicator_id = ?
             AND a.action = 'Extra'
-            ORDER BY a.od_field
+            AND a.weight is not null
+            ORDER BY a.weight
         """
         self.cur.execute(query, (indic_id, ))
         res = self.cur.fetchall()
-        extra = {}
-        for rec in res:
-            extra[rec[0]] = rec[1]
-        return extra
+        return res
 
     def get_indicator_value(self, indicator_id, attribute):
         """

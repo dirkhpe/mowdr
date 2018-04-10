@@ -75,9 +75,9 @@ class FileHandler:
         bs_close = "</div></div></body></html>"
         bs_table = '<h2>Informatie</h2><table class="table table-striped table-bordered table-condensed">'
         bs_table += '<thead><tr><th scope="col">Veld</th><th scope="col">Waarde</th></tr></thead><tbody>'
-        attribs = self.ds.get_extra_values(indic_id)
-        for k in attribs:
-            bs_table += "<tr><td>{k}</td><td>{v}</td></tr>".format(k=k, v=attribs[k])
+        res = self.ds.get_extra_values(indic_id)
+        for rec in res:
+            bs_table += "<tr><td>{k}</td><td>{v}</td></tr>".format(k=rec[0], v=rec[1])
         bs_table += '</tbody></table>'
         bs = bs_head + gh + bs_h1 + bs_intro + bs_table + bs_slot + gf + bs_close
         bs_filename = "bijsluiter_{indic}.html".format(indic=str(indic_id).zfill(3))

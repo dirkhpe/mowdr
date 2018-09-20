@@ -125,3 +125,4 @@ class Ftp_Handler:
             log_msg = "Looks like file %s is removed from FTP Server"
             logging.debug(log_msg, filename)
         return
+

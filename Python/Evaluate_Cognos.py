@@ -29,10 +29,12 @@ for indic_id in ds.get_indicator_ids():
         # Verify if Cognos URL exist on PublicCognos. Load if it does.
         pc_url = PublicCognos(indicatorname)  # Get my PublicCognos URL Object
         # Check if Cognos Public URL exists
-        if pc_url.check_if_cognos_report_exists():
+        # if pc_url.check_if_cognos_report_exists():
+        if True:
             # get redirect_file and redirect_page.
             redirect_file, redirect_url = pc_url.redirect2cognos_page(indic_id, config)
             # Add Cognos URL to indicators table. Cognos Resource ID (id_cognos) is not available as long as package
             # has not been created.
             ds.insert_indicator(indic_id, 'url_cognos', redirect_url)
 my_log.info("End Application")
+

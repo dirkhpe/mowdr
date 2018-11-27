@@ -13,7 +13,6 @@ Apart from above 3 resources, the PublicCognos is handled as an additional resou
 import logging
 import os
 import re
-import sys
 import xml.etree.ElementTree as Et
 from Datastore import Datastore
 from Ftp_Handler import Ftp_Handler
@@ -106,9 +105,7 @@ class FileHandler:
         """
         Remove the url attribute for this resource.
         If file does not contain 'empty', then calculate URL the file and set result in indicators table.
-
         :param file: Filename of the resource (not including path!)
-
         :return:
         """
         logging.debug('Add/Remove file %s to indicators table.', file)
@@ -148,30 +145,19 @@ class FileHandler:
 
     def load_metadata(self, metafile, indic_id):
         """
-        For this indicator the metadata and/or resource files have been created or updated.
+        For this indicator the metadata and/or resource files (cijfers or commentaar) have been created or updated.
         Read the file with metadata and add or replace the information in table 'indicators'. This procedure will
         populate all fields that come from the 'Dataroom'.
         Call function to populate the dataset if this is a new dataset or an update of the dataset.
         Pre-requisite for this call is that dataset exists already.
-        Cognos Add / Remove needs to be added here.
-
-        :param metafile: pointer to the file with metadata.
-
+        :param metafile: filename of the file with metadata.
         :param indic_id: Indicator ID
-
         :return:
         """
         # TODO: Add URL for 'bijsluiter' to database
         log_msg = "In load_metadata for file " + metafile
         logging.debug(log_msg)
-        try:
-            tree = Et.parse(metafile)
-        except:  # catch all errors for now, try to be more specific in the future.
-            e = sys.exc_info()[1]
-            ec = sys.exc_info()[0]
-            log_msg = "Error during parsing metafile xml: %s %s"
-            logging.critical(log_msg, e, ec)
-            return
+        tree = Et.parse(metafile)
         root = tree.getroot()
         # metadata is available, get list of attributes from Dataroom Application and required for Dataset Page.
         # First collect all attribute names in list attrib_names.
@@ -182,7 +168,6 @@ class FileHandler:
         # Then remove information from Dataroom for Dataset for this indicator ID.
         for attrib_name in attrib_names:
             self.ds.remove_indicator_attribute(indic_id, attrib_name)
-        # indicatorname = ""
         # Add variable data from indicator metadata xml to indicator table.
         for child in root:
             # First get child text
@@ -201,17 +186,17 @@ class FileHandler:
                     self.ds.insert_indicator(indic_id, 'notes', child_text)
             # The 'title' field will be used for all Dataset and all resources and gets special treatment.
             elif child.tag.lower() == 'title':
-                # Set Title for cijfers, commentaar and Cognos report (to do).
+                # Set Title for cijfers, commentaar and PowerBI report (to do).
                 indicatorname = child_text
                 name_cijfersxml = child_text + " - cijfers (XML)"
                 name_cijferstable = child_text + " - cijfers (Tabel)"
                 name_commentaar = child_text + " - commentaar"
-                name_cognos = indicatorname + " - cognos"
+                name_powerbi = indicatorname + " - PowerBI"
                 self.ds.insert_indicator(indic_id, 'title', indicatorname)
                 self.ds.insert_indicator(indic_id, 'name_cijfersxml', name_cijfersxml)
                 self.ds.insert_indicator(indic_id, 'name_commentaar', name_commentaar)
                 self.ds.insert_indicator(indic_id, 'name_cijferstable', name_cijferstable)
-                self.ds.insert_indicator(indic_id, 'name_cognos', name_cognos)
+                self.ds.insert_indicator(indic_id, 'name_powerbi', name_powerbi)
             elif child.tag != 'id':
                 log_msg = "Found Dataroom Attribute **" + child.tag + "** not required for Open Data Dataset"
                 logging.warning(log_msg)
@@ -220,7 +205,7 @@ class FileHandler:
         additional_attribs = ['description_cijfersxml', 'format_cijfersxml', 'tdt_cijfersxml',
                               'description_cijferstable', 'format_cijferstable', 'tdt_cijferstable',
                               'description_commentaar', 'format_commentaar', 'tdt_commentaar',
-                              'description_cognos', 'format_cognos', 'tdt_cognos', 'license_id',
+                              'description_powerbi', 'format_powerbi', 'license_id',
                               'author_name', 'author_email', 'maintainer_name', 'maintainer_email',
                               'language']
         for add_attrib in additional_attribs:
@@ -235,17 +220,19 @@ class FileHandler:
         cijfersXML and cijfersTable.
         The second group of files is the metadata files.
         In the first group of files, the file is moved first. Then if the file contains string 'empty' then the file
-        is removed from FTP site since it cannot be available for external parties anymore. Then the resource
-        information is removed from CKAN.
+        is removed from FTP site since it cannot be available for external parties anymore. Then the resource id is
+        removed from the database.
         If the file is valid information (does not contain string 'empty') then the file is loaded on the FTP site.
         In both cases the size of the file and the url are calculated and handled: added to the database or removed
         from the database if filename contains 'empty'.
-        Then the second group of files is handled: the metadata. The file is moved first. Then if the dataset exists
-        on the Open Data platform and the string contains 'empty' or cijfersxml does not exist, then the update_package
-        method is called to display the package as private on Open Data.
+        Then the second group of files is handled: the metadata. If at least one metadata file is found, then a flag is
+        set for the dcat_ap_create.py script to create a new dcat_ap.xml file. (In case of any change on cijferrecords,
+        then attribute 'Cijfers laatst aangepast' is updated and a metadata file must be available.
+        The metadata file is moved first. Then if the metadata string contains 'empty' or cijfersxml does not exist,
+        then all information related to this indicator is removed from the database.
         Else (the dataset does not yet exist or cijfersxml does exist so a dataset package must be created) the
-        load_metadata method is called.
-
+        load_metadata method is called to add information to the database. This info will be used by dcat_ap_create
+        script.
         :return:
         """
         # Get ckan connection first
@@ -254,7 +241,7 @@ class FileHandler:
         log_msg = "Scan %s for files"
         logging.debug(log_msg, scandir)
         # Don't use os.listdir in for loop since I'll move files. For loop will get confused.
-        # Extract filelist first for cijfersXML, cijfersTable or commentaar types. Cognos is also known as
+        # Extract filelist first for cijfersXML, cijfersTable or commentaar types. PowerBI is also known as
         # resource type, but no files expected so no problem in leaving this.
         type_list = my_env.get_resource_types()
         filelist = [file for file in os.listdir(scandir) if my_env.type_from_file(file) in type_list]

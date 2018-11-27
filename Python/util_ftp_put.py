@@ -25,3 +25,4 @@ my_log.info("Arguments: {a}".format(a=args))
 fn = args.fileName
 ftp = Ftp_Handler(config)
 ftp.load_file(fn)
+

@@ -220,13 +220,12 @@ def get_resource_types():
     """
     This method will return all known resource types in an array.
     To do: convert all resource type handling in a class, create an iterator here.
-
     :return: dictionary with known resource types and resource label.
     """
     resource_types = {'cijfersxml': 'Cijfers (XML)',
                       'cijferstable': 'Cijfers (Tabel)',
                       'commentaar': 'Commentaar',
-                      'cognos': 'Rapport (Cognos)'}
+                      'powerbi': 'Rapport (PowerBI)'}
     return resource_types
 
 
@@ -303,6 +302,7 @@ def get_dataset_id(indic_id):
     dataset_id = '_ind' + str(indic_id).zfill(3)
     return dataset_id
 
+
 def get_global_header(cfg):
     """
     This method will return the Global header to include in html pages, such as the 'Bijsluiter'.
@@ -319,6 +319,7 @@ def get_global_header(cfg):
 </header>
     """.format(gh_id=gh_id)
     return header_str
+
 
 def get_global_footer(cfg):
     """

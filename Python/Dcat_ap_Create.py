@@ -63,8 +63,9 @@ def get_contactpoint(el):
     # Create the ContactPoint object in the profile
     contact_obj = SubElement(contact_res, 'vcard:Kind', attrib={'rdf:about': contact_uri})
     contact_name = SubElement(contact_obj, 'vcard:fn')
-    contact_name.text = config['dcat_ap']['contact_name']
-    SubElement(contact_obj, 'vcard:hasEmail', attrib={'rdf:resource': config['OpenData']['author_email']})
+    # contact_name.text = config['dcat_ap']['contact_name']
+    contact_name.text = contact_uri
+    # SubElement(contact_obj, 'vcard:hasEmail', attrib={'rdf:resource': config['OpenData']['author_email']})
     return contact_res
 
 
@@ -145,10 +146,6 @@ for indic_id in ds.get_indicator_ids():
     # landing_page = config['dcat_ap']['landing_url'] + my_env.get_name_from_indic(config, indic_id)
     landing_page = ds.get_indicator_val(indic_id, "bijsluiter")
     dataset_lp = SubElement(dataset_obj, 'dcat:landingPage', attrib={'rdf:resource': landing_page})
-    dataset_theme_datathank = SubElement(dataset_obj, 'dcat:theme',
-                                         attrib={'rdf:resource': config['dcat_ap']['datathank_theme']})
-    dataset_theme_fedgov = SubElement(dataset_obj, 'dcat:theme',
-                                      attrib={'rdf:resource': config['dcat_ap']['fedgov_theme']})
 
     # Now handle all distributions
     distr_dict = my_env.get_resource_types()

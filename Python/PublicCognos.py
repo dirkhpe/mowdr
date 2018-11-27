@@ -119,3 +119,4 @@ class PublicCognos:
             myfile.write(redirect_contents.format(**context))
         logging.debug("File " + redirect_file + " created for loading on " + redirect_url)
         return redirect_file, redirect_url
+

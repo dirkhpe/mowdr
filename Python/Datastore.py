@@ -258,6 +258,7 @@ class Datastore:
     def get_attribs_source(self, source):
         """
         This method collects all attributes for a specific source.
+
         :param source: Value of the source parameter
         :return: Array of result lists. Each result list has one element: the attribute name.
         """
@@ -398,3 +399,4 @@ class Datastore:
             print(msg)
             logging.error(msg)
         return
+

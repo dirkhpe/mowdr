@@ -11,7 +11,7 @@
 *.pyc
 Python/properties/*
 Python/__pycache__/*
-Python/.idea
+**/.idea
 Python/Test.py
 Python/lib/__pycache__/*
 Python/sqlite3.exe
